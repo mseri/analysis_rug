@@ -264,13 +264,13 @@ $$
 
 ```coq
 Definition S : subset ℝ :=
-  fun x => ∃ n : ℕ, x = 1 / (INR n + 1).
+  fun x => ∃ n : ℕ, x = 1 / (n + 1).
 
-Lemma S_mem_helper (n : ℕ) : 1 / (INR n + 1) ∈ S.
+Lemma S_mem_helper (n : ℕ) : 1 / (n + 1) ∈ S.
 Proof.
-  It suffices to show that ∃ m : ℕ, 1 / (INR n + 1) = 1 / (INR m + 1).
+  It suffices to show that ∃ m : ℕ, 1 / (n + 1) = 1 / (m + 1).
   Choose m := n.
-  We conclude that 1 / (INR n + 1) = 1 / (INR m + 1).
+  We conclude that 1 / (n + 1) = 1 / (m + 1).
 Qed.
 
 Hint Resolve S_mem_helper : wp_reals.
@@ -280,15 +280,15 @@ Lemma S_upper_bound : 1 is an _upper bound_ for S.
 Proof.
   We need to show that ∀ x ∈ S, x ≤ 1.
   Take x ∈ S.
-  It holds that ∃ n : ℕ, x = 1 / (INR n + 1).
+  It holds that ∃ n : ℕ, x = 1 / (n + 1).
   Obtain such an n.
-  It holds that x = 1 / (INR n + 1).
-  It holds that 0 ≤ INR n as (Hnn).
-  By Hnn it holds that 1 ≤ INR n + 1 as (H1).
-  By H1 it holds that 0 < INR n + 1.
+  It holds that x = 1 / (n + 1).
+  It holds that 0 ≤ n as (Hnn).
+  By Hnn it holds that 1 ≤ n + 1 as (H1).
+  By H1 it holds that 0 < n + 1.
   (* TODO: why below it only works if I omit the 1 in the numerator? *)
-  By H1 it holds that / (INR n + 1) ≤ / 1.
-  We conclude that (& x = 1 / (INR n + 1) = / (INR n + 1) ≤ / 1 = 1).
+  By H1 it holds that / (n + 1) ≤ / 1.
+  We conclude that (& x = 1 / (n + 1) = / (n + 1) ≤ / 1 = 1).
 Qed.
 
 Lemma S_sup : 1 is the _supremum_ of S.
@@ -318,13 +318,13 @@ Lemma S_lower_bound : 0 is a _lower bound_ for S.
 Proof.
   We need to show that ∀ x ∈ S, 0 ≤ x.
   Take x ∈ S.
-  It holds that ∃ n : ℕ, x = 1 / (INR n + 1).
+  It holds that ∃ n : ℕ, x = 1 / (n + 1).
   Obtain such an n.
-  It holds that x = 1 / (INR n + 1).
-  It holds that 0 ≤ INR n.
-  It holds that 0 < INR n + 1.
-  It holds that 0 < / (INR n + 1).
-  We conclude that (& 0 ≤ / (INR n + 1) = 1 / (INR n + 1) = x).
+  It holds that x = 1 / (n + 1).
+  It holds that 0 ≤ n.
+  It holds that 0 < n + 1.
+  It holds that 0 < / (n + 1).
+  We conclude that (& 0 ≤ / (n + 1) = 1 / (n + 1) = x).
 Qed.
 
 Lemma S_inf : 0 is the _infimum_ of S.
@@ -338,15 +338,14 @@ Proof.
     Take ε > 0.
     It holds that 0 < / ε as (Hε_inv_pos).
     By the Archimedean property it holds that
-      ∃ n1 ∈ ℕ, INR n1 > / ε as (HArch).
+      ∃ n1 ∈ ℕ, n1 > / ε as (HArch).
     Obtain such an n1.
-    It holds that INR n1 > / ε.
-    It holds that INR n1 + 1 > / ε.
-    It holds that 0 < INR n1 + 1.
-    It holds that / (INR n1 + 1) < / (/ ε).
-    Choose a := 1 / (INR n1 + 1).
-    { Indeed, a ∈ S. }
-    We conclude that (& a = 1 / (INR n1 + 1) = / (INR n1 + 1) < / (/ ε) = ε = 0 + ε).
+    It holds that (& n1 + 1 > n1 > / ε > 0).
+    It holds that / (n1 + 1) < / (/ ε).
+    Choose a := 1 / (n1 + 1). { Indeed, a ∈ S. }
+    We conclude that (&
+      a = 1 / (n1 + 1) = / (n1 + 1) < / (/ ε) = ε = 0 + ε
+    ).
 Qed.
 ```
 
@@ -371,16 +370,17 @@ Proof.
   By archimedN we conclude that ∃ n : ℕ, INR n > x.
 Qed.
 
-Lemma archimedean_2 (y : ℝ) (Hy : y > 0) : ∃ n : ℕ, 1 / (INR n + 1) < y.
+Lemma archimedean_2 (y : ℝ) (Hy : y > 0) : ∃ n : ℕ, 1 / (n + 1) < y.
 Proof.
   It holds that 0 < / y as (Hy_inv_pos).
-  By the Archimedean property it holds that ∃ n1 ∈ ℕ, INR n1 > / y as (HN).
+  By the Archimedean property it holds that ∃ n1 ∈ ℕ, n1 > / y as (HN).
   Obtain such an n1.
-  It holds that (& INR n1 + 1 > INR n1 > / y).
-  It holds that 0 < INR n1 + 1.
-  It holds that / (INR n1 + 1) < / (/ y).
+  It holds that (& n1 + 1 > n1 > / y > 0).
+  It holds that / (n1 + 1) < / (/ y).
   Choose n := n1.
-  We conclude that (& 1 / (INR n1 + 1) = / (INR n1 + 1) < / (/ y) = y).
+  We conclude that (&
+    1 / (n1 + 1) = / (n1 + 1) < / (/ y) = y
+  ).
 Qed.
 ```
 
@@ -518,16 +518,11 @@ Choose $m\in\mathbb{Z}$ with $na < m < nb$ (possible since $nb - na > 1$). Then 
 $a < r < b$.
 
 ```coq
-(* This proof mixes Waterproof natural-language style with a plain Ltac1 block
-   for the nonlinear real-number arithmetic (products and divisions), which
-   Waterproof's automation does not handle robustly -- similar to the ltac1
-   escape hatch used in lecture04_subsequences.mv for the Monotone
-   Convergence Theorem. *)
 Lemma density_of_rationals (lo hi : ℝ) (H : lo < hi) :
     ∃ p : ℤ, ∃ q : ℤ, (q > 0)%Z ∧ lo < IZR p / IZR q ∧ IZR p / IZR q < hi.
 Proof.
   It holds that hi - lo > 0 as (Hpos).
-  By archimedean_2 it holds that ∃ n : ℕ, 1 / (INR n + 1) < hi - lo as (HArch).
+  By archimedean_2 it holds that ∃ n : ℕ, 1 / (n + 1) < hi - lo as (HArch).
   Obtain such an n.
   (* TODO: this one seems tricky with Waterproof and I was not able to find a
      simple-ish way to prove it. *)

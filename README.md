@@ -2,7 +2,7 @@
 
 This repository contains course material for the [Analysis](https://ocasys.rug.nl/current/catalog/course/WBMA012-05) course at the University of Groningen.
 
-The lectures material can be accessed at [mseri.me/analysis](https://mseri.me/analysis).
+The lectures material can be accessed at [mseri.me/analysis_rug](https://mseri.me/analysis_rug).
 This contains both the syllabus, including tutorial exercises, and navigable slides for the lectures.
 
 The `waterproof` folder contains the slides of the lectures formalized in Waterproof.

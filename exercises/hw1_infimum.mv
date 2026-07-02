@@ -1,0 +1,108 @@
+# Homework 1 -- Infimum
+
+Determine the greatest lower bound (infimum) of the set
+$$
+A = \bigg\lbrace \frac{2x+1}{3y-x} : x, y \in \mathbb{R} \text{ and } 1 \leq 2x < y \bigg\rbrace.
+$$
+
+<hint title="Import libraries (click to open/close)">
+```coq
+Require Import Stdlib.Reals.Reals.
+Require Import Waterproof.Tactics.
+Require Import Waterproof.Notations.Common.
+Require Import Waterproof.Notations.Reals.
+Require Import Waterproof.Notations.Sets.
+Require Import Waterproof.Chains.
+Require Import Waterproof.Automation.
+Require Import Waterproof.Libs.Analysis.SupAndInf.
+
+Waterproof Enable Automation RealsAndIntegers.
+Waterproof Enable Automation Intuition.
+
+Open Scope R_scope.
+Open Scope subset_scope.
+
+Set Default Goal Selector "!".
+Set Bullet Behavior "Waterproof Relaxed Subproofs".
+```
+</hint>
+
+We define the set $A$ formally.
+```coq
+Definition A : subset ℝ :=
+  fun p => ∃ x : ℝ, ∃ y : ℝ,
+    1 ≤ 2*x ∧ 2*x < y ∧ p = (2*x + 1) / (3*y - x).
+
+Waterproof Register Expand "A";
+  for A;
+  as "Definition A".
+```
+
+## Part 1: 0 is a lower bound for A
+
+```coq
+Lemma A_lower_bound : 0 is a _lower bound_ for A.
+Proof.
+```
+<input-area>
+```coq
+
+```
+</input-area>
+```coq
+Qed.
+```
+
+## Part 2: 0 is the greatest lower bound
+
+It is useful to prove this lemma separately.
+
+```coq
+Lemma A_near_zero : ∀ ε > 0, ∃ a ∈ A, a < 0 + ε.
+Proof.
+```
+<input-area>
+```coq
+
+```
+</input-area>
+```coq
+Qed.
+```
+
+## Main result: 0 is the infimum of A
+
+Note that the `alt_char_inf_mpr` theorem in `Waterproof.Analysis.SupAndInf`
+can be of great help.
+
+```coq
+Lemma inf_A : 0 is the _infimum_ of A.
+Proof.
+```
+<input-area>
+```coq
+
+```
+</input-area>
+```coq
+Qed.
+```
+
+## Declaration of own work
+
+Please declare that the work above is your own work by writing `Yes.` below.
+In particular, this means the proofs are typed by yourself and you could
+explain them when asked.
+```coq
+Inductive answer : Type := Yes : answer.
+
+Definition own_work : answer. exact
+```
+<input-area>
+```coq
+
+```
+</input-area>
+```coq
+Qed.
+```

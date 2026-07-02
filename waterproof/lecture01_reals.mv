@@ -1,0 +1,654 @@
+# Lecture 1 -- The real numbers
+
+This file formalizes the main definitions and theorems from Lecture 1,
+following Abbott §1.2 (Preliminaries), §1.3 (Axiom of Completeness), and
+§1.4 (Consequences of Completeness).
+
+<hint title="Import libraries (click to open/close)">
+```coq
+Require Import Stdlib.Reals.Reals.
+Require Import Waterproof.Tactics.
+Require Import Waterproof.Notations.Common.
+Require Import Waterproof.Notations.Reals.
+Require Import Waterproof.Notations.Sets.
+Require Import Waterproof.Chains.
+Require Import Waterproof.Automation.
+Require Import Waterproof.Libs.Analysis.SupAndInf.
+Require Import Waterproof.Libs.Reals.ArchimedN.
+
+Waterproof Enable Automation RealsAndIntegers.
+Waterproof Enable Automation Intuition.
+
+Open Scope R_scope.
+Open Scope subset_scope.
+
+Set Default Goal Selector "!".
+Set Bullet Behavior "Waterproof Relaxed Subproofs".
+
+Hint Resolve Rinv_0_lt_compat : wp_reals.
+Hint Resolve Rinv_lt_contravar : wp_reals.
+Hint Resolve Rinv_le_contravar : wp_reals.
+```
+</hint>
+
+# Axiom of Completeness
+
+## Upper bounds
+
+**Definition:** $A \subseteq \mathbb{R}$ is called **bounded above** if
+$$
+\exists\, b \in \mathbb{R} \qquad\text{such that}\qquad a \leq b \qquad\forall\, a \in A
+$$Such a $b$ is called an **upper bound** for $A$.
+
+**Example:**
+
+Let $A = \bigg\lbrace\frac{1}{n} \,:\, n \in \mathbb{N}\bigg\rbrace = \bigg\lbrace 1, \frac{1}{2}, \frac{1}{3}, \dots \bigg\rbrace$.
+Any number $b \geq 1$ is an upper bound for $A$.
+
+```coq
+(* In Waterproof: M is an _upper bound_ for A means ∀ a ∈ A, a ≤ M
+   and: A is _bounded from above_ means ∃ M ∈ ℝ, M is an upper bound for A *)
+```
+
+## Supremum (least upper bound)
+
+**Definition:** $s\in\mathbb{R}$ is called the **least upper bound** or **supremum** of
+$A\subseteq\mathbb{R}$ if
+- $s$ is an upper bound for $A$
+- if $b$ is any upper bound for $A$ then $s \leq b$
+
+**Notation:** $s = \sup A$
+
+```coq
+(* In Waterproof: M is the _supremum_ of A means M is an upper bound for A
+   and M ≤ every other upper bound for A. *)
+```
+
+## Supremum characterization lemma
+
+**Lemma:** if $s$ is an upper bound for $A$ then
+$$
+s = \sup A
+\quad\Leftrightarrow\quad
+\forall\,\epsilon>0 \quad \exists \, a\in A\quad \text{s.t.} \quad s-\epsilon < a
+$$
+
+**Proof ($\Rightarrow$):** $s - \epsilon < s$ so $s-\epsilon$ is not an upper bound for $A$,
+hence there exists $a\in A$ with $s-\epsilon < a$.
+
+**Proof ($\Leftarrow$):** if $b < s$ then for $\epsilon = s-b$ there exists $a\in A$ with
+$b = s-\epsilon < a$, so $b$ is not an upper bound: contradiction. Hence $s \leq b$.
+
+```coq
+Lemma sup_characterization (A : subset ℝ) (s : ℝ)
+    (Hs : s is an _upper bound_ for A) :
+    (s is the _supremum_ of A) ⇔ (∀ ε > 0, ∃ a ∈ A, s - ε < a).
+Proof.
+  We show both directions.
+  - We need to show that s is the _supremum_ of A ⇨ ∀ ε > 0, ∃ a ∈ A, s - ε < a.
+    Assume that s is the _supremum_ of A.
+    (* This result is proved in Waterproof standard library as
+       exists_almost_maximizer_ε, and in fact the following
+       is a valid proof *)
+    (* By exists_almost_maximizer_ε we conclude that ∀ ε > 0, ∃ a ∈ A, s - ε < a. *)
+    Take ε : ℝ; such that ε > 0.
+    It holds that s - ε < s as (Hsupeps).
+    We argue by contradiction.
+    Assume that ¬ (∃ a ∈ A, s - ε < a).
+    It holds that ∀ x ∈ A, x ≤ s - ε.
+    It holds that s - ε is an _upper bound_ for A.
+    (* any_upp_bd_ge_sup is in Waterproofs' library, can you infer what it says? *)
+    By any_upp_bd_ge_sup it holds that s ≤ s - ε.
+    It holds that ¬ (s ≤ s - ε).
+    Contradiction. (* See Hsupeps *)
+  - We need to show that (∀ ε > 0, ∃ a ∈ A, s - ε < a) ⇨ s is the _supremum_ of A.
+    Assume that ∀ ε > 0, ∃ a ∈ A, s - ε < a.
+    (* This is already proven in Waterproof, and in fact the following
+       constitutes a valid proof *)
+    (* By alt_char_sup_mpr it suffices to show that
+      (s is an _upper bound_ for A) ∧ (∀ ε > 0, ∃ a ∈ A, s - ε < a).
+    We show both statements.
+    - We conclude that s is an _upper bound_ for A.
+    - We conclude that ∀ ε > 0, ∃ a ∈ A, s - ε < a. *)
+    We need to show that
+      (s is an _upper bound_ for A) ∧ (∀ b ∈ ℝ, b is an _upper bound_ for A ⇒ s ≤ b).
+    We show both statements.
+    - We conclude that s is an _upper bound_ for A.
+    - We need to show that ∀ b ∈ ℝ, b is an _upper bound_ for A ⇒ s ≤ b.
+      Take b ∈ ℝ.
+      Assume that b is an _upper bound_ for A as (Hub).
+      We argue by contradiction.
+      Assume that ¬ (s ≤ b) as (Hcontra).
+      It holds that b < s as (Hbs).
+      Define ε := s - b. (* So b = s - ε *)
+      By Hbs it holds that ε > 0.
+      It holds that ∃ a ∈ A, s - ε < a.
+      Obtain such an a.
+      It holds that (& b = s - ε < a) as (Hba).
+      By Hba it holds that ¬ (a ≤ b).
+      It holds that a ≤ b.
+      Contradiction.
+Qed.
+```
+
+## Lower bounds
+
+**Definition:** $A \subseteq \mathbb{R}$ is called **bounded below** if
+$$
+\exists\,\ell \in \mathbb{R} \qquad\text{such that}\qquad \ell \leq a \qquad\forall\, a \in A
+$$
+
+Such an $\ell$ is called a **lower bound** for $A$.
+
+**Example:**
+$A = \displaystyle \bigg\lbrace\frac{1}{n} \\,:\\, n \in \mathbb{N}\bigg\rbrace$.
+Any number $\ell \leq 0$ is a lower bound for $A$.
+
+```coq
+(* In Waterproof: m is a _lower bound_ for A means ∀ a ∈ A, m ≤ a
+   and: A is _bounded from below_ means ∃ m ∈ ℝ, m is a lower bound for A *)
+```
+
+## Infimum (greatest lower bound)
+
+**Definition:** $i\in\mathbb{R}$ is called the **greatest lower bound** or **infimum** of
+$A\subseteq\mathbb{R}$ if
+- $i$ is a lower bound for $A$
+- if $\ell$ is any lower bound for $A$ then $\ell \leq i$
+
+**Notation:** $i = \inf A$
+
+**Warning:** a supremum is not always a maximum, and an infimum is not always a minimum.
+$$
+\begin{split}
+\sup\bigg\{\frac{1}{2}, \frac{2}{3}, \frac{3}{4}, \frac{4}{5},\dots\bigg\} &= 1
+  \qquad\text{but there is no largest element} \\[3mm]
+\inf\bigg\{1, \frac{1}{2}, \frac{1}{3}, \frac{1}{4}, \dots\bigg\} &= 0
+  \qquad\text{but there is no smallest element}
+\end{split}
+$$
+
+```coq
+(* In Waterproof: m is the _infimum_ of A means m is a lower bound for A
+   and every other lower bound ℓ satisfies ℓ ≤ m. *)
+```
+
+## Infimum characterization lemma
+
+**Lemma:** if $i$ is a lower bound for $A$ then
+$$
+i = \inf A
+\quad\Leftrightarrow\quad
+\forall\,\epsilon>0 \quad \exists \, a\in A\quad \text{s.t.} \quad a < i + \epsilon
+$$
+
+```coq
+Lemma inf_characterization (A : subset ℝ) (i : ℝ)
+    (Hi : i is a _lower bound_ for A) :
+    (i is the _infimum_ of A) ⇔ (∀ ε > 0, ∃ a ∈ A, a < i + ε).
+Proof.
+  We show both directions.
+  - We need to show that i is the _infimum_ of A ⇨ ∀ ε > 0, ∃ a ∈ A, a < i + ε.
+    Assume that i is the _infimum_ of A as (Hinf).
+    (* This result is proved in Waterproof standard library as
+       exists_almost_minimizer_ε, and in fact the following
+       is a valid proof *)
+    (* By exists_almost_minimizer_ε we conclude that ∀ ε > 0, ∃ a ∈ A, a < i + ε. *)
+    Take ε : ℝ; such that ε > 0.
+    It holds that i < i + ε as (Hiepslt).
+    We argue by contradiction.
+    Assume that ¬ (∃ a ∈ A, a < i + ε).
+    It holds that ∀ x ∈ A, i + ε ≤ x as (Hnotlb).
+    By (Hnotlb) it holds that i + ε is a _lower bound_ for A.
+    (* any_low_bd_le_inf is in Waterproofs' library, can you infer what it says? *)
+    By any_low_bd_le_inf it holds that i + ε ≤ i.
+    It holds that ¬ (i + ε ≤ i).
+    Contradiction. (* See Hiepslt *)
+  - We need to show that (∀ ε > 0, ∃ a ∈ A, a < i + ε) ⇨ i is the _infimum_ of A.
+    Assume that ∀ ε > 0, ∃ a ∈ A, a < i + ε.
+    (* This is already proven in Waterproof, and in fact the following
+       constitutes a valid proof *)
+    (* By alt_char_inf_mpr it suffices to show that
+      (i is a _lower bound_ for A) ∧ (∀ ε > 0, ∃ a ∈ A, a < i + ε).
+    We show both statements.
+    - We conclude that i is a _lower bound_ for A.
+    - We conclude that ∀ ε > 0, ∃ a ∈ A, a < i + ε. *)
+    We need to show that
+      (i is a _lower bound_ for A) ∧ (∀ l ∈ ℝ, l is a _lower bound_ for A ⇒ l ≤ i).
+    We show both statements.
+    - We conclude that i is a _lower bound_ for A.
+    - We need to show that ∀ l ∈ ℝ, l is a _lower bound_ for A ⇒ l ≤ i.
+      Take l ∈ ℝ.
+      Assume that l is a _lower bound_ for A.
+      We argue by contradiction.
+      Assume that ¬ (l ≤ i) as (Hcontra).
+      It holds that i < l.
+      Define ε := l - i. (* So l = i + ε *)
+      It holds that ε > 0.
+      It holds that ∃ a ∈ A, a < i + ε.
+      Obtain such an a.
+      It holds that (& a < i + ε = l) as (Hal).
+      By Hal it holds that ¬ (l ≤ a).
+      It holds that l ≤ a.
+      Contradiction.
+Qed.
+```
+
+## The completeness of ℝ
+
+**Axiom of Completeness (AoC):** every nonempty subset of $\mathbb{R}$ that is bounded above
+has a least upper bound.
+
+```coq
+(* In Waterproof this is R_complete from Waterproof.Libs.Analysis.SupAndInf:
+     ∀ (A : ℝ → Prop), ∀ a ∈ A, (A is bounded from above) ⇒
+       ∃ M ∈ ℝ, M is the supremum of A *)
+```
+
+# Consequences of Completeness
+
+## Example
+
+We work with the set
+$$
+S = \bigg\{ \frac{1}{n+1} : n \in \mathbb{N} \bigg\}
+= \bigg\{1, \tfrac{1}{2}, \tfrac{1}{3}, \dots\bigg\}
+$$
+(using $\mathbb{N} = \{0, 1, 2, \dots\}$ so the index $n+1$ avoids division by zero).
+
+**Claim:** $\sup S = 1$.
+
+**Proof:**
+- Clearly $1/(n+1) \leq 1$ for all $n$, so $1$ is an upper bound.
+- For any $\epsilon>0$ we have $1-\epsilon < 1$ and $1 \in S$ (taking $n=0$).
+
+```coq
+Definition S : subset ℝ :=
+  fun x => ∃ n : ℕ, x = 1 / (INR n + 1).
+
+Lemma S_mem_helper (n : ℕ) : 1 / (INR n + 1) ∈ S.
+Proof.
+  It suffices to show that ∃ m : ℕ, 1 / (INR n + 1) = 1 / (INR m + 1).
+  Choose m := n.
+  We conclude that 1 / (INR n + 1) = 1 / (INR m + 1).
+Qed.
+
+Hint Resolve S_mem_helper : wp_reals.
+Hint Resolve Rinv_lt_contravar : wp_reals.
+
+Lemma S_upper_bound : 1 is an _upper bound_ for S.
+Proof.
+  We need to show that ∀ x ∈ S, x ≤ 1.
+  Take x ∈ S.
+  It holds that ∃ n : ℕ, x = 1 / (INR n + 1).
+  Obtain such an n.
+  It holds that x = 1 / (INR n + 1).
+  It holds that 0 ≤ INR n as (Hnn).
+  By Hnn it holds that 1 ≤ INR n + 1 as (H1).
+  By H1 it holds that 0 < INR n + 1.
+  (* TODO: why below it only works if I omit the 1 in the numerator? *)
+  By H1 it holds that / (INR n + 1) ≤ / 1.
+  We conclude that (& x = 1 / (INR n + 1) = / (INR n + 1) ≤ / 1 = 1).
+Qed.
+
+Lemma S_sup : 1 is the _supremum_ of S.
+Proof.
+  By alt_char_sup_mpr it suffices to show that
+    (1 is an _upper bound_ for S) ∧ (∀ ε > 0, ∃ a ∈ S, 1 - ε < a).
+  We show both statements.
+  - We need to show that 1 is an _upper bound_ for S.
+    By S_upper_bound we conclude that 1 is an _upper bound_ for S.
+  - We need to show that ∀ ε > 0, ∃ a ∈ S, 1 - ε < a.
+    Take ε > 0.
+    Choose a := 1 / (INR 0%nat + 1).
+    { Indeed, a ∈ S. }
+    We conclude that (& 1 - ε < 1 = a).
+Qed.
+```
+
+**Claim:** $\inf S = 0$.
+
+**Proof:**
+- Clearly $0 \leq 1/(n+1)$ for all $n$, so $0$ is a lower bound.
+- For any $\epsilon > 0$: by the Archimedean property there exists $n_1 \in \mathbb{N}$
+  with $n_1 > 1/\epsilon$, so $n_1 + 1 > 1/\epsilon$ and $1/(n_1+1) < \epsilon$.
+
+```coq
+Lemma S_lower_bound : 0 is a _lower bound_ for S.
+Proof.
+  We need to show that ∀ x ∈ S, 0 ≤ x.
+  Take x ∈ S.
+  It holds that ∃ n : ℕ, x = 1 / (INR n + 1).
+  Obtain such an n.
+  It holds that x = 1 / (INR n + 1).
+  It holds that 0 ≤ INR n.
+  It holds that 0 < INR n + 1.
+  It holds that 0 < / (INR n + 1).
+  We conclude that (& 0 ≤ / (INR n + 1) = 1 / (INR n + 1) = x).
+Qed.
+
+Lemma S_inf : 0 is the _infimum_ of S.
+Proof.
+  By alt_char_inf_mpr it suffices to show that
+    (0 is a _lower bound_ for S) ∧ (∀ ε > 0, ∃ a ∈ S, a < 0 + ε).
+  We show both statements.
+  - We need to show that 0 is a _lower bound_ for S.
+    By S_lower_bound we conclude that 0 is a _lower bound_ for S.
+  - We need to show that ∀ ε > 0, ∃ a ∈ S, a < 0 + ε.
+    Take ε > 0.
+    It holds that 0 < / ε as (Hε_inv_pos).
+    By the Archimedean property it holds that
+      ∃ n1 ∈ ℕ, INR n1 > / ε as (HArch).
+    Obtain such an n1.
+    It holds that INR n1 > / ε.
+    It holds that INR n1 + 1 > / ε.
+    It holds that 0 < INR n1 + 1.
+    It holds that / (INR n1 + 1) < / (/ ε).
+    Choose a := 1 / (INR n1 + 1).
+    { Indeed, a ∈ S. }
+    We conclude that (& a = 1 / (INR n1 + 1) = / (INR n1 + 1) < / (/ ε) = ε = 0 + ε).
+Qed.
+```
+
+## The Archimedean Property
+
+**Theorem:**
+1. $\forall\\,x \in \mathbb{R} \quad\exists\\,n \in \mathbb{N}\quad\text{s.t.}\quad n > x$
+2. $\forall\\,y>0 \quad\exists\\,n \in \mathbb{N} \quad\text{s.t.}\quad 1/(n+1) < y$
+
+**Proof (1):** If (1) is not true, then $\mathbb{N}$ is bounded above, and the AoC gives
+$\alpha = \sup\mathbb{N}$. Since $\alpha - 1$ is not an upper bound, there exists $n\in\mathbb{N}$
+with $\alpha - 1 < n$, so $n+1 > \alpha$. But $n+1 \in \mathbb{N}$, contradiction.
+
+**Proof (2):** Given $y>0$, set $x = 1/y$. By (1) there exists $n\in\mathbb{N}$ with $n > 1/y$,
+so $n+1 > n > 1/y$ and therefore $1/(n+1) < y$.
+
+```coq
+Lemma archimedean_1 (x : ℝ) : ∃ n : ℕ, INR n > x.
+Proof.
+  (* In Waterproof this is archimedN from Waterproof.Libs.Reals.ArchimedN
+     This one is tricky to formalize as you can see in Waterproof's source. *)
+  By archimedN we conclude that ∃ n : ℕ, INR n > x.
+Qed.
+
+Lemma archimedean_2 (y : ℝ) (Hy : y > 0) : ∃ n : ℕ, 1 / (INR n + 1) < y.
+Proof.
+  It holds that 0 < / y as (Hy_inv_pos).
+  By the Archimedean property it holds that ∃ n1 ∈ ℕ, INR n1 > / y as (HN).
+  Obtain such an n1.
+  It holds that (& INR n1 + 1 > INR n1 > / y).
+  It holds that 0 < INR n1 + 1.
+  It holds that / (INR n1 + 1) < / (/ y).
+  Choose n := n1.
+  We conclude that (& 1 / (INR n1 + 1) = / (INR n1 + 1) < / (/ y) = y).
+Qed.
+```
+
+## Nested Interval Property
+
+**Theorem:**
+$$
+[a_1, b_1] \supseteq [a_2, b_2] \supseteq [a_3, b_3] \supseteq \cdots
+\quad\Rightarrow\quad
+\bigcap_{n=1}^\infty [a_n, b_n] \neq \varnothing
+$$
+
+That is, if $(a_n)$ is non-decreasing, $(b_n)$ is non-increasing, and $a_n \leq b_n$ for all
+$n\in\mathbb{N}$, then there exists $x\in\mathbb{R}$ with $a_n \leq x \leq b_n$ for all $n$.
+
+**Proof:** Let $A = \{a_n : n\in\mathbb{N}\}$. Every $b_n$ is an upper bound for $A$
+(since $a_m \leq a_n \leq b_n$ for $m \leq n$ and $a_m \leq b_m \leq b_n$ for $m \geq n$).
+By the AoC, $x := \sup A$ exists. Since $x$ is an upper bound, $a_n \leq x$ for all $n$.
+Since each $b_n$ is an upper bound and $x$ is the least upper bound, $x \leq b_n$ for all $n$.
+
+```coq
+Lemma nondecr_ge (a : ℕ → ℝ) (Hmono : ∀ n ∈ ℕ, a n ≤ a (n + 1)%nat) :
+    ∀ n ∈ ℕ, ∀ m ∈ ℕ, (m ≤ n)%nat → a m ≤ a n.
+Proof.
+  We use induction on n.
+  + We first show the base case (∀ m ∈ ℕ, (m ≤ 0)%nat → a m ≤ a 0%nat).
+    Take m ∈ ℕ.
+    Assume that (m ≤ 0)%nat as (Hm0).
+    It holds that (m = 0)%nat as (Hm).
+    We conclude that a m ≤ a 0%nat.
+  + We now show the induction step.
+    Take n ∈ ℕ.
+    Assume that (∀ m ∈ ℕ, (m ≤ n)%nat → a m ≤ a n) as (IH).
+    Take m ∈ ℕ.
+    Assume that (m ≤ n + 1)%nat as (Hmn).
+    Either (m ≤ n)%nat or (m = n + 1)%nat.
+    - Case (m ≤ n)%nat.
+      It holds that a m ≤ a n as (H1).
+      It holds that a n ≤ a (n + 1)%nat as (H2).
+      We conclude that (& a m ≤ a n ≤ a (n + 1)%nat).
+    - Case (m = n + 1)%nat.
+      We conclude that a m ≤ a (n + 1)%nat.
+Qed.
+
+Lemma nonincr_le (bseq : ℕ → ℝ) (Hmono : ∀ n ∈ ℕ, bseq (n + 1)%nat ≤ bseq n) :
+    ∀ n ∈ ℕ, ∀ m ∈ ℕ, (m ≤ n)%nat → bseq n ≤ bseq m.
+Proof.
+  We use induction on n.
+  + We first show the base case (∀ m ∈ ℕ, (m ≤ 0)%nat → bseq 0%nat ≤ bseq m).
+    Take m ∈ ℕ.
+    Assume that (m ≤ 0)%nat as (Hm0).
+    It holds that (m = 0)%nat as (Hm).
+    We conclude that bseq 0%nat ≤ bseq m.
+  + We now show the induction step.
+    Take n ∈ ℕ.
+    Assume that (∀ m ∈ ℕ, (m ≤ n)%nat → bseq n ≤ bseq m) as (IH).
+    Take m ∈ ℕ.
+    Assume that (m ≤ n + 1)%nat as (Hmn).
+    Either (m ≤ n)%nat or (m = n + 1)%nat.
+    - Case (m ≤ n)%nat.
+      It holds that bseq n ≤ bseq m as (H1).
+      It holds that bseq (n + 1)%nat ≤ bseq n as (H2).
+      We conclude that (& bseq (n + 1)%nat ≤ bseq n ≤ bseq m).
+    - Case (m = n + 1)%nat.
+      We conclude that bseq (n + 1)%nat ≤ bseq m.
+Qed.
+
+Lemma nested_interval_property (a bseq : ℕ → ℝ)
+    (Hab : ∀ n ∈ ℕ, a n ≤ bseq n)
+    (Ha_mono : ∀ n ∈ ℕ, a n ≤ a (n + 1)%nat)
+    (Hb_mono : ∀ n ∈ ℕ, bseq (n + 1)%nat ≤ bseq n) :
+    ∃ x ∈ ℝ, ∀ n ∈ ℕ, a n ≤ x ∧ x ≤ bseq n.
+Proof.
+  Define A := (fun y : ℝ => ∃ n : ℕ, y = a n).
+  We claim that ∀ k ∈ ℕ, bseq k is an _upper bound_ for A as (Hallub).
+  { Take k ∈ ℕ.
+    We need to show that ∀ y ∈ A, y ≤ bseq k.
+    Take y ∈ A.
+    It holds that ∃ n : ℕ, y = a n.
+    Obtain such an n.
+    It holds that y = a n.
+    Either (n ≤ k)%nat or (k ≤ n)%nat.
+    - Case (n ≤ k)%nat.
+      By nondecr_ge it holds that a n ≤ a k as (H1).
+      It holds that a k ≤ bseq k as (H2).
+      We conclude that (& y = a n ≤ a k ≤ bseq k).
+    - Case (k ≤ n)%nat.
+      By nonincr_le it holds that bseq n ≤ bseq k as (H1).
+      It holds that a n ≤ bseq n as (H2).
+      We conclude that (& y = a n ≤ bseq n ≤ bseq k).
+  }
+  We claim that A is bounded from above as (HboundedA).
+  { We need to show that ∃ M ∈ ℝ, M is an _upper bound_ for A.
+    Choose M := bseq 0%nat.
+    { Indeed, M ∈ ℝ. }
+    By Hallub we conclude that M is an _upper bound_ for A.
+  }
+  We claim that a 0%nat ∈ A as (Ha0).
+  { We need to show that ∃ n : ℕ, a 0%nat = a n.
+    Choose n := 0%nat.
+    We conclude that a 0%nat = a n.
+  }
+  (* R_complete is the name in the Waterproof.Analysis.SupAndInf
+     module of the axiom of completeness *)
+  By R_complete it holds that ∃ x ∈ ℝ, x is the _supremum_ of A as (Hsup).
+  Obtain such an x.
+  By sup_is_upp_bd it holds that x is an _upper bound_ for A as (Hxub).
+  Choose (x).
+  * Indeed, x ∈ ℝ.
+  * We need to show that ∀ n ∈ ℕ, a n ≤ x ∧ x ≤ bseq n.
+    Take n ∈ ℕ.
+    We show both statements.
+    - We need to show that a n ≤ x.
+      We claim that a n ∈ A as (Han).
+      { We need to show that ∃ k : ℕ, a n = a k.
+        Choose k := n.
+        We conclude that a n = a k.
+      }
+      We conclude that a n ≤ x.
+    - We need to show that x ≤ bseq n.
+      By Hallub it holds that bseq n is an _upper bound_ for A as (Hbn).
+      By Hbn and any_upp_bd_ge_sup it holds that x ≤ bseq n.
+Qed.
+```
+
+## Density of the rationals
+
+**Theorem:**
+$$
+\forall\,a, b \in \mathbb{R}\quad\text{with}\quad a < b\quad\exists\, r \in \mathbb{Q} \quad\text{s.t.}\quad a < r < b
+$$
+
+**Proof:** By the Archimedean property, there exists $n\in\mathbb{N}$ with $1/n < b-a$.
+Choose $m\in\mathbb{Z}$ with $na < m < nb$ (possible since $nb - na > 1$). Then $r = m/n$ satisfies
+$a < r < b$.
+
+```coq
+(* This proof mixes Waterproof natural-language style with a plain Ltac1 block
+   for the nonlinear real-number arithmetic (products and divisions), which
+   Waterproof's automation does not handle robustly -- similar to the ltac1
+   escape hatch used in lecture04_subsequences.mv for the Monotone
+   Convergence Theorem. *)
+Lemma density_of_rationals (lo hi : ℝ) (H : lo < hi) :
+    ∃ p : ℤ, ∃ q : ℤ, (q > 0)%Z ∧ lo < IZR p / IZR q ∧ IZR p / IZR q < hi.
+Proof.
+  It holds that hi - lo > 0 as (Hpos).
+  By archimedean_2 it holds that ∃ n : ℕ, 1 / (INR n + 1) < hi - lo as (HArch).
+  Obtain such an n.
+  (* TODO: this one seems tricky with Waterproof and I was not able to find a
+     simple-ish way to prove it. *)
+  Admitted.
+Qed.
+```
+
+```coq
+
+```
+
+# Absolute value
+
+## Definition of absolute value
+
+**Definition:** for any $x \in \mathbb{R}$ we set
+$$
+|x| =
+\begin{cases}
+\phantom{-}x & \text{if } x \geq 0 \\[5mm]
+-x & \text{if } x < 0
+\end{cases}
+$$
+
+**Examples:** $|{-3.14}| = 3.14$, $\;|0| = 0$, $\;|2| = 2$.
+
+```coq
+(* Note that in Rocq, the proof assistant Waterproof is built on,
+   |x| is called Rabs x, defined in Stdlib.Reals.Rbasic_fun. *)
+```
+
+## Absolute value and maximum
+
+**Lemma:** $|x| = \max\{x, -x\}$
+
+**Proof:**
+- If $x \geq 0$: $-x \leq 0 \leq x$, so $\max\lbrace -x,x \rbrace = x = |x|$.
+- If $x < 0$: $-x > 0 > x$, so $\max\lbrace -x,x \rbrace = -x = |x|$.
+
+```coq
+Lemma abs_eq_max (x : ℝ) : Rabs x = Rmax x (- x).
+Proof.
+  Either x ≥ 0 or x < 0.
+  - Case x ≥ 0.
+    It holds that Rabs x = x as (H1).
+    It holds that Rmax x (- x) = x as (H2).
+    We conclude that Rabs x = Rmax x (- x).
+  - Case x < 0.
+    It holds that Rabs x = - x as (H1).
+    It holds that Rmax x (- x) = - x as (H2).
+    We conclude that Rabs x = Rmax x (- x).
+Qed.
+```
+
+## Product rule
+
+**Lemma:** $|xy| = |x|\\,|y|$
+
+**Proof:** case analysis on the signs of $x$ and $y$.
+
+```coq
+Lemma abs_mult (x y : ℝ) : Rabs (x * y) = Rabs x * Rabs y.
+Proof.
+  By Rabs_mult we conclude that Rabs (x * y) = Rabs x * Rabs y.
+Qed.
+```
+
+## Quotient rule
+
+**Lemma:** $\displaystyle\left|\frac{x}{y}\right| = \frac{|x|}{|y|}$ for $y\neq 0$.
+
+**Proof:** $x/y = x \cdot (1/y)$, $|1/y| = 1/|y|$, and use the product rule.
+
+```coq
+Lemma abs_div (x y : ℝ) (Hy : y ≠ 0) : Rabs (x / y) = Rabs x / Rabs y.
+Proof.
+  By Rabs_inv it holds that Rabs (/ y) = / Rabs y.
+  We conclude that Rabs (x / y) = Rabs x / Rabs y.
+Qed.
+```
+
+## Triangle inequality
+
+**Lemma (Triangle inequality):**
+$$
+|x + y| \leq |x| + |y|
+$$
+
+**Proof:**
+$$\begin{aligned}
+x+y & \leq |x| + y \leq |x| + |y| \\[3mm]
+{-x}-y & \leq |x| - y \leq |x| + |y| \\[3mm]
+|x+y| & = \max\{x+y, -x-y\} \leq |x| + |y|
+\end{aligned}$$
+
+```coq
+Lemma triangle_inequality (x y : ℝ) : Rabs (x + y) ≤ Rabs x + Rabs y.
+Proof.
+  (* Exercise, prove it without calling the corresponding statement in the library *)
+  By Rabs_triang we conclude that Rabs (x + y) ≤ Rabs x + Rabs y.
+Qed.
+```
+
+## Reverse triangle inequality
+
+**Lemma (Reverse triangle inequality):**
+$$
+\big||x| - |y|\big| \leq |x - y|
+$$
+
+**Proof:**
+$$\begin{aligned}
+|x| = |x-y+y| & \leq |x-y| + |y| \implies |x| - |y| \leq |x-y| \\[3mm]
+|y| - |x| & \leq |y-x| = |x-y| \quad\text{(swap $x$ and $y$)} \\[3mm]
+\big||x| - |y|\big| & = \max\{|x|-|y|,\,|y|-|x|\} \leq |x-y|
+\end{aligned}$$
+
+```coq
+Lemma reverse_triangle_inequality (x y : ℝ) : Rabs (Rabs x - Rabs y) ≤ Rabs (x - y).
+Proof.
+  (* Exercise, prove it without calling the corresponding statement in the library *)
+  By Rabs_triang_inv2 we conclude that Rabs (Rabs x - Rabs y) ≤ Rabs (x - y).
+Qed.
+```

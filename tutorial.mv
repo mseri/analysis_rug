@@ -41,8 +41,8 @@ Try to remove it and see what happens.
 Lemma example_reflexivity :
   0 = 0.
 Proof.
-Help. (* optional, ask for help, remove from final proof *)
-We conclude that 0 = 0.
+  Help. (* optional, ask for help, remove from final proof *)
+  We conclude that 0 = 0.
 Qed.
 ```
 ### Try it yourself:
@@ -68,8 +68,8 @@ Sometimes it is useful to remind the reader or yourself of what you need to show
 Lemma example_we_need_to_show_that :
   2 = 2.
 Proof.
-We need to show that 2 = 2.
-We conclude that 2 = 2.
+  We need to show that 2 = 2.
+  We conclude that 2 = 2.
 Qed.
 ```
 ### Try it yourself
@@ -97,7 +97,7 @@ Lemma example_take :
     x = x.
 Proof.
 Take x ∈ ℝ.
-We conclude that x = x.
+  We conclude that x = x.
 Qed.
 ```
 ### Try it yourself:
@@ -123,9 +123,9 @@ Lemma example_choose :
   ∃ y ∈ ℝ,
     y < 3.
 Proof.
-Choose y := 2.
-* Indeed, y ∈ ℝ.
-* We conclude that y < 3.
+  Choose y := 2.
+  * Indeed, y ∈ ℝ.
+  * We conclude that y < 3.
 Qed.
 ```
 ### Try it yourself
@@ -155,11 +155,11 @@ Lemma example_combine_quantifiers :
       ∃ c ∈ ℝ,
         c > b - a.
 Proof.
-Take a ∈ ℝ.
-Take b > 5.
-Choose c := b - a + 1.
-* Indeed, c ∈ ℝ.
-* We conclude that c > b - a.
+  Take a ∈ ℝ.
+  Take b > 5.
+  Choose c := b - a + 1.
+  * Indeed, c ∈ ℝ.
+  * We conclude that c > b - a.
 Qed.
 ```
 ### Try it yourself
@@ -191,9 +191,9 @@ Lemma example_assumptions :
   ∀ a ∈ ℝ,
     a < 0 ⇒ - a > 0.
 Proof.
-Take a ∈ ℝ.
-Assume that a < 0.
-We conclude that -a > 0.
+  Take a ∈ ℝ.
+  Assume that a < 0.
+  We conclude that -a > 0.
 Qed.
 ```
 ### Another example with explicit labels
@@ -202,9 +202,9 @@ Lemma example_assumptions_2 :
   ∀ a ∈ ℝ,
     a < 0 ⇒ - a > 0.
 Proof.
-Take a ∈ ℝ.
-Assume that a < 0 as (a_neg). (* The label here is optional *)
-By (a_neg) we conclude that -a > 0.
+  Take a ∈ ℝ.
+  Assume that a < 0 as (a_neg). (* The label here is optional *)
+  By (a_neg) we conclude that -a > 0.
 Qed.
 ```
 ### Try it yourself
@@ -239,8 +239,8 @@ Parameter f_increasing : ∀ x ∈ ℝ, ∀ y ∈ ℝ, x ≤ y ⇒ f(x) ≤ f(y)
 Lemma example_inequalities:
   2 < f(0) ⇒ 2 < f(1).
 Proof.
-Assume that 2 < f(0).
-By f_increasing we conclude that (& 2 < f(0) ≤ f(1)).
+  Assume that 2 < f(0).
+  By f_increasing we conclude that (& 2 < f(0) ≤ f(1)).
 Qed.
 ```
 ### Try it yourself
@@ -268,9 +268,9 @@ Note that in a proof on paper, I'd still like you to make this conclusion explic
 Lemma example_backwards :
   3 < f(0) ⇒ 2 < f(5).
 Proof.
-Assume that 3 < f(0).
-It suffices to show that f(0) ≤ f(5).
-By f_increasing we conclude that f(0) ≤ f(5).
+  Assume that 3 < f(0).
+  It suffices to show that f(0) ≤ f(5).
+  By f_increasing we conclude that f(0) ≤ f(5).
 Qed.
 ```
 ### Try it yourself
@@ -298,9 +298,9 @@ See also `End monotone_function`: this is where we close the section. Our defini
 Lemma example_forwards :
   7 < f(-1) ⇒ 2 < f(6).
 Proof.
-Assume that 7 < f(-1).
-By f_increasing it holds that f(-1) ≤ f(6).
-We conclude that 2 < f(6).
+  Assume that 7 < f(-1).
+  By f_increasing it holds that f(-1) ≤ f(6).
+  We conclude that 2 < f(6).
 Qed.
 ```
 ### Try it yourself
@@ -332,12 +332,12 @@ Lemma example_use_for_all :
     (∀ ε > 0, x < ε) ⇒
        x + 1/2 < 1.
 Proof.
-Take x ∈ ℝ.
-Assume that ∀ ε > 0, x < ε as (i).
-Use ε := 1/2 in (i).
-* Indeed, 1 / 2 > 0. (* ε > 0 *)
-* It holds that  x < 1 / 2. (* x < ε *)
-We conclude that x + 1/2 < 1.
+  Take x ∈ ℝ.
+  Assume that ∀ ε > 0, x < ε as (i).
+  Use ε := 1/2 in (i).
+  * Indeed, 1 / 2 > 0. (* ε > 0 *)
+  * It holds that  x < 1 / 2. (* x < ε *)
+  We conclude that x + 1/2 < 1.
 Qed.
 ```
 ### Try it yourself
@@ -371,10 +371,10 @@ Lemma example_use_there_exists :
     (∃ y > 10, y < x) ⇒
       10 < x.
 Proof.
-Take x ∈ ℝ.
-Assume that ∃ y > 10, y < x.
-Obtain such a y.
-We conclude that (& 10 < y < x).
+  Take x ∈ ℝ.
+  Assume that ∃ y > 10, y < x.
+  Obtain such a y.
+  We conclude that (& 10 < y < x).
 Qed.
 ```
 ### Another example
@@ -384,10 +384,10 @@ Lemma example_use_there_exists_2 :
     (∃ y > 14, y < x) ⇒
       12 < x.
 Proof.
-Take x ∈ ℝ.
-Assume that (∃ y > 14, y < x) as (i).
-Obtain y according to (i).
-We conclude that (& 12 < y < x).
+  Take x ∈ ℝ.
+  Assume that (∃ y > 14, y < x) as (i).
+  Obtain y according to (i).
+  We conclude that (& 12 < y < x).
 Qed.
 ```
 ### Try it yourself
@@ -418,14 +418,14 @@ Lemma example_contradicition :
     (∀ ε > 0, x > 1 - ε) ⇒
       x ≥ 1.
 Proof.
-Take x ∈ ℝ.
-Assume that ∀ ε > 0, x > 1 - ε as (i).
-We need to show that x ≥ 1.
-We argue by contradiction.
-Assume that ¬(x ≥ 1).
-It holds that (1 - x) > 0.
-By (i) it holds that x > 1 - (1 - x).
-Contradiction.
+  Take x ∈ ℝ.
+  Assume that ∀ ε > 0, x > 1 - ε as (i).
+  We need to show that x ≥ 1.
+  We argue by contradiction.
+  Assume that ¬(x ≥ 1).
+  It holds that (1 - x) > 0.
+  By (i) it holds that x > 1 - (1 - x).
+  Contradiction.
 Qed.
 ```
 ### Try it yourself
@@ -454,18 +454,15 @@ Lemma example_cases :
   ∀ x ∈ ℝ, ∀ y ∈ ℝ,
     max(x, y) = x ∨ max(x, y) = y.
 Proof.
-```
-
-```coq
-Take x ∈ (ℝ).
-Take y ∈ (ℝ).
-Either (x < y) or (x ≥ y). (* The parentheses are not necessary, but can help to make things more readable *)
-- Case (x < y).
-  It suffices to show that max(x, y) = y.
-  We conclude that max(x, y) = y.
-- Case (x ≥ y).
-  It suffices to show that max(x, y) = x.
-  We conclude that max(x, y) = x.
+  Take x ∈ (ℝ).
+  Take y ∈ (ℝ).
+  Either (x < y) or (x ≥ y). (* The parentheses are not necessary, but can help to make things more readable *)
+  - Case (x < y).
+    It suffices to show that max(x, y) = y.
+    We conclude that max(x, y) = y.
+  - Case (x ≥ y).
+    It suffices to show that max(x, y) = x.
+    We conclude that max(x, y) = x.
 Qed.
 ```
 ### Try it yourself
@@ -492,12 +489,12 @@ When you have `and` statements, you go about with the `*` syntax as we did above
 Lemma example_both_statements :
   ∀ x ∈ ℝ, x^2 ≥ 0 ∧ | x | ≥ 0.
 Proof.
-Take x ∈ ℝ.
-We show both statements.
-* We need to show that x^2 ≥ 0.
-  We conclude that x^2 ≥ 0.
-* We need to show that |x| ≥ 0.
-  We conclude that |x| ≥  0.
+  Take x ∈ ℝ.
+  We show both statements.
+  * We need to show that x^2 ≥ 0.
+    We conclude that x^2 ≥ 0.
+  * We need to show that |x| ≥ 0.
+    We conclude that |x| ≥  0.
 Qed.
 ```
 ### Try it yourself
@@ -524,15 +521,15 @@ Lemma example_both_directions :
   ∀ x ∈ ℝ, ∀ y ∈ ℝ,
     x < y ⇔ y > x.
 Proof.
-Take x ∈ ℝ.
-Take y ∈ ℝ.
-We show both directions.
-++ We need to show that x < y ⇒ y > x.
-   Assume that x < y.
-   We conclude that y > x.
-++ We need to show that y > x ⇒ x < y.
-   Assume that y > x.
-   We conclude that x < y.
+  Take x ∈ ℝ.
+  Take y ∈ ℝ.
+  We show both directions.
+  ++ We need to show that x < y ⇒ y > x.
+    Assume that x < y.
+    We conclude that y > x.
+  ++ We need to show that y > x ⇒ x < y.
+    Assume that y > x.
+    We conclude that x < y.
 Qed.
 ```
 ### Try it yourself
@@ -564,17 +561,17 @@ Lemma example_induction :
   ∀ n : ℕ → ℕ, (∀ k ∈ ℕ, (n(k) < n(k+1))%nat) ⇒
     ∀ k ∈ ℕ, (k ≤ n(k))%nat.
 Proof.
-Take n : ℕ → ℕ.
-Assume that (∀ k ∈ ℕ, n(k) < n(k+1))%nat.
-We use induction on k.
-+ We first show the base case (0 ≤ n(0))%nat.
-  We conclude that (0 ≤ n(0))%nat.
-+ We now show the induction step.
-  Take k ∈ ℕ.
-  Assume that (k ≤ n(k))%nat.
-  It holds that (n(k) < n(k+1))%nat.
-  It holds that (n(k) + 1 ≤ n(k+1))%nat.
-  We conclude that (& k + 1 ≤ n(k) + 1 ≤ n(k + 1))%nat.
+  Take n : ℕ → ℕ.
+  Assume that (∀ k ∈ ℕ, n(k) < n(k+1))%nat.
+  We use induction on k.
+  + We first show the base case (0 ≤ n(0))%nat.
+    We conclude that (0 ≤ n(0))%nat.
+  + We now show the induction step.
+    Take k ∈ ℕ.
+    Assume that (k ≤ n(k))%nat.
+    It holds that (n(k) < n(k+1))%nat.
+    It holds that (n(k) + 1 ≤ n(k+1))%nat.
+    We conclude that (& k + 1 ≤ n(k) + 1 ≤ n(k + 1))%nat.
 Qed.
 ```
 ### Try it yourself
@@ -604,11 +601,11 @@ Definition square (x : ℝ) := x^2.
 Lemma example_expand :
   ∀ x ∈ ℝ, square x ≥ 0.
 Proof.
-Take x ∈ ℝ.
-Expand the definition of square.
-  (* Remove the above line in your own code! *)
-We need to show that x^2 ≥ 0.
-We conclude that x^2 ≥ 0.
+  Take x ∈ ℝ.
+  Expand the definition of square.
+    (* Remove the above line in your own code! *)
+  We need to show that x^2 ≥ 0.
+  We conclude that x^2 ≥ 0.
 Qed.
 ```
 ### Try it yourself
@@ -626,12 +623,12 @@ Proof.
 Qed.
 ```
 
-## Challenge exercise: Order limit theorem
+## Challenge exercise: Algebraic limit theorem
 
 Below you will find an example of a more abstract proof that can guide you to solve the next exercise.
 
 ```coq
-Section Order_limit_theorem.
+Section Algebraic_limit_theorem.
 
 Variable a : ℕ → ℝ.
 Variable b : ℕ → ℝ.
@@ -652,32 +649,32 @@ In this way you can have a look both at the notation and how one can go about pr
 Variable α : ℝ.
 Definition ac (n : ℕ) := α * a(n).
 
-Lemma order_limit_theorem_product :
+Lemma algebraic_limit_theorem_product :
 α > 0 ⇒ (
 a ⟶ p ⇒ (
     ac ⟶ (α * p)
     )).
 Proof.
-Assume that α > 0 as (i).
-Assume that a ⟶ p as (ii).
-We need to show that ∀ ε > 0, ∃ N1 ∈ ℕ, ∀ n ≥ N1, Rabs (ac(n) - (α * p)) < ε.
-Take ε > 0.
-By Rdiv_lt_0_compat and (i) it holds that ε / α > 0.
-(* We can also use ∣, obtained with \abs, instead of Rabs: *)
-By (ii) it holds that ∃ Na ∈ ℕ, ∀ n ≥ Na, ｜a(n) - p｜ < ε/α as (iii).
-Obtain such a Na.
-Choose N1 := Na.
-- Indeed, N1 ∈ ℕ.
-- We need to show that ∀ n ≥ N1, ｜ac(n) - (α * p)｜ < ε.
-  Take n ≥ N1.
-  By (i) and (iii) it holds that (& 
-    ｜ac(n) - (α * p)｜
-     = ｜(α * a(n)) - (α * p)｜
-     = α * ｜a(n) - p｜
-     < α * (ε/α)
-     = ε
-  ).
-  We conclude that ｜ac(n) - (α * p)｜ < ε.
+  Assume that α > 0 as (i).
+  Assume that a ⟶ p as (ii).
+  We need to show that ∀ ε > 0, ∃ N1 ∈ ℕ, ∀ n ≥ N1, Rabs (ac(n) - (α * p)) < ε.
+  Take ε > 0.
+  By Rdiv_lt_0_compat and (i) it holds that ε / α > 0.
+  (* We can also use ∣, obtained with \abs, instead of Rabs: *)
+  By (ii) it holds that ∃ Na ∈ ℕ, ∀ n ≥ Na, ｜a(n) - p｜ < ε/α as (iii).
+  Obtain such a Na.
+  Choose N1 := Na.
+  - Indeed, N1 ∈ ℕ.
+  - We need to show that ∀ n ≥ N1, ｜ac(n) - (α * p)｜ < ε.
+    Take n ≥ N1.
+    By (i) and (iii) it holds that (&
+      ｜ac(n) - (α * p)｜
+      = ｜(α * a(n)) - (α * p)｜
+      = α * ｜a(n) - p｜
+      < α * (ε/α)
+      = ε
+    ).
+    We conclude that ｜ac(n) - (α * p)｜ < ε.
 Qed.
 ```
 
@@ -700,7 +697,7 @@ The lemma below now basically states if $a$ converges to $p$ and $b$ converges t
 ```coq
 Definition c (n : ℕ) := a(n) + b(n).
 
-Lemma order_limit_theorem_sum :
+Lemma algebraic_limit_theorem_sum :
 a ⟶ p ⇒ (
     b ⟶ q
     ⇒ c ⟶ (p + q)).
@@ -714,5 +711,5 @@ Proof.
 ```coq
 Qed.
 
-End Order_limit_theorem.
+End Algebraic_limit_theorem.
 ```

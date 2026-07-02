@@ -23,6 +23,13 @@ Notation "'max(' x , y )" := (Rmax x y)
   (format "'max(' x ,  y ')'").
 Notation "'min(' x , y )" := (Rmin x y)
   (format "'min(' x ,  y ')'").
+
+Waterproof Register Expand "⟶";
+  for converges_to;
+  as "Definition of convergence".
+
+Notation "'the' 'triangle' 'inequality'" := Rabs_triang.
+Set Bullet Behavior "Waterproof Relaxed Subproofs".
 ```
 </hint>## 1. We conclude that
 
@@ -617,4 +624,95 @@ Proof.
 </input-area>
 ```coq
 Qed.
+```
+
+## Challenge exercise: Order limit theorem
+
+Below you will find an example of a more abstract proof that can guide you to solve the next exercise.
+
+```coq
+Section Order_limit_theorem.
+
+Variable a : ℕ → ℝ.
+Variable b : ℕ → ℝ.
+
+Variable p : ℝ.
+Variable q : ℝ.
+```
+
+The above says: let $a : \mathbb{N} \to \mathbb{R}$ and
+$b : \mathbb{N} \to \mathbb{R}$ be sequences, and let $p, q \in \mathbb{R}$.
+
+In the lemma below we introduce a real number $\alpha$ and a squence $ac(n) := \alpha a(n)$.
+In the lemma we show that if $\alpha > 0$ and $a$ converges to $p$, then $\alpha a(n) \to \alpha p$.
+
+In this way you can have a look both at the notation and how one can go about proving the statement. Hopefully this can be a helpful guide and a refresher to the syntax. Remember that you can click throught the steps of the proof and look at the remaining goals to prove in the Goals panel.
+
+```coq
+Variable α : ℝ.
+Definition ac (n : ℕ) := α * a(n).
+
+Lemma order_limit_theorem_product :
+α > 0 ⇒ (
+a ⟶ p ⇒ (
+    ac ⟶ (α * p)
+    )).
+Proof.
+Assume that α > 0 as (i).
+Assume that a ⟶ p as (ii).
+We need to show that ∀ ε > 0, ∃ N1 ∈ ℕ, ∀ n ≥ N1, Rabs (ac(n) - (α * p)) < ε.
+Take ε > 0.
+By Rdiv_lt_0_compat and (i) it holds that ε / α > 0.
+(* We can also use ∣, obtained with \abs, instead of Rabs: *)
+By (ii) it holds that ∃ Na ∈ ℕ, ∀ n ≥ Na, ｜a(n) - p｜ < ε/α as (iii).
+Obtain such a Na.
+Choose N1 := Na.
+- Indeed, N1 ∈ ℕ.
+- We need to show that ∀ n ≥ N1, ｜ac(n) - (α * p)｜ < ε.
+  Take n ≥ N1.
+  By (i) and (iii) it holds that (& 
+    ｜ac(n) - (α * p)｜
+     = ｜(α * a(n)) - (α * p)｜
+     = α * ｜a(n) - p｜
+     < α * (ε/α)
+     = ε
+  ).
+  We conclude that ｜ac(n) - (α * p)｜ < ε.
+Qed.
+```
+
+We will now define the sequence $c : \mathbb{N} \to \mathbb{R}$ by
+$$c(n) = a(n) + b(n).$$
+The lemma below now basically states if $a$ converges to $p$ and $b$ converges to $q$, then $c$ converges to $p + q$.
+
+## Before you start, here are a few points of attention:
+
+⚠️ When Waterproof remains stuck on "verified on line NN", it means that the step that's being taken around line NN is too large for Waterproof to verify. It tries but cannot find the reason. You then need to provide more information, or make a smaller step.
+
+⚠️ Avoid using `N` and `N0` as variable names. Using these names usually gives problems later.
+
+⚠️ When choosing a natural number, such as `N1`, it can be necessary to use the `%nat` notation, as in `N1 := (...)%nat` .
+
+⚠️ Also in Waterproof, it can be useful to rename certain dummy variables in statements (for instance replacing `ε` by `ε1` in a statement of the form `∀ ε1 > 0, ...`.
+
+⚠️ You can use `the triangle inequality`.
+
+```coq
+Definition c (n : ℕ) := a(n) + b(n).
+
+Lemma order_limit_theorem_sum :
+a ⟶ p ⇒ (
+    b ⟶ q
+    ⇒ c ⟶ (p + q)).
+Proof.
+```
+<input-area>
+```coq
+
+```
+</input-area>
+```coq
+Qed.
+
+End Order_limit_theorem.
 ```

@@ -1,0 +1,339 @@
+# Lecture 4 -- Monotone sequences and subsequences
+
+These notes formalize Abbott §2.4 (monotone convergence theorem) and §2.5
+(subsequences and Bolzano-Weierstrass). They develop the connection between
+bounded monotone sequences and convergence, and extract convergent subsequences.
+
+<hint title="Import libraries (click to open/close)">
+```coq
+Require Import Stdlib.Reals.Reals.
+Require Import Stdlib.Reals.SeqProp.
+Require Import Stdlib.micromega.Lia.
+Require Import Stdlib.micromega.Lra.
+Require Import Waterproof.Tactics.
+Require Import Waterproof.Notations.Common.
+Require Import Waterproof.Notations.Reals.
+Require Import Waterproof.Notations.Sets.
+Require Import Waterproof.Chains.
+Require Import Waterproof.Automation.
+Require Import Waterproof.Libs.Analysis.SupAndInf.
+Require Import Waterproof.Libs.Analysis.Sequences.
+Require Import Waterproof.Libs.Analysis.Subsequences.
+
+Require Import Waterproof.Libs.Analysis.LimsupLiminfBolzano.
+
+Waterproof Enable Automation RealsAndIntegers.
+Waterproof Enable Automation Intuition.
+
+Open Scope R_scope.
+Open Scope subset_scope.
+
+Set Default Goal Selector "!".
+Set Bullet Behavior "Waterproof Relaxed Subproofs".
+```
+</hint>
+
+## Auxiliary lemmas
+
+The following lemma is fundamental for all monotone sequence arguments.
+
+```coq
+Lemma nondecr_ge (a : ℕ → ℝ) (Hmono : ∀ n ∈ ℕ, a n ≤ a (n + 1)%nat) :
+    ∀ n ∈ ℕ, ∀ m ∈ ℕ, (m ≤ n)%nat → a m ≤ a n.
+Proof.
+  We use induction on n.
+  + We first show the base case (∀ m ∈ ℕ, (m ≤ 0)%nat → a m ≤ a 0%nat).
+    Take m ∈ ℕ.
+    Assume that (m ≤ 0)%nat as (Hm0).
+    It holds that (m = 0)%nat as (Hm).
+    We conclude that a m ≤ a 0%nat.
+  + We now show the induction step.
+    Take n ∈ ℕ.
+    Assume that (∀ m ∈ ℕ, (m ≤ n)%nat → a m ≤ a n) as (IH).
+    Take m ∈ ℕ.
+    Assume that (m ≤ n + 1)%nat as (Hmn).
+    Either (m ≤ n)%nat or (m = n + 1)%nat.
+    - Case (m ≤ n)%nat.
+      It holds that a m ≤ a n as (H1).
+      It holds that a n ≤ a (n + 1)%nat as (H2).
+      We conclude that (& a m ≤ a n ≤ a (n + 1)%nat).
+    - Case (m = n + 1)%nat.
+      We conclude that a m ≤ a (n + 1)%nat.
+Qed.
+```
+
+## The monotone convergence theorem
+
+**Theorem (Monotone Convergence):** A nondecreasing sequence that is bounded above converges.
+
+**Proof Strategy:**
+
+Define the range set $S_a = \lbrace a_n : n \in \mathbb{N}\rbrace$.
+
+Since $a$ is bounded above, $S_a$ is bounded from above.
+
+By completeness of $\mathbb{R}$, the supremum $L = \sup S_a$ exists.
+
+For $\varepsilon > 0$, the value $L - \varepsilon$ is not an upper bound, so there exists $N_0$ with $a_{N_0} > L - \varepsilon$.
+
+For any $n \geq N_0$, monotonicity gives $L - \varepsilon < a_{N_0} \leq a_n \leq L$, so $|a_n - L| < \varepsilon$.
+
+```coq
+Lemma ex_4_1 (a : ℕ → ℝ)
+    (Hbdd : a is _bounded above_)
+    (Hmono : ∀ n ∈ ℕ, a n ≤ a (n + 1)%nat) :
+    ∃ L ∈ ℝ, a ⟶ L.
+Proof.
+  Define A := (fun x0 : ℝ => ∃ k : ℕ, x0 = a k).
+  We claim that A is bounded from above as (HAbdd).
+  {
+    We need to show that ∃ M0 ∈ ℝ, M0 is an _upper bound_ for A.
+    It holds that ∃ M ∈ ℝ, ∀ n ∈ ℕ, a n ≤ M as (HMbdd).
+    Obtain such an M.
+    Choose (M).
+    * Indeed, M ∈ ℝ.
+    * We need to show that M is an _upper bound_ for A.
+      We need to show that ∀ x ∈ A, x ≤ M.
+      Take x ∈ A.
+      It holds that ∃ k : ℕ, x = a k as (HkA).
+      Obtain such a k.
+      It holds that x = a k as (Hxk).
+      It holds that (a k ≤ M).
+      We conclude that x ≤ M.
+  }
+  We claim that a 0%nat ∈ A as (Hnotempty).
+  {
+    We need to show that ∃ k : ℕ, a 0%nat = a k.
+    Choose (0%nat).
+    We conclude that a 0%nat = a 0%nat.
+  }
+  By (R_complete A (a 0%nat) Hnotempty HAbdd) it holds that ∃ L ∈ ℝ, L is the _supremum_ of A as (HLsup).
+  Obtain such an L.
+  It holds that L is the _supremum_ of A as (HLsup_prop).
+  By sup_is_upp_bd it holds that L is an _upper bound_ for A as (HLup).
+  Choose (L).
+  * Indeed, L ∈ ℝ.
+  * We need to show that a ⟶ L.
+    We need to show that ∀ ε > 0, ∃ N1 ∈ ℕ, ∀ n ≥ N1, | a n - L | < ε.
+    Take ε > 0.
+    By exists_almost_maximizer_ε it holds that ∃ y ∈ A, L - ε < y as (Heps).
+    Obtain such a y.
+    It holds that (y ∈ A ∧ L - ε < y) as (Heps_prop).
+    It holds that y ∈ A as (HyA).
+    It holds that L - ε < y as (Hy_ineq).
+    It holds that ∃ N1 : ℕ, y = a N1 as (Heq).
+    Obtain such an N1.
+    It holds that y = a N1 as (Heq_prop).
+    Choose (N1).
+    * Indeed, N1 ∈ ℕ.
+    * We need to show that ∀ n ≥ N1, | a n - L | < ε.
+      Take n ≥ N1.
+      It suffices to show that -ε < a n - L < ε.
+      We show both a n - L < ε and -ε < a n - L.
+      - We claim that a n ∈ A as (Han).
+        {
+          We need to show that ∃ k : ℕ, a n = a k.
+          Choose k := n.
+          We conclude that a n = a k.
+        }
+        By HLup it holds that a n ≤ L.
+        We conclude that a n - L < ε.
+      - It holds that L - ε < a N1.
+        By nondecr_ge it holds that a N1 ≤ a n.
+        We conclude that -ε < a n - L.
+Qed.
+```
+
+## Subsequences and convergence
+
+**Theorem:** If $(a_n)$ converges to $L$ and $\varphi : \mathbb{N} \to \mathbb{N}$
+is a strictly increasing index sequence, then $(a_{\varphi(k)})$ also converges to $L$.
+
+**Proof:**
+
+Given $\varepsilon > 0$, since $a_n \to L$, there exists $N_0$ such that $|a_n - L| < \varepsilon$ for all $n \geq N_0$.
+
+Since $\varphi$ is strictly increasing, $\varphi(k) \geq k$. Thus for $k \geq N_0$, we have $\varphi(k) \geq k \geq N_0$, so $|a_{\varphi(k)} - L| < \varepsilon$.
+
+```coq
+Lemma ex_4_2 (a : ℕ → ℝ) (phi : ℕ → ℕ) (L : ℝ) :
+    a ⟶ L → is_index_seq phi → (fun k ↦ a (phi k)) ⟶ L.
+Proof.
+  Assume that a ⟶ L as (Ha).
+  Assume that is_index_seq phi as (Hphi).
+  We need to show that (fun k ↦ a (phi k)) ⟶ L.
+  We need to show that ∀ ε > 0, ∃ Nm ∈ ℕ, ∀ k ≥ Nm, | a (phi k) - L | < ε.
+  Take ε > 0.
+  Since (ε > 0) it holds that ∃ Nm ∈ ℕ, ∀ n ≥ Nm, | a n - L | < ε as (HNm).
+  Obtain such an Nm.
+  Choose (Nm).
+  * Indeed, Nm ∈ ℕ.
+  * We need to show that ∀ k ≥ Nm, | a (phi k) - L | < ε.
+    Take k ≥ Nm.
+    By index_seq_grows_0 it holds that (phi k ≥ k)%nat as (Hsub).
+    It holds that (phi k ≥ Nm)%nat as (Htrans).
+    We conclude that | a (phi k) - L | < ε.
+Qed.
+```
+
+## Bolzano-Weierstrass theorem
+
+**Theorem:** Every bounded sequence in $\mathbb{R}$ has a convergent subsequence.
+
+**Proof Idea:**
+
+If $(a_n)$ is bounded, all terms lie in some interval $[-M, M]$.
+
+Successively halving the interval always contains infinitely many terms (by pigeonhole principle).
+
+The nested closed intervals converge to a point $x \in \bigcap_{k} I_k$, and a subsequence built from one term per interval converges to $x$.
+
+```coq
+Lemma ex_4_3 (a : ℕ → ℝ) (Hub : has_ub a) (Hlb : has_lb a) :
+    ∃ phi : ℕ → ℕ, ∃ l : ℝ,
+      is_index_seq phi ∧ (fun k ↦ a (phi k)) ⟶ l.
+Proof.
+  (* TODO: Here I am cheating... just calling BW from Waterproof *)
+  By Bolzano_Weierstrass we conclude that ∃ phi : ℕ → ℕ, ∃ l : ℝ,
+    is_index_seq phi ∧ (fun k ↦ a (phi k)) ⟶ l.
+Qed.
+```
+
+## Cauchy sequences are bounded
+
+**Theorem:** Every Cauchy sequence is bounded.
+
+**Definition:** $(a_n)$ is **Cauchy** if $\forall\varepsilon > 0, \exists N \in \mathbb{N},$
+for all $m, n \geq N$, we have $|a_m - a_n| < \varepsilon$.
+
+**Proof:**
+
+Apply the Cauchy criterion with $\varepsilon = 1$ to get $N_0$ such that $|a_m - a_{N_0}| < 1$ for all $m \geq N_0$.
+
+For $n \geq N_0$, we have $|a_n| \leq |a_{N_0}| + 1$.
+
+The finitely many terms $a_0, \ldots, a_{N_0-1}$ are bounded by their maximum.
+
+Thus all terms satisfy $|a_n| \leq M$ for a uniform bound.
+
+```coq
+Definition is_cauchy (a : ℕ → ℝ) := ∀ ε > 0, ∃ N1 ∈ ℕ, ∀ n ≥ N1, ∀ m ≥ N1, |a m - a n| < ε.
+Notation "a 'is' '_Cauchy_'" := (is_cauchy a) (at level 69).
+
+Lemma Cauchy_crit_equiv (a : ℕ → ℝ) :
+  (a is _Cauchy_) ⇔ Cauchy_crit a.
+Proof.
+  unfold Cauchy_crit.
+  split.
+  - (* Forward: Waterproof _Cauchy_ → Cauchy_crit *)
+    intro HC.
+    intros eps Heps.
+    destruct (HC eps Heps) as [N1 H'].
+    destruct H' as [HN1_in HN1].          (* N1 ∈ ℕ ∧ (∀ n ≥ N1, ...) *)
+    exists N1.
+    intros n m Hn Hm.
+    unfold Rdist.
+    rewrite Rabs_minus_sym.
+    apply HN1 with (n := n) (m := m);      (* HN1 : ∀ n ≥ N1, ∀ m ≥ N1, ... *)
+      assumption.                          (* Hn : n ≥ N1, Hm : m ≥ N1 *)
+- (* Reverse: Cauchy_crit → Waterproof _Cauchy_ *)
+    intro HC.
+    intros eps Heps.
+    destruct (HC eps Heps) as [N1 HN].
+    Choose N2 := N1%nat. { Indeed, N2 ∈ ℕ. }
+    We need to show that ∀ n ≥ N2, ∀ m ≥ N2, |a(m) - a(n)| < eps.
+    intros n Hn m Hm.
+    rewrite Rabs_minus_sym.
+    We conclude that | a n - a m | < eps.
+Qed.
+
+
+Lemma ex_4_4 (a : ℕ → ℝ) :
+    a is _Cauchy_ → a is _bounded_.
+Proof.
+  Assume that a is _Cauchy_.
+  It holds that ∀ ε > 0, ∃ N1 ∈ ℕ, ∀ n ≥ N1, ∀ m ≥ N1, |a m - a n| < ε as (HC).
+  We need to show that a is _bounded_.
+
+  (* ∀ n ≥ N1∀ n ≥ N1a bounded sequence in Waterproof is decentered: | a n - q | < M for some fixed q and M.
+     We need is bounded_equivalent to get the usual notion (or we Choose q :=0 and go from there). *)
+  By is_bounded_equivalence it holds that (is_bounded a ⇔ is_bounded_equivalent a) as (Hequiv).
+  By Hequiv it suffices to show that is_bounded_equivalent a.
+  We need to show that ∃ M > 0, ∀ n ∈ ℕ, | a n | ≤ M.
+
+  (* Set ε = 1 *)
+  By HC it holds that ∃ N1 ∈ ℕ, ∀ n ≥ N1, ∀ m ≥ N1, | a m - a n | < 1.
+  Obtain such a N1.
+  It holds that ∀ n ≥ N1, | a n - a N1 | < 1.
+
+  (* By triangle inequality: |a n| < 1 + |a N1| for all n ≥ N1 *)
+  We claim that ∀ n ≥ N1, |a n| < 1 + |a N1| as (HNub).
+  {
+    Take n ≥ N1.
+    It holds that (|a n - a N1| < 1).
+    It holds that (|a n| = |(a n - a N1) + a N1|).
+    By Rabs_triang it holds that (|(a n - a N1) + a N1| ≤ |a n - a N1| + |a N1|).
+    It holds that (|a n - a N1| + |a N1| < 1 + |a N1|).
+    We conclude that (|a n| < 1 + |a N1|).
+  }
+
+  (* TODO: I got stuck trying to obtain the max of the finite set by hand.
+     While I try to fix it, I am relying on Stdlib. *)
+  We claim that Cauchy_crit a as (HCr). { apply Cauchy_crit_equiv, HC. }
+
+  We claim that ∃ UB : ℝ, is_upper_bound (EUn a) UB as (Hub_exists).
+  {
+      destruct (cauchy_maj a HCr) as [UB HUB];
+      unfold is_upper_bound, EUn in HUB;
+      exists UB;
+      exact HUB.
+  }
+  Obtain such a UB.
+  It holds that (is_upper_bound (EUn a) UB) as (HUB).
+  We claim that ∀ n ∈ ℕ, a n ≤ UB as (HUBn).
+  {
+    Take n ∈ ℕ.
+    We claim that EUn a (a n) as (Heun).
+    {
+      We need to show that ∃ k : ℕ, a n = a k.
+      Choose k := n.
+      We conclude that a n = a k.
+    }
+    By HUB we conclude that a n ≤ UB.
+  }
+  We claim that ∃ LB : ℝ, is_upper_bound (EUn (opp_seq a)) LB as (Hlb_exists).
+  {
+      destruct (cauchy_min a HCr) as [LB HLB];
+      unfold has_lb, bound in *;
+      unfold is_upper_bound, EUn in HLB;
+      exists LB;
+      exact HLB.
+  }
+  Obtain such a LB.
+  It holds that (is_upper_bound (EUn (opp_seq a)) LB) as (HLB).
+  We claim that ∀ n ∈ ℕ, -LB ≤ a n as (HLBn).
+  {
+    Take n ∈ ℕ.
+    We claim that EUn (opp_seq a) (- a n) as (Heun_lb).
+    {
+      We need to show that ∃ k : ℕ, - a n = opp_seq a k.
+      Choose k := n.
+      We conclude that - a n = opp_seq a k.
+    }
+    By HLB it holds that - a n ≤ LB.
+    We conclude that -LB ≤ a n.
+  }
+
+  Choose M := (Rabs UB + Rabs LB + 1). { Indeed, M > 0. }
+  We need to show that ∀ n ∈ ℕ, | a n | ≤ Rabs UB + Rabs LB + 1.
+  Take n ∈ ℕ.
+  It holds that (a n ≤ UB) as (H1).
+  It holds that (-LB ≤ a n) as (H2).
+  By Rle_abs it holds that UB ≤ Rabs UB as (H3).
+  By Rle_abs it holds that LB ≤ Rabs LB as (H4).
+  By Rle_abs it holds that -LB ≤ Rabs (-LB) as (H5).
+  It holds that (Rabs (-LB) = Rabs LB) as (H6).
+  We conclude that | a n | ≤ Rabs UB + Rabs LB + 1.
+Qed.
+
+```

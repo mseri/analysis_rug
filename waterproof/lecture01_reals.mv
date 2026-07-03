@@ -161,9 +161,9 @@ $A\subseteq\mathbb{R}$ if
 **Warning:** a supremum is not always a maximum, and an infimum is not always a minimum.
 $$
 \begin{split}
-\sup\bigg\{\frac{1}{2}, \frac{2}{3}, \frac{3}{4}, \frac{4}{5},\dots\bigg\} &= 1
+\sup\bigg\lbrace \frac{1}{2}, \frac{2}{3}, \frac{3}{4}, \frac{4}{5},\dots\bigg\rbrace &= 1
   \qquad\text{but there is no largest element} \\[3mm]
-\inf\bigg\{1, \frac{1}{2}, \frac{1}{3}, \frac{1}{4}, \dots\bigg\} &= 0
+\inf\bigg\lbrace 1, \frac{1}{2}, \frac{1}{3}, \frac{1}{4}, \dots\bigg\rbrace &= 0
   \qquad\text{but there is no smallest element}
 \end{split}
 $$
@@ -251,10 +251,10 @@ has a least upper bound.
 
 We work with the set
 $$
-S = \bigg\{ \frac{1}{n+1} : n \in \mathbb{N} \bigg\}
-= \bigg\{1, \tfrac{1}{2}, \tfrac{1}{3}, \dots\bigg\}
+S = \bigg\lbrace \frac{1}{n+1} : n \in \mathbb{N} \bigg\rbrace
+= \bigg\lbrace 1, \tfrac{1}{2}, \tfrac{1}{3}, \dots\bigg\rbrace
 $$
-(using $\mathbb{N} = \{0, 1, 2, \dots\}$ so the index $n+1$ avoids division by zero).
+(using $\mathbb{N} = \lbrace 0, 1, 2, \dots\rbrace$ so the index $n+1$ avoids division by zero).
 
 **Claim:** $\sup S = 1$.
 
@@ -355,11 +355,21 @@ Qed.
 1. $\forall\\,x \in \mathbb{R} \quad\exists\\,n \in \mathbb{N}\quad\text{s.t.}\quad n > x$
 2. $\forall\\,y>0 \quad\exists\\,n \in \mathbb{N} \quad\text{s.t.}\quad 1/(n+1) < y$
 
-**Proof (1):** If (1) is not true, then $\mathbb{N}$ is bounded above, and the AoC gives
-$\alpha = \sup\mathbb{N}$. Since $\alpha - 1$ is not an upper bound, there exists $n\in\mathbb{N}$
-with $\alpha - 1 < n$, so $n+1 > \alpha$. But $n+1 \in \mathbb{N}$, contradiction.
+**Proof (1):**
 
-**Proof (2):** Given $y>0$, set $x = 1/y$. By (1) there exists $n\in\mathbb{N}$ with $n > 1/y$,
+If (1) is not true, then $\mathbb{N}$ is bounded above, and the AoC gives
+$\alpha = \sup\mathbb{N}$.
+
+Since $\alpha - 1$ is not an upper bound, there exists $n\in\mathbb{N}$
+with $\alpha - 1 < n$, so $n+1 > \alpha$.
+
+But $n+1 \in \mathbb{N}$, contradiction.
+
+**Proof (2):**
+
+Given $y>0$, set $x = 1/y$. 
+
+By (1) there exists $n\in\mathbb{N}$ with $n > 1/y$,
 so $n+1 > n > 1/y$ and therefore $1/(n+1) < y$.
 
 ```coq
@@ -396,9 +406,16 @@ $$
 That is, if $(a_n)$ is non-decreasing, $(b_n)$ is non-increasing, and $a_n \leq b_n$ for all
 $n\in\mathbb{N}$, then there exists $x\in\mathbb{R}$ with $a_n \leq x \leq b_n$ for all $n$.
 
-**Proof:** Let $A = \{a_n : n\in\mathbb{N}\}$. Every $b_n$ is an upper bound for $A$
-(since $a_m \leq a_n \leq b_n$ for $m \leq n$ and $a_m \leq b_m \leq b_n$ for $m \geq n$).
-By the AoC, $x := \sup A$ exists. Since $x$ is an upper bound, $a_n \leq x$ for all $n$.
+**Proof:**
+
+Let $A = \lbrace a_n : n\in\mathbb{N}\rbrace$.
+
+Every $b_n$ is an upper bound for $A$ (since $a_m \leq a_n \leq b_n$ for $m \leq n$ and $a_m \leq b_m \leq b_n$ for $m \geq n$).
+
+By the AoC, $x := \sup A$ exists. 
+
+Since $x$ is an upper bound, $a_n \leq x$ for all $n$.
+
 Since each $b_n$ is an upper bound and $x$ is the least upper bound, $x \leq b_n$ for all $n$.
 
 ```coq
@@ -513,9 +530,13 @@ $$
 \forall\,a, b \in \mathbb{R}\quad\text{with}\quad a < b\quad\exists\, r \in \mathbb{Q} \quad\text{s.t.}\quad a < r < b
 $$
 
-**Proof:** By the Archimedean property, there exists $n\in\mathbb{N}$ with $1/n < b-a$.
-Choose $m\in\mathbb{Z}$ with $na < m < nb$ (possible since $nb - na > 1$). Then $r = m/n$ satisfies
-$a < r < b$.
+**Proof:**
+
+By the Archimedean property, there exists $n\in\mathbb{N}$ with $1/n < b-a$.
+
+Choose $m\in\mathbb{Z}$ with $na < m < nb$ (possible since $nb - na > 1$).
+
+Then $r = m/n$ satisfies $a < r < b$.
 
 ```coq
 Lemma density_of_rationals (lo hi : ℝ) (H : lo < hi) :
@@ -556,7 +577,7 @@ $$
 
 ## Absolute value and maximum
 
-**Lemma:** $|x| = \max\{x, -x\}$
+**Lemma:** $|x| = \max\lbrace x, -x\rbrace$
 
 **Proof:**
 - If $x \geq 0$: $-x \leq 0 \leq x$, so $\max\lbrace -x,x \rbrace = x = |x|$.
@@ -615,7 +636,7 @@ $$
 $$\begin{aligned}
 x+y & \leq |x| + y \leq |x| + |y| \\[3mm]
 {-x}-y & \leq |x| - y \leq |x| + |y| \\[3mm]
-|x+y| & = \max\{x+y, -x-y\} \leq |x| + |y|
+|x+y| & = \max\lbrace x+y, -x-y\rbrace \leq |x| + |y|
 \end{aligned}$$
 
 ```coq
@@ -637,7 +658,7 @@ $$
 $$\begin{aligned}
 |x| = |x-y+y| & \leq |x-y| + |y| \implies |x| - |y| \leq |x-y| \\[3mm]
 |y| - |x| & \leq |y-x| = |x-y| \quad\text{(swap $x$ and $y$)} \\[3mm]
-\big||x| - |y|\big| & = \max\{|x|-|y|,\,|y|-|x|\} \leq |x-y|
+\big||x| - |y|\big| & = \max\lbrace |x|-|y|,\,|y|-|x|\rbrace \leq |x-y|
 \end{aligned}$$
 
 ```coq

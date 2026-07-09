@@ -6,8 +6,10 @@
   properties of compact sets, and the nested compact sets property. *)
 
 From Stdlib Require Import Reals.Reals.
-From Stdlib Require Import micromega.Lra.
-(* From Waterproof Require Import Libs.Analysis.Compactness. *)
+
+From Waterproof Require Export Notations.Common.
+From Waterproof Require Export Notations.Reals.
+From Waterproof Require Export Notations.Sets.
 From Waterproof Require Import Libs.Analysis.OpenAndClosed.
 Require Export RUG.Analysis.Topology.
 Require Export RUG.Analysis.Lib.Compactness.

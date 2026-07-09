@@ -11,8 +11,6 @@
   are in turn used by [Analysis.Series] for the Cauchy criterion of series. *)
 
 From Stdlib Require Import Reals.Reals.
-From Stdlib Require Import micromega.Lia.
-From Stdlib Require Import micromega.Lra.
 From Waterproof Require Import Libs.Analysis.Subsequences.
 From Waterproof Require Import Libs.Analysis.LimsupLiminfBolzano.
 Require Export RUG.Analysis.Subsequences.

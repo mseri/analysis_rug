@@ -1,3 +1,7 @@
 *.diags
 *.cache
 *.mo
+*.vo
+
+_build/
+_opam/

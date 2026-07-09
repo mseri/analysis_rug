@@ -9,9 +9,13 @@
 From Stdlib Require Import Reals.Reals.
 From Stdlib Require Import Reals.Ranalysis5.
 From Stdlib Require Import Reals.Rtopology.
-From Stdlib Require Import micromega.Lra.
+
+From Waterproof Require Export Notations.Common.
+From Waterproof Require Export Notations.Reals.
+From Waterproof Require Export Notations.Sets.
+
 From Waterproof Require Import Libs.Analysis.ContinuityDomainR.
-From Waterproof Require Import Libs.Analysis.Compactness.
+Require Export RUG.Analysis.Lib.Compactness.
 Require Export RUG.Analysis.Compactness.
 Require Export RUG.Analysis.Limits.
 

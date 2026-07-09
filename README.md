@@ -5,8 +5,7 @@ This repository contains course material for the [Analysis](https://ocasys.rug.n
 The lectures material can be accessed at [mseri.me/analysis_rug](https://mseri.me/analysis_rug).
 This contains both the syllabus, including tutorial exercises, and navigable slides for the lectures.
 
-The `waterproof` folder contains the slides of the lectures formalized in Waterproofc (stale).
-The `theories` folder contains the content of the lectures, separated in thematic sections, formalized in Waterproof (current).
+The `theories` folder contains the content of the lectures, separated in thematic sections, formalized in Waterproof (WIP).
 The `exercises` folder contains the barebone homework exercises in Waterproof format, ready to be formalized.
 
 ## Waterproof

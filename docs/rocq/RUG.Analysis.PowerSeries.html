@@ -1,0 +1,140 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link href="coqdoc.css" rel="stylesheet" type="text/css" />
+<title>RUG.Analysis.PowerSeries</title>
+</head>
+
+<body>
+
+<div id="page">
+
+<div id="header">
+</div>
+
+<div id="main">
+
+<h1 class="libtitle">Library RUG.Analysis.PowerSeries</h1>
+
+<div class="code">
+</div>
+
+<div class="doc">
+<a id="lab63"></a><h1 class="section">RUG.Analysis.PowerSeries — Power series and radius of convergence.</h1>
+
+
+<div class="paragraph"> </div>
+
+  Lecture 13 (lecture13_power_series.mv).
+
+<div class="paragraph"> </div>
+
+  Formalizes Abbott §6.5: radius of convergence, Abel's theorem,
+  term-by-term differentiation and integration of power series. 
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">Stdlib</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="library">Reals.Reals</span>.<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">Stdlib</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="library">Reals.PSeries_reg</span>.<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">Stdlib</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="library">micromega.Lra</span>.<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">Waterproof</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="library">Libs.Analysis.Series</span>.<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">Waterproof</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="library">Libs.Analysis.Subsequences</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Export</span> <a class="idref" href="RUG.Analysis.FunctionSequences.html#"><span class="id" title="library">RUG.Analysis.FunctionSequences</span></a>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Export</span> <a class="idref" href="RUG.Analysis.Series.html#"><span class="id" title="library">RUG.Analysis.Series</span></a>.<br/>
+
+<br/>
+<span class="id" title="var">Waterproof</span> <span class="id" title="var">Enable</span> <span class="id" title="var">Automation</span> <span class="id" title="var">RealsAndIntegers</span>.<br/>
+<span class="id" title="var">Waterproof</span> <span class="id" title="var">Enable</span> <span class="id" title="var">Automation</span> <span class="id" title="var">Intuition</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Open</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">R_scope</span>.<br/>
+<span class="id" title="keyword">Open</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">subset_scope</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Set</span> <span class="id" title="var">Default</span> <span class="id" title="keyword">Goal</span> <span class="id" title="var">Selector</span> "!".<br/>
+<span class="id" title="keyword">Set</span> <span class="id" title="var">Bullet</span> <span class="id" title="var">Behavior</span> "Waterproof Relaxed Subproofs".<br/>
+
+<br/>
+<span class="id" title="keyword">Notation</span> <a id="2dbc1958c80b31830c8c65dca0848ad9" class="idref" href="#2dbc1958c80b31830c8c65dca0848ad9"><span class="id" title="notation">&quot;</span></a>∑" := <span class="id" title="abbreviation">partial_sums</span> (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 50) : <span class="id" title="var">R_scope</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a id="lab64"></a><h2 class="section">Radius of convergence</h2>
+
+<div class="paragraph"> </div>
+
+ The radius of convergence of <span class="inlinecode">∑</span> <span class="inlinecode"><span class="id" title="var">a</span>ₙ</span> <span class="inlinecode"><span class="id" title="var">x</span>ⁿ</span> is the supremum of all <span class="inlinecode"><span class="id" title="var">r</span></span> <span class="inlinecode">≥</span> <span class="inlinecode">0</span>
+    for which the series converges. 
+<div class="paragraph"> </div>
+
+ A power series converging at <span class="inlinecode"><span class="id" title="var">x₀</span></span> converges absolutely on <span class="inlinecode">(-|<span class="id" title="var">x₀</span>|,</span> <span class="inlinecode">|<span class="id" title="var">x₀</span>|)</span>.
+
+<div class="paragraph"> </div>
+
+    Proof idea: from convergence at <span class="inlinecode"><span class="id" title="var">x₀</span></span> the terms <span class="inlinecode"><span class="id" title="var">a</span>ₙ</span> <span class="inlinecode"><span class="id" title="var">x₀</span>ⁿ</span> are bounded, say
+    <span class="inlinecode">|<span class="id" title="var">a</span>ₙ</span> <span class="inlinecode"><span class="id" title="var">x₀</span>ⁿ|</span> <span class="inlinecode">≤</span> <span class="inlinecode"><span class="id" title="var">M</span></span>. Then <span class="inlinecode">|<span class="id" title="var">a</span>ₙ</span> <span class="inlinecode"><span class="id" title="var">x</span>ⁿ|</span> <span class="inlinecode">=</span> <span class="inlinecode">|<span class="id" title="var">a</span>ₙ</span> <span class="inlinecode"><span class="id" title="var">x₀</span>ⁿ|</span> <span class="inlinecode">·</span> <span class="inlinecode">|<span class="id" title="var">x</span>/<span class="id" title="var">x₀</span>|ⁿ</span> <span class="inlinecode">≤</span> <span class="inlinecode"><span class="id" title="var">M</span></span> <span class="inlinecode">·</span> <span class="inlinecode">|<span class="id" title="var">x</span>/<span class="id" title="var">x₀</span>|ⁿ</span>, and
+    <span class="inlinecode">|<span class="id" title="var">x</span>/<span class="id" title="var">x₀</span>|</span> <span class="inlinecode">&lt;</span> <span class="inlinecode">1</span> gives a convergent geometric bound. 
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <a id="abel_lemma" class="idref" href="#abel_lemma"><span class="id" title="lemma">abel_lemma</span></a> (<a id="a:1" class="idref" href="#a:1"><span class="id" title="binder">a</span></a> : <span class="id" title="notation">ℕ</span> <span class="id" title="notation">→</span> <span class="id" title="notation">ℝ</span>) (<a id="x0:2" class="idref" href="#x0:2"><span class="id" title="binder">x0</span></a> : <span class="id" title="notation">ℝ</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<a id="H:6" class="idref" href="#H:6"><span class="id" title="binder">H</span></a> : <span class="id" title="notation">∃</span> <a id="L:3" class="idref" href="#L:3"><span class="id" title="binder"><span id="L:4" class="id">L</span></span></a> <a id="L:4" class="idref" href="#L:4"><span class="id" title="binder">:</span></a> <a id="L:4" class="idref" href="#L:4"><span class="id" title="binder">ℝ</span></a><span class="id" title="notation">,</span> <a class="idref" href="RUG.Analysis.PowerSeries.html#2dbc1958c80b31830c8c65dca0848ad9"><span class="id" title="notation">∑</span></a> <span class="id" title="notation">(</span><span class="id" title="keyword">fun</span> <a id="n:5" class="idref" href="#n:5"><span class="id" title="binder">n</span></a> ⇒ <a class="idref" href="RUG.Analysis.PowerSeries.html#a:1"><span class="id" title="variable">a</span></a> <a class="idref" href="RUG.Analysis.PowerSeries.html#n:5"><span class="id" title="variable">n</span></a> <span class="id" title="notation">×</span> <a class="idref" href="RUG.Analysis.PowerSeries.html#x0:2"><span class="id" title="variable">x0</span></a> <span class="id" title="notation">^</span> <a class="idref" href="RUG.Analysis.PowerSeries.html#n:5"><span class="id" title="variable">n</span></a><span class="id" title="notation">)</span> <span class="id" title="notation">⟶</span> <a class="idref" href="RUG.Analysis.PowerSeries.html#L:3"><span class="id" title="variable">L</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<a id="x:7" class="idref" href="#x:7"><span class="id" title="binder">x</span></a> : <span class="id" title="notation">ℝ</span>) (<a id="Hx:8" class="idref" href="#Hx:8"><span class="id" title="binder">Hx</span></a> : <span class="id" title="definition">Rabs</span> <a class="idref" href="RUG.Analysis.PowerSeries.html#x:7"><span class="id" title="variable">x</span></a> <span class="id" title="notation">&lt;</span> <span class="id" title="definition">Rabs</span> <a class="idref" href="RUG.Analysis.PowerSeries.html#x0:2"><span class="id" title="variable">x0</span></a>) :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="notation">∃</span> <a id="L:9" class="idref" href="#L:9"><span class="id" title="binder"><span id="L:10" class="id">L</span></span></a> <a id="L:10" class="idref" href="#L:10"><span class="id" title="binder">:</span></a> <a id="L:10" class="idref" href="#L:10"><span class="id" title="binder">ℝ</span></a><span class="id" title="notation">,</span> <a class="idref" href="RUG.Analysis.PowerSeries.html#2dbc1958c80b31830c8c65dca0848ad9"><span class="id" title="notation">∑</span></a> <span class="id" title="notation">(</span><span class="id" title="keyword">fun</span> <a id="n:11" class="idref" href="#n:11"><span class="id" title="binder">n</span></a> ⇒ <span class="id" title="definition">Rabs</span> <span class="id" title="notation">(</span><a class="idref" href="RUG.Analysis.PowerSeries.html#a:1"><span class="id" title="variable">a</span></a> <a class="idref" href="RUG.Analysis.PowerSeries.html#n:11"><span class="id" title="variable">n</span></a> <span class="id" title="notation">×</span> <a class="idref" href="RUG.Analysis.PowerSeries.html#x:7"><span class="id" title="variable">x</span></a> <span class="id" title="notation">^</span> <a class="idref" href="RUG.Analysis.PowerSeries.html#n:11"><span class="id" title="variable">n</span></a><span class="id" title="notation">))</span> <span class="id" title="notation">⟶</span> <a class="idref" href="RUG.Analysis.PowerSeries.html#L:9"><span class="id" title="variable">L</span></a>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a id="lab65"></a><h2 class="section">Uniform convergence on compact sub-intervals</h2>
+
+<div class="paragraph"> </div>
+
+ Theorem 13.3: if the radius of convergence is <span class="inlinecode"><span class="id" title="var">R</span></span> <span class="inlinecode">&gt;</span> <span class="inlinecode">0</span>, then <span class="inlinecode">∑</span> <span class="inlinecode"><span class="id" title="var">a</span>ₙ</span> <span class="inlinecode"><span class="id" title="var">x</span>ⁿ</span>
+    converges uniformly on every <span class="inlinecode">[−<span class="id" title="var">r</span>,</span> <span class="inlinecode"><span class="id" title="var">r</span>]</span> with <span class="inlinecode"><span class="id" title="var">r</span></span> <span class="inlinecode">&lt;</span> <span class="inlinecode"><span class="id" title="var">R</span></span>.
+
+<div class="paragraph"> </div>
+
+    Proof idea: pick <span class="inlinecode"><span class="id" title="var">r'</span></span> with <span class="inlinecode"><span class="id" title="var">r</span></span> <span class="inlinecode">&lt;</span> <span class="inlinecode"><span class="id" title="var">r'</span></span> <span class="inlinecode">&lt;</span> <span class="inlinecode"><span class="id" title="var">R</span></span>. The series converges absolutely at
+    <span class="inlinecode"><span class="id" title="var">r'</span></span>, so <span class="inlinecode">∑</span> <span class="inlinecode">|<span class="id" title="var">a</span>ₙ|</span> <span class="inlinecode">(<span class="id" title="var">r'</span>)ⁿ</span> <span class="inlinecode">&lt;</span> <span class="inlinecode">∞</span>. For <span class="inlinecode"><span class="id" title="var">x</span></span> <span class="inlinecode">∈</span> <span class="inlinecode">[−<span class="id" title="var">r</span>,</span> <span class="inlinecode"><span class="id" title="var">r</span>]</span>,
+    <span class="inlinecode">|<span class="id" title="var">a</span>ₙ</span> <span class="inlinecode"><span class="id" title="var">x</span>ⁿ|</span> <span class="inlinecode">≤</span> <span class="inlinecode">|<span class="id" title="var">a</span>ₙ|</span> <span class="inlinecode"><span class="id" title="var">r</span>ⁿ</span> <span class="inlinecode">≤</span> <span class="inlinecode">|<span class="id" title="var">a</span>ₙ|</span> <span class="inlinecode">(<span class="id" title="var">r'</span>)ⁿ</span>, so the Weierstrass M-test gives uniform
+    convergence. 
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <a id="power_series_uniform_on_compact" class="idref" href="#power_series_uniform_on_compact"><span class="id" title="lemma">power_series_uniform_on_compact</span></a> (<a id="a:12" class="idref" href="#a:12"><span class="id" title="binder">a</span></a> : <span class="id" title="notation">ℕ</span> <span class="id" title="notation">→</span> <span class="id" title="notation">ℝ</span>) (<a id="R:13" class="idref" href="#R:13"><span class="id" title="binder">R</span></a> <a id="r:14" class="idref" href="#r:14"><span class="id" title="binder">r</span></a> : <span class="id" title="notation">ℝ</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<a id="HR:15" class="idref" href="#HR:15"><span class="id" title="binder">HR</span></a> : <a class="idref" href="RUG.Analysis.PowerSeries.html#R:13"><span class="id" title="variable">R</span></a> <span class="id" title="notation">&gt;</span> 0) (<a id="Hr0:16" class="idref" href="#Hr0:16"><span class="id" title="binder">Hr0</span></a> : 0 <span class="id" title="notation">&lt;</span> <a class="idref" href="RUG.Analysis.PowerSeries.html#r:14"><span class="id" title="variable">r</span></a>) (<a id="HrR:17" class="idref" href="#HrR:17"><span class="id" title="binder">HrR</span></a> : <a class="idref" href="RUG.Analysis.PowerSeries.html#r:14"><span class="id" title="variable">r</span></a> <span class="id" title="notation">&lt;</span> <a class="idref" href="RUG.Analysis.PowerSeries.html#R:13"><span class="id" title="variable">R</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<a id="Hconv:23" class="idref" href="#Hconv:23"><span class="id" title="binder">Hconv</span></a> : <span class="id" title="notation">∀</span> <a id="x:18" class="idref" href="#x:18"><span class="id" title="binder"><span id="x:19" class="id">x</span></span></a> <a id="x:19" class="idref" href="#x:19"><span class="id" title="binder">:</span></a> <a id="x:19" class="idref" href="#x:19"><span class="id" title="binder">ℝ</span></a><span class="id" title="notation">,</span> <span class="id" title="definition">Rabs</span> <a class="idref" href="RUG.Analysis.PowerSeries.html#x:18"><span class="id" title="variable">x</span></a> <span class="id" title="notation">&lt;</span> <a class="idref" href="RUG.Analysis.PowerSeries.html#R:13"><span class="id" title="variable">R</span></a> <span class="id" title="notation">→</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="notation">∃</span> <a id="L:20" class="idref" href="#L:20"><span class="id" title="binder"><span id="L:21" class="id">L</span></span></a> <a id="L:21" class="idref" href="#L:21"><span class="id" title="binder">:</span></a> <a id="L:21" class="idref" href="#L:21"><span class="id" title="binder">ℝ</span></a><span class="id" title="notation">,</span> <a class="idref" href="RUG.Analysis.PowerSeries.html#2dbc1958c80b31830c8c65dca0848ad9"><span class="id" title="notation">∑</span></a> <span class="id" title="notation">(</span><span class="id" title="keyword">fun</span> <a id="n:22" class="idref" href="#n:22"><span class="id" title="binder">n</span></a> ⇒ <a class="idref" href="RUG.Analysis.PowerSeries.html#a:12"><span class="id" title="variable">a</span></a> <a class="idref" href="RUG.Analysis.PowerSeries.html#n:22"><span class="id" title="variable">n</span></a> <span class="id" title="notation">×</span> <a class="idref" href="RUG.Analysis.PowerSeries.html#x:18"><span class="id" title="variable">x</span></a> <span class="id" title="notation">^</span> <a class="idref" href="RUG.Analysis.PowerSeries.html#n:22"><span class="id" title="variable">n</span></a><span class="id" title="notation">)</span> <span class="id" title="notation">⟶</span> <a class="idref" href="RUG.Analysis.PowerSeries.html#L:20"><span class="id" title="variable">L</span></a>) :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="notation">∃</span> <a id="g:24" class="idref" href="#g:24"><span class="id" title="binder"><span id="g:25" class="id">g</span></span></a> <a id="g:25" class="idref" href="#g:25"><span class="id" title="binder">:</span></a> <a id="g:25" class="idref" href="#g:25"><span class="id" title="binder">ℝ</span></a> <a id="g:25" class="idref" href="#g:25"><span class="id" title="binder">→</span></a> <a id="g:25" class="idref" href="#g:25"><span class="id" title="binder">ℝ</span></a><span class="id" title="notation">,</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="RUG.Analysis.Lib.UniformConvergence.html#converges_uniformly"><span class="id" title="definition">converges_uniformly</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="notation">(</span><span class="id" title="keyword">fun</span> <a id="N:26" class="idref" href="#N:26"><span class="id" title="binder">N</span></a> <a id="x:27" class="idref" href="#x:27"><span class="id" title="binder">x</span></a> ⇒ <span class="id" title="definition">sum_f_R0</span> <span class="id" title="notation">(</span><span class="id" title="keyword">fun</span> <a id="n:28" class="idref" href="#n:28"><span class="id" title="binder">n</span></a> ⇒ <a class="idref" href="RUG.Analysis.PowerSeries.html#a:12"><span class="id" title="variable">a</span></a> <a class="idref" href="RUG.Analysis.PowerSeries.html#n:28"><span class="id" title="variable">n</span></a> <span class="id" title="notation">×</span> <a class="idref" href="RUG.Analysis.PowerSeries.html#x:27"><span class="id" title="variable">x</span></a> <span class="id" title="notation">^</span> <a class="idref" href="RUG.Analysis.PowerSeries.html#n:28"><span class="id" title="variable">n</span></a><span class="id" title="notation">)</span> <span class="id" title="notation">N</span><span class="id" title="notation">)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="notation">g</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="notation">(</span><span class="id" title="notation">fun</span> <a id="x:29" class="idref" href="#x:29"><span class="id" title="binder">x</span></a> <span class="id" title="notation">⇒</span> <span class="id" title="notation">Rabs</span> <span class="id" title="notation">x</span> <span class="id" title="notation">≤</span> <span class="id" title="notation">r</span><span class="id" title="notation">)</span>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a id="lab66"></a><h2 class="section">Continuity of power series</h2>
+
+</div>
+<div class="code">
+</div>
+</div>
+
+<div id="footer">
+<hr/><a href="index.html">Index</a><hr/>This page has been generated by <a href="http://rocq-prover.org/">coqdoc</a>
+</div>
+
+</div>
+
+</body>
+</html>

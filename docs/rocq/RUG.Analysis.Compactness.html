@@ -1,0 +1,200 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link href="coqdoc.css" rel="stylesheet" type="text/css" />
+<title>RUG.Analysis.Compactness</title>
+</head>
+
+<body>
+
+<div id="page">
+
+<div id="header">
+</div>
+
+<div id="main">
+
+<h1 class="libtitle">Library RUG.Analysis.Compactness</h1>
+
+<div class="code">
+</div>
+
+<div class="doc">
+<a id="lab4"></a><h1 class="section">RUG.Analysis.Compactness — Compact subsets of ℝ.</h1>
+
+
+<div class="paragraph"> </div>
+
+  Lecture 7 (lecture07_compactness.mv).
+
+<div class="paragraph"> </div>
+
+  Formalizes Abbott §3.3: the Heine-Borel theorem (compact ↔ closed and bounded),
+  properties of compact sets, and the nested compact sets property. 
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">Stdlib</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="library">Reals.Reals</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">Waterproof</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Export</span> <span class="id" title="library">Notations.Common</span>.<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">Waterproof</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Export</span> <span class="id" title="library">Notations.Reals</span>.<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">Waterproof</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Export</span> <span class="id" title="library">Notations.Sets</span>.<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">Waterproof</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="library">Libs.Analysis.OpenAndClosed</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Export</span> <a class="idref" href="RUG.Analysis.Topology.html#"><span class="id" title="library">RUG.Analysis.Topology</span></a>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Export</span> <a class="idref" href="RUG.Analysis.Lib.Compactness.html#"><span class="id" title="library">RUG.Analysis.Lib.Compactness</span></a>.<br/>
+
+<br/>
+<span class="id" title="var">Waterproof</span> <span class="id" title="var">Enable</span> <span class="id" title="var">Automation</span> <span class="id" title="var">RealsAndIntegers</span>.<br/>
+<span class="id" title="var">Waterproof</span> <span class="id" title="var">Enable</span> <span class="id" title="var">Automation</span> <span class="id" title="var">Intuition</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Open</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">R_scope</span>.<br/>
+<span class="id" title="keyword">Open</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">subset_scope</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Set</span> <span class="id" title="var">Default</span> <span class="id" title="keyword">Goal</span> <span class="id" title="var">Selector</span> "!".<br/>
+<span class="id" title="keyword">Set</span> <span class="id" title="var">Bullet</span> <span class="id" title="var">Behavior</span> "Waterproof Relaxed Subproofs".<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a id="lab5"></a><h2 class="section">Closed intervals are compact</h2>
+
+<div class="paragraph"> </div>
+
+ Every closed bounded interval is compact (Heine-Borel, one direction).
+
+<div class="paragraph"> </div>
+
+    Proof idea: given a sequence in <span class="inlinecode">[<span class="id" title="var">a</span>,<span class="id" title="var">b</span>]</span>, Bolzano–Weierstrass provides a
+    convergent subsequence, and the order limit theorem places its limit in
+    <span class="inlinecode">[<span class="id" title="var">a</span>,<span class="id" title="var">b</span>]</span> (from <span class="inlinecode"><span class="id" title="var">a</span></span> <span class="inlinecode">≤</span> <span class="inlinecode"><span class="id" title="var">x</span>ₙ</span> <span class="inlinecode">≤</span> <span class="inlinecode"><span class="id" title="var">b</span></span>). 
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <a id="segment_compact" class="idref" href="#segment_compact"><span class="id" title="lemma">segment_compact</span></a> (<a id="a:1" class="idref" href="#a:1"><span class="id" title="binder">a</span></a> <a id="b:2" class="idref" href="#b:2"><span class="id" title="binder">b</span></a> : <span class="id" title="notation">ℝ</span>) :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="notation">[</span><a class="idref" href="RUG.Analysis.Compactness.html#a:1"><span class="id" title="variable">a</span></a><span class="id" title="notation">,</span> <a class="idref" href="RUG.Analysis.Compactness.html#b:2"><span class="id" title="variable">b</span></a><span class="id" title="notation">]</span> <a class="idref" href="RUG.Analysis.Lib.Compactness.html#:::x_'is'_'_compact_'"><span class="id" title="notation">is</span></a> <a class="idref" href="RUG.Analysis.Lib.Compactness.html#:::x_'is'_'_compact_'"><span class="id" title="notation">_compact_</span></a>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">By</span> <a class="idref" href="RUG.Analysis.Lib.Compactness.html#closed_interval_is_compact"><span class="id" title="lemma">closed_interval_is_compact</span></a> <span class="id" title="var">we</span> <span class="id" title="var">conclude</span> <span class="id" title="var">that</span> <span class="id" title="notation">[</span><span class="id" title="var">a</span><span class="id" title="notation">,</span> <span class="id" title="var">b</span><span class="id" title="notation">]</span> <a class="idref" href="RUG.Analysis.Lib.Compactness.html#:::x_'is'_'_compact_'"><span class="id" title="notation">is</span></a> <a class="idref" href="RUG.Analysis.Lib.Compactness.html#:::x_'is'_'_compact_'"><span class="id" title="notation">_compact_</span></a>.<br/>
+<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a id="lab6"></a><h2 class="section">Compact sets are closed and bounded</h2>
+
+<div class="paragraph"> </div>
+
+ Every compact set is closed.
+
+<div class="paragraph"> </div>
+
+    Proof idea: if <span class="inlinecode"><span class="id" title="var">x</span></span> is a limit point of <span class="inlinecode"><span class="id" title="var">K</span></span>, take a sequence in <span class="inlinecode"><span class="id" title="var">K</span></span> converging
+    to <span class="inlinecode"><span class="id" title="var">x</span></span>. By compactness it has a subsequence converging to some <span class="inlinecode"><span class="id" title="var">y</span></span> <span class="inlinecode">∈</span> <span class="inlinecode"><span class="id" title="var">K</span></span>; but
+    subsequences of a convergent sequence share its limit, so <span class="inlinecode"><span class="id" title="var">x</span></span> <span class="inlinecode">=</span> <span class="inlinecode"><span class="id" title="var">y</span></span> <span class="inlinecode">∈</span> <span class="inlinecode"><span class="id" title="var">K</span></span>. 
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <a id="compact_is_closed" class="idref" href="#compact_is_closed"><span class="id" title="lemma">compact_is_closed</span></a> (<a id="K:3" class="idref" href="#K:3"><span class="id" title="binder">K</span></a> : <span class="id" title="notation">ℝ</span> <span class="id" title="notation">→</span> <span class="id" title="keyword">Prop</span>) (<a id="HK:4" class="idref" href="#HK:4"><span class="id" title="binder">HK</span></a> : <a class="idref" href="RUG.Analysis.Compactness.html#K:3"><span class="id" title="variable">K</span></a> <a class="idref" href="RUG.Analysis.Lib.Compactness.html#:::x_'is'_'_compact_'"><span class="id" title="notation">is</span></a> <a class="idref" href="RUG.Analysis.Lib.Compactness.html#:::x_'is'_'_compact_'"><span class="id" title="notation">_compact_</span></a>) :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="RUG.Analysis.Compactness.html#K:3"><span class="id" title="variable">K</span></a> <span class="id" title="notation">is</span> <span class="id" title="notation">_closed_</span>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Every compact set is bounded.
+
+<div class="paragraph"> </div>
+
+    Proof idea: if <span class="inlinecode"><span class="id" title="var">K</span></span> were unbounded, pick <span class="inlinecode"><span class="id" title="var">x</span>ₙ</span> <span class="inlinecode">∈</span> <span class="inlinecode"><span class="id" title="var">K</span></span> with <span class="inlinecode">|<span class="id" title="var">x</span>ₙ|</span> <span class="inlinecode">&gt;</span> <span class="inlinecode"><span class="id" title="var">n</span></span>; this
+    sequence has no convergent subsequence (convergent sequences are bounded),
+    contradicting compactness. 
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <a id="compact_is_bounded" class="idref" href="#compact_is_bounded"><span class="id" title="lemma">compact_is_bounded</span></a> (<a id="K:5" class="idref" href="#K:5"><span class="id" title="binder">K</span></a> : <span class="id" title="notation">ℝ</span> <span class="id" title="notation">→</span> <span class="id" title="keyword">Prop</span>) (<a id="HK:6" class="idref" href="#HK:6"><span class="id" title="binder">HK</span></a> : <a class="idref" href="RUG.Analysis.Compactness.html#K:5"><span class="id" title="variable">K</span></a> <a class="idref" href="RUG.Analysis.Lib.Compactness.html#:::x_'is'_'_compact_'"><span class="id" title="notation">is</span></a> <a class="idref" href="RUG.Analysis.Lib.Compactness.html#:::x_'is'_'_compact_'"><span class="id" title="notation">_compact_</span></a>) :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="RUG.Analysis.Compactness.html#K:5"><span class="id" title="variable">K</span></a> <a class="idref" href="RUG.Analysis.Lib.Compactness.html#:::x_'is'_'_bounded_'"><span class="id" title="notation">is</span></a> <a class="idref" href="RUG.Analysis.Lib.Compactness.html#:::x_'is'_'_bounded_'"><span class="id" title="notation">_bounded_</span></a>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a id="lab7"></a><h2 class="section">Closed subsets of compact sets are compact</h2>
+
+<div class="paragraph"> </div>
+
+ A closed subset of a compact set is compact.
+
+<div class="paragraph"> </div>
+
+    Proof idea: a sequence in <span class="inlinecode"><span class="id" title="var">F</span></span> <span class="inlinecode">⊆</span> <span class="inlinecode"><span class="id" title="var">K</span></span> has, by compactness of <span class="inlinecode"><span class="id" title="var">K</span></span>, a subsequence
+    converging to some <span class="inlinecode"><span class="id" title="var">y</span></span> <span class="inlinecode">∈</span> <span class="inlinecode"><span class="id" title="var">K</span></span>; since <span class="inlinecode"><span class="id" title="var">F</span></span> is closed and the subsequence lies in
+    <span class="inlinecode"><span class="id" title="var">F</span></span>, the limit <span class="inlinecode"><span class="id" title="var">y</span></span> <span class="inlinecode">∈</span> <span class="inlinecode"><span class="id" title="var">F</span></span>. 
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <a id="closed_subset_of_compact_is_compact" class="idref" href="#closed_subset_of_compact_is_compact"><span class="id" title="lemma">closed_subset_of_compact_is_compact</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<a id="K:7" class="idref" href="#K:7"><span class="id" title="binder">K</span></a> <a id="F:8" class="idref" href="#F:8"><span class="id" title="binder">F</span></a> : <span class="id" title="notation">ℝ</span> <span class="id" title="notation">→</span> <span class="id" title="keyword">Prop</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<a id="HK:9" class="idref" href="#HK:9"><span class="id" title="binder">HK</span></a> : <a class="idref" href="RUG.Analysis.Compactness.html#K:7"><span class="id" title="variable">K</span></a> <a class="idref" href="RUG.Analysis.Lib.Compactness.html#:::x_'is'_'_compact_'"><span class="id" title="notation">is</span></a> <a class="idref" href="RUG.Analysis.Lib.Compactness.html#:::x_'is'_'_compact_'"><span class="id" title="notation">_compact_</span></a>) (<a id="HF:10" class="idref" href="#HF:10"><span class="id" title="binder">HF</span></a> : <a class="idref" href="RUG.Analysis.Compactness.html#F:8"><span class="id" title="variable">F</span></a> <span class="id" title="notation">is</span> <span class="id" title="notation">_closed_</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<a id="Hinc:13" class="idref" href="#Hinc:13"><span class="id" title="binder">Hinc</span></a> : <span class="id" title="notation">∀</span> <a id="x:11" class="idref" href="#x:11"><span class="id" title="binder"><span id="x:12" class="id">x</span></span></a> <a id="x:12" class="idref" href="#x:12"><span class="id" title="binder">:</span></a> <a id="x:12" class="idref" href="#x:12"><span class="id" title="binder">ℝ</span></a><span class="id" title="notation">,</span> <a class="idref" href="RUG.Analysis.Compactness.html#F:8"><span class="id" title="variable">F</span></a> <a class="idref" href="RUG.Analysis.Compactness.html#x:11"><span class="id" title="variable">x</span></a> <span class="id" title="notation">→</span> <a class="idref" href="RUG.Analysis.Compactness.html#K:7"><span class="id" title="variable">K</span></a> <a class="idref" href="RUG.Analysis.Compactness.html#x:11"><span class="id" title="variable">x</span></a>) :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="RUG.Analysis.Compactness.html#F:8"><span class="id" title="variable">F</span></a> <a class="idref" href="RUG.Analysis.Lib.Compactness.html#:::x_'is'_'_compact_'"><span class="id" title="notation">is</span></a> <a class="idref" href="RUG.Analysis.Lib.Compactness.html#:::x_'is'_'_compact_'"><span class="id" title="notation">_compact_</span></a>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a id="lab8"></a><h2 class="section">Heine-Borel theorem</h2>
+
+<div class="paragraph"> </div>
+
+ Heine–Borel theorem: a subset of ℝ is compact iff it is closed and bounded.
+
+<div class="paragraph"> </div>
+
+    Proof idea: (⇒) is the two theorems above. (⇐) given a sequence in a bounded
+    <span class="inlinecode"><span class="id" title="var">K</span></span>, Bolzano–Weierstrass gives a convergent subsequence, and closedness
+    places its limit in <span class="inlinecode"><span class="id" title="var">K</span></span>. 
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <a id="heine_borel" class="idref" href="#heine_borel"><span class="id" title="lemma">heine_borel</span></a> (<a id="K:14" class="idref" href="#K:14"><span class="id" title="binder">K</span></a> : <span class="id" title="notation">ℝ</span> <span class="id" title="notation">→</span> <span class="id" title="keyword">Prop</span>) :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="notation">(</span><a class="idref" href="RUG.Analysis.Compactness.html#K:14"><span class="id" title="variable">K</span></a> <a class="idref" href="RUG.Analysis.Lib.Compactness.html#:::x_'is'_'_compact_'"><span class="id" title="notation">is</span></a> <a class="idref" href="RUG.Analysis.Lib.Compactness.html#:::x_'is'_'_compact_'"><span class="id" title="notation">_compact_</span></a><span class="id" title="notation">)</span> <span class="id" title="notation">⇔</span> <span class="id" title="notation">(</span><a class="idref" href="RUG.Analysis.Compactness.html#K:14"><span class="id" title="variable">K</span></a> <span class="id" title="notation">is</span> <span class="id" title="notation">_closed_</span> <span class="id" title="notation">∧</span> <a class="idref" href="RUG.Analysis.Compactness.html#K:14"><span class="id" title="variable">K</span></a> <a class="idref" href="RUG.Analysis.Lib.Compactness.html#:::x_'is'_'_bounded_'"><span class="id" title="notation">is</span></a> <a class="idref" href="RUG.Analysis.Lib.Compactness.html#:::x_'is'_'_bounded_'"><span class="id" title="notation">_bounded_</span></a><span class="id" title="notation">)</span>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a id="lab9"></a><h2 class="section">Nested compact sets</h2>
+
+<div class="paragraph"> </div>
+
+ A decreasing sequence of nonempty compact sets has nonempty intersection.
+
+<div class="paragraph"> </div>
+
+    Proof idea: a generalization of the nested interval property. Picking a point
+    <span class="inlinecode"><span class="id" title="var">x</span>ₙ</span> <span class="inlinecode">∈</span> <span class="inlinecode"><span class="id" title="var">K</span>ₙ</span>, compactness of <span class="inlinecode"><span class="id" title="var">K₀</span></span> gives a subsequence converging to some <span class="inlinecode"><span class="id" title="var">x</span></span>;
+    since each <span class="inlinecode"><span class="id" title="var">K</span>ₙ</span> is closed and eventually contains the tail of the
+    subsequence, <span class="inlinecode"><span class="id" title="var">x</span></span> <span class="inlinecode">∈</span> <span class="inlinecode"><span class="id" title="var">K</span>ₙ</span> for every <span class="inlinecode"><span class="id" title="var">n</span></span>. 
+</div>
+<div class="code">
+</div>
+</div>
+
+<div id="footer">
+<hr/><a href="index.html">Index</a><hr/>This page has been generated by <a href="http://rocq-prover.org/">coqdoc</a>
+</div>
+
+</div>
+
+</body>
+</html>

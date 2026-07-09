@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link href="coqdoc.css" rel="stylesheet" type="text/css" />
+<title>RUG.Analysis.Taylor</title>
+</head>
+
+<body>
+
+<div id="page">
+
+<div id="header">
+</div>
+
+<div id="main">
+
+<h1 class="libtitle">Library RUG.Analysis.Taylor</h1>
+
+<div class="code">
+</div>
+
+<div class="doc">
+<a id="lab97"></a><h1 class="section">RUG.Analysis.Taylor — Taylor's theorem and Taylor series.</h1>
+
+
+<div class="paragraph"> </div>
+
+  Lecture 14 (lecture14_taylor.mv).
+
+<div class="paragraph"> </div>
+
+  Formalizes Abbott §6.6 and §8.6: Taylor polynomials, the Lagrange
+  remainder formula, and Taylor series for exp, sin, cos. 
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">Stdlib</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="library">Reals.Reals</span>.<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">Stdlib</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="library">Reals.Ranalysis1</span>.<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">Stdlib</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="library">Reals.Rtrigo_def</span>.<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">Stdlib</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="library">Reals.Exp_prop</span>.<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">Stdlib</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="library">micromega.Lra</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Export</span> <a class="idref" href="RUG.Analysis.Derivatives.html#"><span class="id" title="library">RUG.Analysis.Derivatives</span></a>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Export</span> <a class="idref" href="RUG.Analysis.PowerSeries.html#"><span class="id" title="library">RUG.Analysis.PowerSeries</span></a>.<br/>
+
+<br/>
+<span class="id" title="var">Waterproof</span> <span class="id" title="var">Enable</span> <span class="id" title="var">Automation</span> <span class="id" title="var">RealsAndIntegers</span>.<br/>
+<span class="id" title="var">Waterproof</span> <span class="id" title="var">Enable</span> <span class="id" title="var">Automation</span> <span class="id" title="var">Intuition</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Open</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">R_scope</span>.<br/>
+<span class="id" title="keyword">Open</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">subset_scope</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Set</span> <span class="id" title="var">Default</span> <span class="id" title="keyword">Goal</span> <span class="id" title="var">Selector</span> "!".<br/>
+<span class="id" title="keyword">Set</span> <span class="id" title="var">Bullet</span> <span class="id" title="var">Behavior</span> "Waterproof Relaxed Subproofs".<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a id="lab98"></a><h2 class="section">Taylor polynomials for exp</h2>
+
+<div class="paragraph"> </div>
+
+ The Taylor polynomial of degree <span class="inlinecode"><span class="id" title="var">n</span></span> for <span class="inlinecode"><span class="id" title="var">f</span></span> around <span class="inlinecode">0</span> is
+    <span class="inlinecode"><span class="id" title="var">s</span>ₙ(<span class="id" title="var">x</span>)</span> <span class="inlinecode">=</span> <span class="inlinecode">∑<span class="id" title="var">_</span>{<span class="id" title="var">k</span>=0}^<span class="id" title="var">n</span></span> <span class="inlinecode"><span class="id" title="var">f</span>^{(<span class="id" title="var">k</span>)}(0)/<span class="id" title="var">k</span>!</span> <span class="inlinecode">·</span> <span class="inlinecode"><span class="id" title="var">x</span>ᵏ</span>; the Lagrange remainder is
+    <span class="inlinecode"><span class="id" title="var">E</span>ₙ(<span class="id" title="var">x</span>)</span> <span class="inlinecode">=</span> <span class="inlinecode"><span class="id" title="var">f</span>(<span class="id" title="var">x</span>)</span> <span class="inlinecode">-</span> <span class="inlinecode"><span class="id" title="var">s</span>ₙ(<span class="id" title="var">x</span>)</span>. For <span class="inlinecode"><span class="id" title="var">f</span>(<span class="id" title="var">x</span>)</span> <span class="inlinecode">=</span> <span class="inlinecode"><span class="id" title="var">e</span>ˣ</span> all derivatives at <span class="inlinecode">0</span> equal <span class="inlinecode">1</span>,
+    so <span class="inlinecode"><span class="id" title="var">s</span>ₙ(<span class="id" title="var">x</span>)</span> <span class="inlinecode">=</span> <span class="inlinecode">∑<span class="id" title="var">_</span>{<span class="id" title="var">k</span>=0}^<span class="id" title="var">n</span></span> <span class="inlinecode"><span class="id" title="var">x</span>ᵏ/<span class="id" title="var">k</span>!</span>. 
+<div class="paragraph"> </div>
+
+ The <span class="inlinecode"><span class="id" title="var">n</span></span>-th Taylor polynomial of exp at 0. 
+</div>
+<div class="code">
+
+<br/>
+</div>
+
+<div class="doc">
+<a id="lab99"></a><h2 class="section">Sinusoidal bounds</h2>
+
+<div class="paragraph"> </div>
+
+ The first-order Taylor polynomial of <span class="inlinecode"><span class="id" title="var">sin</span></span> at <span class="inlinecode">0</span>. 
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <a id="T_sin1" class="idref" href="#T_sin1"><span class="id" title="definition">T_sin1</span></a> (<a id="x:1" class="idref" href="#x:1"><span class="id" title="binder">x</span></a> : <span class="id" title="axiom">R</span>) : <span class="id" title="axiom">R</span> := <a class="idref" href="RUG.Analysis.Taylor.html#x:1"><span class="id" title="variable">x</span></a>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Theorem 14.3 (upper bound): <span class="inlinecode"><span class="id" title="var">sin</span></span> <span class="inlinecode"><span class="id" title="var">x</span></span> <span class="inlinecode">&lt;</span> <span class="inlinecode"><span class="id" title="var">x</span></span> for <span class="inlinecode"><span class="id" title="var">x</span></span> <span class="inlinecode">&gt;</span> <span class="inlinecode">0</span>. The degree-1 Taylor
+    polynomial of <span class="inlinecode"><span class="id" title="var">sin</span></span> at <span class="inlinecode">0</span> is <span class="inlinecode"><span class="id" title="var">s₁</span>(<span class="id" title="var">x</span>)</span> <span class="inlinecode">=</span> <span class="inlinecode"><span class="id" title="var">x</span></span>, and this is the Stdlib lemma
+    <span class="inlinecode"><span class="id" title="var">sin_lt_x</span></span>. 
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <a id="sin_lt_x" class="idref" href="#sin_lt_x"><span class="id" title="lemma">sin_lt_x</span></a> (<a id="x:2" class="idref" href="#x:2"><span class="id" title="binder">x</span></a> : <span class="id" title="axiom">R</span>) (<a id="Hx:3" class="idref" href="#Hx:3"><span class="id" title="binder">Hx</span></a> : 0 <span class="id" title="notation">&lt;</span> <a class="idref" href="RUG.Analysis.Taylor.html#x:2"><span class="id" title="variable">x</span></a>) : <span class="id" title="definition">sin</span> <a class="idref" href="RUG.Analysis.Taylor.html#x:2"><span class="id" title="variable">x</span></a> <span class="id" title="notation">&lt;</span> <a class="idref" href="RUG.Analysis.Taylor.html#x:2"><span class="id" title="variable">x</span></a>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Theorem 14.3 (lower bound): <span class="inlinecode"><span class="id" title="var">x</span></span> <span class="inlinecode">-</span> <span class="inlinecode"><span class="id" title="var">x</span>³/6</span> <span class="inlinecode">≤</span> <span class="inlinecode"><span class="id" title="var">sin</span></span> <span class="inlinecode"><span class="id" title="var">x</span></span> for <span class="inlinecode">0</span> <span class="inlinecode">≤</span> <span class="inlinecode"><span class="id" title="var">x</span></span> <span class="inlinecode">≤</span> <span class="inlinecode">π/2</span>.
+
+<div class="paragraph"> </div>
+
+    Proof idea: this follows from the alternating series estimate for
+    <span class="inlinecode"><span class="id" title="var">sin</span></span> <span class="inlinecode"><span class="id" title="var">x</span></span> <span class="inlinecode">=</span> <span class="inlinecode"><span class="id" title="var">x</span></span> <span class="inlinecode">-</span> <span class="inlinecode"><span class="id" title="var">x</span>³/3!</span> <span class="inlinecode">+</span> <span class="inlinecode"><span class="id" title="var">x⁵</span>/5!</span> <span class="inlinecode">-</span> <span class="inlinecode">⋯</span>; truncating after the cubic term gives a
+    lower bound on <span class="inlinecode">[0,</span> <span class="inlinecode">π/2]</span>. 
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <a id="sin_ge_taylor" class="idref" href="#sin_ge_taylor"><span class="id" title="lemma">sin_ge_taylor</span></a> (<a id="x:4" class="idref" href="#x:4"><span class="id" title="binder">x</span></a> : <span class="id" title="axiom">R</span>) (<a id="Hx0:5" class="idref" href="#Hx0:5"><span class="id" title="binder">Hx0</span></a> : 0 <span class="id" title="notation">≤</span> <a class="idref" href="RUG.Analysis.Taylor.html#x:4"><span class="id" title="variable">x</span></a>) (<a id="HxPI:6" class="idref" href="#HxPI:6"><span class="id" title="binder">HxPI</span></a> : <a class="idref" href="RUG.Analysis.Taylor.html#x:4"><span class="id" title="variable">x</span></a> <span class="id" title="notation">≤</span> <span class="id" title="definition">PI</span> <span class="id" title="notation">/</span> 2) :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="RUG.Analysis.Taylor.html#x:4"><span class="id" title="variable">x</span></a> <span class="id" title="notation">-</span> <a class="idref" href="RUG.Analysis.Taylor.html#x:4"><span class="id" title="variable">x</span></a> <span class="id" title="notation">^</span> 3 <span class="id" title="notation">/</span> 6 <span class="id" title="notation">≤</span> <span class="id" title="definition">sin</span> <a class="idref" href="RUG.Analysis.Taylor.html#x:4"><span class="id" title="variable">x</span></a>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a id="lab100"></a><h2 class="section">Error bound for the linear approximation of sin</h2>
+
+<div class="paragraph"> </div>
+
+ Theorem 14.4: <span class="inlinecode">|<span class="id" title="var">sin</span></span> <span class="inlinecode"><span class="id" title="var">x</span></span> <span class="inlinecode">-</span> <span class="inlinecode"><span class="id" title="var">x</span>|</span> <span class="inlinecode">≤</span> <span class="inlinecode"><span class="id" title="var">x</span>³/6</span> for <span class="inlinecode">0</span> <span class="inlinecode">&lt;</span> <span class="inlinecode"><span class="id" title="var">x</span></span> <span class="inlinecode">≤</span> <span class="inlinecode">π/2</span>, so the linear
+    approximation <span class="inlinecode"><span class="id" title="var">sin</span></span> <span class="inlinecode"><span class="id" title="var">x</span></span> <span class="inlinecode">≈</span> <span class="inlinecode"><span class="id" title="var">x</span></span> has error at most <span class="inlinecode"><span class="id" title="var">x</span>³/6</span>.
+
+<div class="paragraph"> </div>
+
+    Proof idea: the upper bound <span class="inlinecode"><span class="id" title="var">sin</span></span> <span class="inlinecode"><span class="id" title="var">x</span></span> <span class="inlinecode">&lt;</span> <span class="inlinecode"><span class="id" title="var">x</span></span> gives <span class="inlinecode"><span class="id" title="var">sin</span></span> <span class="inlinecode"><span class="id" title="var">x</span></span> <span class="inlinecode">-</span> <span class="inlinecode"><span class="id" title="var">x</span></span> <span class="inlinecode">&lt;</span> <span class="inlinecode">0</span>, so
+    <span class="inlinecode">|<span class="id" title="var">sin</span></span> <span class="inlinecode"><span class="id" title="var">x</span></span> <span class="inlinecode">-</span> <span class="inlinecode"><span class="id" title="var">x</span>|</span> <span class="inlinecode">=</span> <span class="inlinecode"><span class="id" title="var">x</span></span> <span class="inlinecode">-</span> <span class="inlinecode"><span class="id" title="var">sin</span></span> <span class="inlinecode"><span class="id" title="var">x</span></span>; the lower bound <span class="inlinecode"><span class="id" title="var">sin</span></span> <span class="inlinecode"><span class="id" title="var">x</span></span> <span class="inlinecode">≥</span> <span class="inlinecode"><span class="id" title="var">x</span></span> <span class="inlinecode">-</span> <span class="inlinecode"><span class="id" title="var">x</span>³/6</span> then gives
+    <span class="inlinecode"><span class="id" title="var">x</span></span> <span class="inlinecode">-</span> <span class="inlinecode"><span class="id" title="var">sin</span></span> <span class="inlinecode"><span class="id" title="var">x</span></span> <span class="inlinecode">≤</span> <span class="inlinecode"><span class="id" title="var">x</span>³/6</span>. 
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <a id="sin_approx_error" class="idref" href="#sin_approx_error"><span class="id" title="lemma">sin_approx_error</span></a> (<a id="x:7" class="idref" href="#x:7"><span class="id" title="binder">x</span></a> : <span class="id" title="axiom">R</span>) (<a id="Hx0:8" class="idref" href="#Hx0:8"><span class="id" title="binder">Hx0</span></a> : 0 <span class="id" title="notation">&lt;</span> <a class="idref" href="RUG.Analysis.Taylor.html#x:7"><span class="id" title="variable">x</span></a>) (<a id="HxPI:9" class="idref" href="#HxPI:9"><span class="id" title="binder">HxPI</span></a> : <a class="idref" href="RUG.Analysis.Taylor.html#x:7"><span class="id" title="variable">x</span></a> <span class="id" title="notation">≤</span> <span class="id" title="definition">PI</span> <span class="id" title="notation">/</span> 2) :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="definition">Rabs</span> <span class="id" title="notation">(</span><span class="id" title="definition">sin</span> <a class="idref" href="RUG.Analysis.Taylor.html#x:7"><span class="id" title="variable">x</span></a> <span class="id" title="notation">-</span> <a class="idref" href="RUG.Analysis.Taylor.html#x:7"><span class="id" title="variable">x</span></a><span class="id" title="notation">)</span> <span class="id" title="notation">≤</span> <a class="idref" href="RUG.Analysis.Taylor.html#x:7"><span class="id" title="variable">x</span></a> <span class="id" title="notation">^</span> 3 <span class="id" title="notation">/</span> 6.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>.<br/>
+</div>
+</div>
+
+<div id="footer">
+<hr/><a href="index.html">Index</a><hr/>This page has been generated by <a href="http://rocq-prover.org/">coqdoc</a>
+</div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,234 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link href="coqdoc.css" rel="stylesheet" type="text/css" />
+<title>RUG.Analysis.Countability</title>
+</head>
+
+<body>
+
+<div id="page">
+
+<div id="header">
+</div>
+
+<div id="main">
+
+<h1 class="libtitle">Library RUG.Analysis.Countability</h1>
+
+<div class="code">
+</div>
+
+<div class="doc">
+<a id="lab15"></a><h1 class="section">RUG.Analysis.Countability — Countable and uncountable sets.</h1>
+
+
+<div class="paragraph"> </div>
+
+  Lecture 2 (lecture02_countability.mv).
+
+<div class="paragraph"> </div>
+
+  Formalizes Abbott §1.5: injections, countability of ℕ, ℤ, ℕ×ℕ,
+  and Cantor's theorem on the non-existence of a surjection A → 𝒫(A). 
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">Stdlib</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="library">ZArith.ZArith</span>.<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">Stdlib</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="library">Arith.Cantor</span>.<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">Stdlib</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="library">micromega.Lia</span>.<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">Waterproof</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="library">Notations.Functions</span>.<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">Waterproof</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="library">Libs.Functions</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Export</span> <a class="idref" href="RUG.Analysis.Reals.html#"><span class="id" title="library">RUG.Analysis.Reals</span></a>.<br/>
+
+<br/>
+<span class="id" title="var">Waterproof</span> <span class="id" title="var">Enable</span> <span class="id" title="var">Automation</span> <span class="id" title="var">RealsAndIntegers</span>.<br/>
+<span class="id" title="var">Waterproof</span> <span class="id" title="var">Enable</span> <span class="id" title="var">Automation</span> <span class="id" title="var">Intuition</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Open</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">R_scope</span>.<br/>
+<span class="id" title="keyword">Open</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">subset_scope</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Set</span> <span class="id" title="var">Default</span> <span class="id" title="keyword">Goal</span> <span class="id" title="var">Selector</span> "!".<br/>
+<span class="id" title="keyword">Set</span> <span class="id" title="var">Bullet</span> <span class="id" title="var">Behavior</span> "Waterproof Relaxed Subproofs".<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a id="lab16"></a><h2 class="section">Countable sets</h2>
+
+<div class="paragraph"> </div>
+
+ A type <span class="inlinecode"><span class="id" title="var">A</span></span> is countable if there exists an injection <span class="inlinecode"><span class="id" title="var">A</span></span> <span class="inlinecode">→</span> <span class="inlinecode"><span class="id" title="var">ℕ</span></span>. 
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <a id="countable" class="idref" href="#countable"><span class="id" title="definition">countable</span></a> (<a id="A:1" class="idref" href="#A:1"><span class="id" title="binder">A</span></a> : <span class="id" title="keyword">Type</span>) : <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="notation">∃</span> <a id="f:2" class="idref" href="#f:2"><span class="id" title="binder"><span id="f:3" class="id">f</span></span></a> <a id="f:3" class="idref" href="#f:3"><span class="id" title="binder">:</span></a> <a id="f:3" class="idref" href="#f:3"><span class="id" title="binder">A</span></a> <a id="f:3" class="idref" href="#f:3"><span class="id" title="binder">→</span></a> <a id="f:3" class="idref" href="#f:3"><span class="id" title="binder">ℕ</span></a><span class="id" title="notation">,</span> <a class="idref" href="RUG.Analysis.Countability.html#f:2"><span class="id" title="variable">f</span></a> <span class="id" title="notation">is</span> <span class="id" title="notation">injective</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a id="lab17"></a><h2 class="section">ℕ ∼ 𝔼: the even numbers</h2>
+
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Definition</span> <a id="double" class="idref" href="#double"><span class="id" title="definition">double</span></a> (<a id="n:4" class="idref" href="#n:4"><span class="id" title="binder">n</span></a> : <span class="id" title="notation">ℕ</span>) : <span class="id" title="notation">ℕ</span> := 2 <a class="idref" href="http://rocq-prover.org/doc/V9.1.1/stdlib//Corelib.Init.Peano.html#ea2ff3d561159081cea6fb2e8113cc54"><span class="id" title="notation">×</span></a> <a class="idref" href="RUG.Analysis.Countability.html#n:4"><span class="id" title="variable">n</span></a>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <a id="even_injection" class="idref" href="#even_injection"><span class="id" title="lemma">even_injection</span></a> : <a class="idref" href="RUG.Analysis.Countability.html#double"><span class="id" title="definition">double</span></a> <span class="id" title="notation">is</span> <span class="id" title="notation">injective</span>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">ltac1</span>:(<span class="id" title="tactic">unfold</span> <span class="id" title="definition">injective</span>; <span class="id" title="tactic">intros</span> <span class="id" title="var">a</span> <span class="id" title="var">_</span> <span class="id" title="var">b</span> <span class="id" title="var">_</span> <span class="id" title="var">H</span>; <span class="id" title="tactic">unfold</span> <a class="idref" href="RUG.Analysis.Countability.html#double"><span class="id" title="definition">double</span></a> <span class="id" title="tactic">in</span> <span class="id" title="var">H</span>; <span class="id" title="var">lia</span>).<br/>
+<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a id="lab18"></a><h2 class="section">ℕ is countable</h2>
+
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <a id="nat_countable" class="idref" href="#nat_countable"><span class="id" title="lemma">nat_countable</span></a> : <a class="idref" href="RUG.Analysis.Countability.html#countable"><span class="id" title="definition">countable</span></a> <span class="id" title="notation">ℕ</span>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">It</span> <span class="id" title="var">suffices</span> <span class="id" title="var">to</span> <span class="id" title="var">show</span> <span class="id" title="var">that</span> <span class="id" title="notation">∃</span> <a id="f:5" class="idref" href="#f:5"><span class="id" title="binder"><span id="f:6" class="id">f</span></span></a> <a id="f:6" class="idref" href="#f:6"><span class="id" title="binder">:</span></a> <a id="f:6" class="idref" href="#f:6"><span class="id" title="binder">ℕ</span></a> <a id="f:6" class="idref" href="#f:6"><span class="id" title="binder">→</span></a> <a id="f:6" class="idref" href="#f:6"><span class="id" title="binder">ℕ</span></a><span class="id" title="notation">,</span> <a class="idref" href="RUG.Analysis.Countability.html#f:5"><span class="id" title="variable">f</span></a> <span class="id" title="notation">is</span> <span class="id" title="notation">injective</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">Choose</span> <span class="id" title="var">f</span> := (<span class="id" title="keyword">fun</span> <a id="n:7" class="idref" href="#n:7"><span class="id" title="binder">n</span></a> : <span class="id" title="notation">ℕ</span> ⇒ <a class="idref" href="RUG.Analysis.Countability.html#n:7"><span class="id" title="variable">n</span></a>).<br/>
+&nbsp;&nbsp;<span class="id" title="var">ltac1</span>:(<span class="id" title="tactic">unfold</span> <span class="id" title="definition">injective</span>; <span class="id" title="tactic">intros</span> <span class="id" title="var">a</span> <span class="id" title="var">_</span> <span class="id" title="var">b</span> <span class="id" title="var">_</span> <span class="id" title="var">H</span>; <span class="id" title="tactic">exact</span> <span class="id" title="var">H</span>).<br/>
+<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a id="lab19"></a><h2 class="section">ℤ is countable</h2>
+
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Definition</span> <a id="g_Z" class="idref" href="#g_Z"><span class="id" title="definition">g_Z</span></a> : <a class="idref" href="http://rocq-prover.org/doc/V9.1.1/stdlib//Corelib.Numbers.BinNums.html#Z"><span class="id" title="inductive">Z</span></a> <span class="id" title="notation">→</span> <span class="id" title="notation">ℕ</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">fun</span> <a id="n:8" class="idref" href="#n:8"><span class="id" title="binder">n</span></a> ⇒ <span class="id" title="keyword">if</span> (<a class="idref" href="RUG.Analysis.Countability.html#n:8"><span class="id" title="variable">n</span></a> <span class="id" title="notation">&gt;=?</span> 0)%<span class="id" title="var">Z</span> <span class="id" title="keyword">then</span> <span class="id" title="definition">Z.to_nat</span> <span class="id" title="notation">(</span>2 <span class="id" title="notation">×</span> <a class="idref" href="RUG.Analysis.Countability.html#n:8"><span class="id" title="variable">n</span></a><span class="id" title="notation">)</span>%<span class="id" title="var">Z</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">else</span> <span class="id" title="definition">Z.to_nat</span> <span class="id" title="notation">(</span><span class="id" title="notation">(</span>-2<span class="id" title="notation">)</span> <span class="id" title="notation">×</span> <a class="idref" href="RUG.Analysis.Countability.html#n:8"><span class="id" title="variable">n</span></a> <span class="id" title="notation">-</span> 1<span class="id" title="notation">)</span>%<span class="id" title="var">Z</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <a id="g_Z_injective" class="idref" href="#g_Z_injective"><span class="id" title="lemma">g_Z_injective</span></a> : <a class="idref" href="RUG.Analysis.Countability.html#g_Z"><span class="id" title="definition">g_Z</span></a> <span class="id" title="notation">is</span> <span class="id" title="notation">injective</span>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">ltac1</span>:(<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="definition">injective</span>, <a class="idref" href="RUG.Analysis.Countability.html#g_Z"><span class="id" title="definition">g_Z</span></a>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">n1</span> <span class="id" title="var">_</span> <span class="id" title="var">n2</span> <span class="id" title="var">_</span> <span class="id" title="var">H</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> ((<span class="id" title="var">n1</span> <span class="id" title="notation">&gt;=?</span> 0)%<span class="id" title="var">Z</span>) <span class="id" title="var">eqn</span>:<span class="id" title="var">E1</span>; <span class="id" title="tactic">destruct</span> ((<span class="id" title="var">n2</span> <span class="id" title="notation">&gt;=?</span> 0)%<span class="id" title="var">Z</span>) <span class="id" title="var">eqn</span>:<span class="id" title="var">E2</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">try</span> <span class="id" title="tactic">apply</span> <span class="id" title="lemma">Z.geb_le</span> <span class="id" title="tactic">in</span> <span class="id" title="var">E1</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">try</span> <span class="id" title="tactic">apply</span> <span class="id" title="lemma">Z.geb_le</span> <span class="id" title="tactic">in</span> <span class="id" title="var">E2</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">try</span> (<span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="lemma">Bool.not_true_iff_false</span> <span class="id" title="tactic">in</span> <span class="id" title="var">E1</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="lemma">Z.geb_le</span> <span class="id" title="tactic">in</span> <span class="id" title="var">E1</span>; <span class="id" title="tactic">apply</span> <span class="id" title="lemma">Z.lt_nge</span> <span class="id" title="tactic">in</span> <span class="id" title="var">E1</span>);<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">try</span> (<span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="lemma">Bool.not_true_iff_false</span> <span class="id" title="tactic">in</span> <span class="id" title="var">E2</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="lemma">Z.geb_le</span> <span class="id" title="tactic">in</span> <span class="id" title="var">E2</span>; <span class="id" title="tactic">apply</span> <span class="id" title="lemma">Z.lt_nge</span> <span class="id" title="tactic">in</span> <span class="id" title="var">E2</span>);<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="lemma">Z2Nat.inj</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H</span>; <span class="id" title="var">lia</span><br/>
+&nbsp;&nbsp;).<br/>
+<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <a id="Z_countable" class="idref" href="#Z_countable"><span class="id" title="lemma">Z_countable</span></a> : <a class="idref" href="RUG.Analysis.Countability.html#countable"><span class="id" title="definition">countable</span></a> <a class="idref" href="http://rocq-prover.org/doc/V9.1.1/stdlib//Corelib.Numbers.BinNums.html#Z"><span class="id" title="inductive">Z</span></a>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">It</span> <span class="id" title="var">suffices</span> <span class="id" title="var">to</span> <span class="id" title="var">show</span> <span class="id" title="var">that</span> <span class="id" title="notation">∃</span> <a id="f:9" class="idref" href="#f:9"><span class="id" title="binder"><span id="f:10" class="id">f</span></span></a> <a id="f:10" class="idref" href="#f:10"><span class="id" title="binder">:</span></a> <a id="f:10" class="idref" href="#f:10"><span class="id" title="binder">Z</span></a> <a id="f:10" class="idref" href="#f:10"><span class="id" title="binder">→</span></a> <a id="f:10" class="idref" href="#f:10"><span class="id" title="binder">ℕ</span></a><span class="id" title="notation">,</span> <a class="idref" href="RUG.Analysis.Countability.html#f:9"><span class="id" title="variable">f</span></a> <span class="id" title="notation">is</span> <span class="id" title="notation">injective</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">Choose</span> <span class="id" title="var">f</span> := <a class="idref" href="RUG.Analysis.Countability.html#g_Z"><span class="id" title="definition">g_Z</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">By</span> <a class="idref" href="RUG.Analysis.Countability.html#g_Z_injective"><span class="id" title="lemma">g_Z_injective</span></a> <span class="id" title="var">we</span> <span class="id" title="var">conclude</span> <span class="id" title="var">that</span> <a class="idref" href="RUG.Analysis.Countability.html#g_Z"><span class="id" title="definition">g_Z</span></a> <span class="id" title="notation">is</span> <span class="id" title="notation">injective</span>.<br/>
+<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a id="lab20"></a><h2 class="section">ℕ × ℕ is countable (Cantor pairing)</h2>
+
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Definition</span> <a id="cantor_pair" class="idref" href="#cantor_pair"><span class="id" title="definition">cantor_pair</span></a> (<a id="mn:11" class="idref" href="#mn:11"><span class="id" title="binder">mn</span></a> : <a class="idref" href="http://rocq-prover.org/doc/V9.1.1/stdlib//Corelib.Init.Datatypes.html#nat"><span class="id" title="inductive">nat</span></a> <a class="idref" href="http://rocq-prover.org/doc/V9.1.1/stdlib//Corelib.Init.Datatypes.html#11c698c8685bb8ab1cf725545c085ac4"><span class="id" title="notation">×</span></a> <a class="idref" href="http://rocq-prover.org/doc/V9.1.1/stdlib//Corelib.Init.Datatypes.html#nat"><span class="id" title="inductive">nat</span></a>) : <span class="id" title="notation">ℕ</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">let</span> <a id="m:12" class="idref" href="#m:12"><span class="id" title="binder">m</span></a> := <a class="idref" href="http://rocq-prover.org/doc/V9.1.1/stdlib//Corelib.Init.Datatypes.html#fst"><span class="id" title="definition">fst</span></a> <a class="idref" href="RUG.Analysis.Countability.html#mn:11"><span class="id" title="variable">mn</span></a> <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">let</span> <a id="n:13" class="idref" href="#n:13"><span class="id" title="binder">n</span></a> := <a class="idref" href="http://rocq-prover.org/doc/V9.1.1/stdlib//Corelib.Init.Datatypes.html#snd"><span class="id" title="definition">snd</span></a> <a class="idref" href="RUG.Analysis.Countability.html#mn:11"><span class="id" title="variable">mn</span></a> <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;<a class="idref" href="http://rocq-prover.org/doc/V9.1.1/stdlib//Corelib.Init.Peano.html#ea2ff3d561159081cea6fb2e8113cc54"><span class="id" title="notation">(</span></a><a class="idref" href="RUG.Analysis.Countability.html#m:12"><span class="id" title="variable">m</span></a> <a class="idref" href="http://rocq-prover.org/doc/V9.1.1/stdlib//Corelib.Init.Peano.html#0dacc1786c5ba797d47dd85006231633"><span class="id" title="notation">+</span></a> <a class="idref" href="RUG.Analysis.Countability.html#n:13"><span class="id" title="variable">n</span></a><a class="idref" href="http://rocq-prover.org/doc/V9.1.1/stdlib//Corelib.Init.Peano.html#ea2ff3d561159081cea6fb2e8113cc54"><span class="id" title="notation">)</span></a> <a class="idref" href="http://rocq-prover.org/doc/V9.1.1/stdlib//Corelib.Init.Peano.html#ea2ff3d561159081cea6fb2e8113cc54"><span class="id" title="notation">×</span></a> <a class="idref" href="http://rocq-prover.org/doc/V9.1.1/stdlib//Corelib.Init.Peano.html#ea2ff3d561159081cea6fb2e8113cc54"><span class="id" title="notation">(</span></a><a class="idref" href="RUG.Analysis.Countability.html#m:12"><span class="id" title="variable">m</span></a> <a class="idref" href="http://rocq-prover.org/doc/V9.1.1/stdlib//Corelib.Init.Peano.html#0dacc1786c5ba797d47dd85006231633"><span class="id" title="notation">+</span></a> <a class="idref" href="RUG.Analysis.Countability.html#n:13"><span class="id" title="variable">n</span></a> <a class="idref" href="http://rocq-prover.org/doc/V9.1.1/stdlib//Corelib.Init.Peano.html#0dacc1786c5ba797d47dd85006231633"><span class="id" title="notation">+</span></a> 1<a class="idref" href="http://rocq-prover.org/doc/V9.1.1/stdlib//Corelib.Init.Peano.html#ea2ff3d561159081cea6fb2e8113cc54"><span class="id" title="notation">)</span></a> <span class="id" title="notation">/</span> 2 <a class="idref" href="http://rocq-prover.org/doc/V9.1.1/stdlib//Corelib.Init.Peano.html#0dacc1786c5ba797d47dd85006231633"><span class="id" title="notation">+</span></a> <a class="idref" href="RUG.Analysis.Countability.html#n:13"><span class="id" title="variable">n</span></a>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <a id="NxN_countable" class="idref" href="#NxN_countable"><span class="id" title="lemma">NxN_countable</span></a> : <a class="idref" href="RUG.Analysis.Countability.html#countable"><span class="id" title="definition">countable</span></a> <span class="id" title="notation">(</span><a class="idref" href="http://rocq-prover.org/doc/V9.1.1/stdlib//Corelib.Init.Datatypes.html#nat"><span class="id" title="inductive">nat</span></a> <a class="idref" href="http://rocq-prover.org/doc/V9.1.1/stdlib//Corelib.Init.Datatypes.html#11c698c8685bb8ab1cf725545c085ac4"><span class="id" title="notation">×</span></a> <a class="idref" href="http://rocq-prover.org/doc/V9.1.1/stdlib//Corelib.Init.Datatypes.html#nat"><span class="id" title="inductive">nat</span></a><span class="id" title="notation">)</span>%<span class="id" title="keyword">type</span>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">It</span> <span class="id" title="var">suffices</span> <span class="id" title="var">to</span> <span class="id" title="var">show</span> <span class="id" title="var">that</span> <span class="id" title="notation">∃</span> <a id="f:14" class="idref" href="#f:14"><span class="id" title="binder"><span id="f:15" class="id">f</span></span></a> <a id="f:15" class="idref" href="#f:15"><span class="id" title="binder">:</span></a> <a id="f:15" class="idref" href="#f:15"><span class="id" title="binder">(</span></a><a id="f:15" class="idref" href="#f:15"><span class="id" title="binder">nat</span></a> <a id="f:15" class="idref" href="#f:15"><span class="id" title="binder">×</span></a> <a id="f:15" class="idref" href="#f:15"><span class="id" title="binder">nat</span></a><a id="f:15" class="idref" href="#f:15"><span class="id" title="binder">)%</span></a><a id="f:15" class="idref" href="#f:15"><span class="id" title="binder">type</span></a> <a id="f:15" class="idref" href="#f:15"><span class="id" title="binder">→</span></a> <a id="f:15" class="idref" href="#f:15"><span class="id" title="binder">ℕ</span></a><span class="id" title="notation">,</span> <a class="idref" href="RUG.Analysis.Countability.html#f:14"><span class="id" title="variable">f</span></a> <span class="id" title="notation">is</span> <span class="id" title="notation">injective</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">Choose</span> <span class="id" title="var">f</span> := <span class="id" title="definition">Cantor.to_nat</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">ltac1</span>:(<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="definition">injective</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">p1</span> <span class="id" title="var">_</span> <span class="id" title="var">p2</span> <span class="id" title="var">_</span> <span class="id" title="var">H</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">exact</span> (<span class="id" title="lemma">Cantor.to_nat_inj</span> <span class="id" title="var">p1</span> <span class="id" title="var">p2</span> <span class="id" title="var">H</span>)<br/>
+&nbsp;&nbsp;).<br/>
+<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a id="lab21"></a><h2 class="section">Cantor's theorem</h2>
+
+<div class="paragraph"> </div>
+
+ There is no surjective function <span class="inlinecode"><span class="id" title="var">A</span></span> <span class="inlinecode">→</span> <span class="inlinecode">𝒫(<span class="id" title="var">A</span>)</span>.
+
+<div class="paragraph"> </div>
+
+    Proof (diagonal argument): given <span class="inlinecode"><span class="id" title="var">g</span></span> <span class="inlinecode">:</span> <span class="inlinecode"><span class="id" title="var">A</span></span> <span class="inlinecode">→</span> <span class="inlinecode">𝒫(<span class="id" title="var">A</span>)</span>, define
+    <span class="inlinecode"><span class="id" title="var">B</span></span> <span class="inlinecode">=</span> <span class="inlinecode">{<span class="id" title="var">x</span></span> <span class="inlinecode">∈</span> <span class="inlinecode"><span class="id" title="var">A</span></span> <span class="inlinecode">:</span> <span class="inlinecode"><span class="id" title="var">x</span></span> <span class="inlinecode">∉</span> <span class="inlinecode"><span class="id" title="var">g</span>(<span class="id" title="var">x</span>)}</span>. If <span class="inlinecode"><span class="id" title="var">B</span></span> <span class="inlinecode">=</span> <span class="inlinecode"><span class="id" title="var">g</span>(<span class="id" title="var">x'</span>)</span> then <span class="inlinecode"><span class="id" title="var">x'</span></span> <span class="inlinecode">∈</span> <span class="inlinecode"><span class="id" title="var">B</span></span> <span class="inlinecode">⇔</span> <span class="inlinecode"><span class="id" title="var">x'</span></span> <span class="inlinecode">∉</span> <span class="inlinecode"><span class="id" title="var">g</span>(<span class="id" title="var">x'</span>)</span> <span class="inlinecode">=</span> <span class="inlinecode"><span class="id" title="var">B</span></span>,
+    a contradiction; so <span class="inlinecode"><span class="id" title="var">g</span></span> is not surjective. 
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <a id="cantors_theorem" class="idref" href="#cantors_theorem"><span class="id" title="lemma">cantors_theorem</span></a> (<a id="A:16" class="idref" href="#A:16"><span class="id" title="binder">A</span></a> : <span class="id" title="keyword">Type</span>) (<a id="g:17" class="idref" href="#g:17"><span class="id" title="binder">g</span></a> : <a class="idref" href="RUG.Analysis.Countability.html#A:16"><span class="id" title="variable">A</span></a> <span class="id" title="notation">→</span> <span class="id" title="notation">(</span><a class="idref" href="RUG.Analysis.Countability.html#A:16"><span class="id" title="variable">A</span></a> <span class="id" title="notation">→</span> <span class="id" title="keyword">Prop</span><span class="id" title="notation">)</span>) :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="notation">¬</span> <a class="idref" href="RUG.Analysis.Countability.html#g:17"><span class="id" title="variable">g</span></a> <span class="id" title="notation">is</span> <span class="id" title="notation">surjective</span>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">ltac1</span>:(<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">intro</span> <span class="id" title="var">Hsurj</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="definition">surjective</span> <span class="id" title="tactic">in</span> <span class="id" title="var">Hsurj</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">pose</span> (<span class="id" title="var">B</span> := <span class="id" title="keyword">fun</span> <a id="x:18" class="idref" href="#x:18"><span class="id" title="binder"><span id="x:19" class="id">x</span></span></a> : <span class="id" title="var">A</span> ⇒ <a class="idref" href="http://rocq-prover.org/doc/V9.1.1/stdlib//Corelib.Init.Logic.html#63a68285c81db8f9bc456233bb9ed181"><span class="id" title="notation">¬</span></a> <span class="id" title="var">g</span> <a class="idref" href="RUG.Analysis.Countability.html#x:18"><span class="id" title="variable">x</span></a> <a class="idref" href="RUG.Analysis.Countability.html#x:18"><span class="id" title="variable">x</span></a>);<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> (<span class="id" title="var">Hsurj</span> <span class="id" title="var">B</span> (<span class="id" title="lemma">mem_subset_full_set</span> <span class="id" title="var">B</span>)) <span class="id" title="keyword">as</span> [<span class="id" title="var">x0</span> [<span class="id" title="var">_</span> <span class="id" title="var">Hx0</span>]];<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="var">H1</span> : <span class="id" title="var">g</span> <span class="id" title="var">x0</span> <span class="id" title="var">x0</span> <a class="idref" href="http://rocq-prover.org/doc/V9.1.1/stdlib//Corelib.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <span class="id" title="var">B</span> <span class="id" title="var">x0</span>) <span class="id" title="tactic">by</span> (<span class="id" title="tactic">rewrite</span> <span class="id" title="var">Hx0</span>; <span class="id" title="tactic">reflexivity</span>);<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">B</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H1</span>; <span class="id" title="tactic">cbv</span> <span class="id" title="keyword">beta</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H1</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="var">Hfn</span> : <span class="id" title="var">g</span> <span class="id" title="var">x0</span> <span class="id" title="var">x0</span> <a class="idref" href="http://rocq-prover.org/doc/V9.1.1/stdlib//Corelib.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a> <a class="idref" href="http://rocq-prover.org/doc/V9.1.1/stdlib//Corelib.Init.Logic.html#False"><span class="id" title="inductive">False</span></a>) <span class="id" title="tactic">by</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="tactic">intro</span> <span class="id" title="var">p</span>; <span class="id" title="tactic">pose</span> <span class="id" title="var">proof</span> <span class="id" title="var">p</span> <span class="id" title="keyword">as</span> <span class="id" title="var">q</span>; <span class="id" title="tactic">rewrite</span> <span class="id" title="var">H1</span> <span class="id" title="tactic">in</span> <span class="id" title="var">p</span>; <span class="id" title="tactic">exact</span> (<span class="id" title="var">p</span> <span class="id" title="var">q</span>));<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="var">Hpos</span> : <span class="id" title="var">g</span> <span class="id" title="var">x0</span> <span class="id" title="var">x0</span>) <span class="id" title="tactic">by</span> (<span class="id" title="tactic">rewrite</span> <span class="id" title="var">H1</span>; <span class="id" title="tactic">exact</span> <span class="id" title="var">Hfn</span>);<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">exact</span> (<span class="id" title="var">Hfn</span> <span class="id" title="var">Hpos</span>)<br/>
+&nbsp;&nbsp;).<br/>
+<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a id="lab22"></a><h2 class="section">ℝ is uncountable</h2>
+
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Axiom</span> <a id="R_uncountable" class="idref" href="#R_uncountable"><span class="id" title="axiom">R_uncountable</span></a> : <span class="id" title="notation">¬</span> <span class="id" title="notation">∃</span> <a id="f:20" class="idref" href="#f:20"><span class="id" title="binder"><span id="f:21" class="id">f</span></span></a> <a id="f:21" class="idref" href="#f:21"><span class="id" title="binder">:</span></a> <a id="f:21" class="idref" href="#f:21"><span class="id" title="binder">ℕ</span></a> <a id="f:21" class="idref" href="#f:21"><span class="id" title="binder">→</span></a> <a id="f:21" class="idref" href="#f:21"><span class="id" title="binder">ℝ</span></a><span class="id" title="notation">,</span> <a class="idref" href="RUG.Analysis.Countability.html#f:20"><span class="id" title="variable">f</span></a> <span class="id" title="notation">is</span> <span class="id" title="notation">surjective</span>.<br/>
+</div>
+</div>
+
+<div id="footer">
+<hr/><a href="index.html">Index</a><hr/>This page has been generated by <a href="http://rocq-prover.org/">coqdoc</a>
+</div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,5 @@
+# For fcc / coq-lsp interactive checking of .mv files.
+# Dual -R entries: first for source, second for dune-built .vo files.
+-R theories RUG.Analysis
+-R _build/default/theories RUG.Analysis
+-arg -w -arg -cannot-open-path

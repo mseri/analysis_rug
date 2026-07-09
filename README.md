@@ -5,8 +5,9 @@ This repository contains course material for the [Analysis](https://ocasys.rug.n
 The lectures material can be accessed at [mseri.me/analysis_rug](https://mseri.me/analysis_rug).
 This contains both the syllabus, including tutorial exercises, and navigable slides for the lectures.
 
-The `waterproof` folder contains the slides of the lectures formalized in Waterproof.
-The `exercises` forlder contains the barebone homework exercises, ready to be formalized.
+The `waterproof` folder contains the slides of the lectures formalized in Waterproofc (stale).
+The `theories` folder contains the content of the lectures, separated in thematic sections, formalized in Waterproof (current).
+The `exercises` folder contains the barebone homework exercises in Waterproof format, ready to be formalized.
 
 ## Waterproof
 
@@ -46,4 +47,3 @@ Tip: make sure you close your Github codespace environment after using it.
 allow this.
 6. Open the relevant `.mv` file, for instance `tutorial.mv`.
 7. If everything installed correctly, you should see a "Goal" window on the right, which shows what is left to prove when you click in the text of proofs.
-

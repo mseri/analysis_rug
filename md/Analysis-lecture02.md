@@ -8,6 +8,8 @@ Topics:
 - Abbott §1.5. Cardinality
 - Abbott §1.6. Cantor's theorem
 
+Formalization: [`Countability.v`](docs/rocq/RUG.Analysis.Countability.html)
+
 ---
 
 # Intro

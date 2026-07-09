@@ -7,6 +7,8 @@ date: "Lecture 11, Wednesday 18 December 2024"
 Topics:
 - Abbott §6.2: Pointwise and uniform convergence
 
+Formalization: [`FunctionSequences.v`](docs/rocq/RUG.Analysis.FunctionSequences.html)
+
 ---
 
 # Pointwise convergence

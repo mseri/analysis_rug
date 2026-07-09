@@ -8,6 +8,8 @@ Topics:
 - Abbott §7.2: the Riemann integral
 - Abbott §7.3: integrals of discontinuous functions
 
+Formalization: [`Integration.v`](docs/rocq/RUG.Analysis.Integration.html)
+
 ---
 
 # Upper and lower sums

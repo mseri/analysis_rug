@@ -363,8 +363,8 @@
   </div>
   <div class="nav-body" id="nav-body">
     <div class="nav-section">Info</div>
-    <button class="nav-item" data-file="md/Analysis-2526-course-info.md" data-mode="doc">Course Information</button>
-    <div class="nav-section">Lectures 2024–2025</div>
+    <button class="nav-item" data-file="md/Analysis-course-info.md" data-mode="doc">Course Information</button>
+    <div class="nav-section">Lectures</div>
     <!-- populated by JS -->
   </div>
 </div>
@@ -409,7 +409,7 @@
 
   // ── Config ────────────────────────────────────────────────────────
   const LECTURE_COUNT = 17;
-  const COURSE_FILE   = 'md/Analysis-2526-course-info.md';
+  const COURSE_FILE   = 'md/Analysis-course-info.md';
 
   // ── State ─────────────────────────────────────────────────────────
   let slides     = [];
@@ -434,7 +434,7 @@
   for (let i = 1; i <= LECTURE_COUNT; i++) {
     const btn = document.createElement('button');
     btn.className   = 'nav-item';
-    btn.dataset.file = 'md/Analysis-2425-lecture' + String(i).padStart(2, '0') + '.md';
+    btn.dataset.file = 'md/Analysis-lecture' + String(i).padStart(2, '0') + '.md';
     btn.dataset.mode = 'slides';
     btn.textContent  = 'Lecture ' + i;
     navBody.appendChild(btn);
@@ -624,11 +624,13 @@
     }
   }
 
-  // ── Nav click ─────────────────────────────────────────────────────
-  navBody.addEventListener('click', function (e) {
-    var item = e.target.closest('.nav-item');
-    if (!item || !item.dataset.file) return;
+  // ── Item selection + hash routing (#lecture05, #course-info) ──────
+  function slugFor(item) {
+    var m = item.dataset.file.match(/Analysis-(lecture\d+|course-info)\.md$/);
+    return m ? m[1] : null;
+  }
 
+  function activate(item, updateHash) {
     navBody.querySelectorAll('.nav-item').forEach(function (b) { b.classList.remove('active'); });
     item.classList.add('active');
     activeItem = item;
@@ -637,9 +639,34 @@
       topbarTitle.textContent = 'Analysis — Course Information';
     }
 
-    closeMenu();
+    if (updateHash) {
+      var slug = slugFor(item);
+      if (slug) history.replaceState(null, '', '#' + slug);
+    }
+
     loadFile(item.dataset.file, item.dataset.mode);
+  }
+
+  function openFromHash() {
+    var slug = location.hash.replace(/^#/, '');
+    if (!slug) return;
+    var items = navBody.querySelectorAll('.nav-item');
+    for (var i = 0; i < items.length; i++) {
+      if (slugFor(items[i]) === slug) { activate(items[i], false); return; }
+    }
+  }
+
+  // ── Nav click ─────────────────────────────────────────────────────
+  navBody.addEventListener('click', function (e) {
+    var item = e.target.closest('.nav-item');
+    if (!item || !item.dataset.file) return;
+
+    closeMenu();
+    activate(item, true);
   });
+
+  window.addEventListener('hashchange', openFromHash);
+  openFromHash();
 
 }());
 </script>

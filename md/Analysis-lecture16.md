@@ -8,6 +8,8 @@ Topics:
 - Abbott §7.4: properties of integrals
 - Abbott §7.5: the fundamental theorem of calculus
 
+Formalization: [`Integration.v`](docs/rocq/RUG.Analysis.Integration.html), [`FTC.v`](docs/rocq/RUG.Analysis.FTC.html)
+
 ---
 
 ## A useful lemma

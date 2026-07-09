@@ -1,6 +1,6 @@
 (** * RUG.Analysis.Integration — The Riemann integral.
 
-  Lecture 15 (lecture15_integration.mv).
+  #<a href="../../index.html##lecture15">Lecture 15</a>#.
 
   Formalizes Abbott §7.2–7.4: the definition of the Riemann integral via
   upper and lower sums, integrability of continuous functions, and basic

@@ -1,6 +1,6 @@
 (** * RUG.Analysis.Sequences — Convergence of sequences.
 
-  Lecture 3 (lecture03_sequences.mv).
+  #<a href="../../index.html##lecture03">Lecture 3</a>#.
 
   Formalizes Abbott §2.2–2.3: the ε-N definition of convergence,
   algebraic limit theorem, order limit theorem, and squeeze_theorem theorem. *)

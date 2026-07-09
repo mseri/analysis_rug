@@ -7,6 +7,8 @@ date: "Lecture 14, Wednesday 15 January 2025"
 Topics:
 - Abbott §6.6: Taylor series
 
+Formalization: [`Taylor.v`](docs/rocq/RUG.Analysis.Taylor.html)
+
 ---
 
 # Taylor series

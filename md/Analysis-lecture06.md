@@ -7,6 +7,8 @@ date: "Lecture 6, Wednesday 27 November 2023"
 Topics:
 - Abbott §3.2. Open and closed sets
 
+Formalization: [`Topology.v`](docs/rocq/RUG.Analysis.Topology.html)
+
 ---
 
 # Open sets

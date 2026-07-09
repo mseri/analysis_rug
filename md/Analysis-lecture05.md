@@ -8,6 +8,8 @@ Topics:
 - Abbott §2.6. The Cauchy criterion
 - Abbott §2.7. Properties of infinite series
 
+Formalization: [`CauchySequences.v`](docs/rocq/RUG.Analysis.CauchySequences.html), [`Series.v`](docs/rocq/RUG.Analysis.Series.html)
+
 ---
 
 # Cauchy sequences

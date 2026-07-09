@@ -1,6 +1,6 @@
 (** * RUG.Analysis.FTC — The fundamental theorem of calculus.
 
-  Lecture 16 (lecture16_ftc.mv).
+  #<a href="../../index.html##lecture16">Lecture 16</a>#.
 
   Formalizes Abbott §7.5: the two parts of the fundamental theorem,
   the Cauchy-Schwarz inequality for integrals, and integration by parts. *)

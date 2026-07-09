@@ -8,6 +8,8 @@ Topics:
 - Abbott §4.4. Continuity and compactness
 - Abbott §4.5. The intermediate value theorem
 
+Formalization: [`Continuity.v`](docs/rocq/RUG.Analysis.Continuity.html), [`Compactness.v`](docs/rocq/RUG.Analysis.Compactness.html)
+
 ---
 
 # Continuity and compactness

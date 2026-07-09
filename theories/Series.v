@@ -1,6 +1,6 @@
 (** * RUG.Analysis.Series — Convergence of infinite series.
 
-  Lecture 5 (lecture05_series.mv).
+  #<a href="../../index.html##lecture05">Lecture 5</a>#.
 
   Formalizes Abbott §2.6 (Cauchy criterion) and §2.7 (series, comparison test,
   absolute convergence, alternating series test, geometric series).

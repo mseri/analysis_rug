@@ -8,6 +8,8 @@ Topics:
 
 - Abbott §6.5: Power series
 
+Formalization: [`PowerSeries.v`](docs/rocq/RUG.Analysis.PowerSeries.html)
+
 ---
 
 # Pointwise convergence

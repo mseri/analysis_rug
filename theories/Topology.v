@@ -1,6 +1,6 @@
 (** * RUG.Analysis.Topology — Open sets, closed sets, and limit points.
 
-  Lecture 6 (lecture06_topology.mv).
+  #<a href="../../index.html##lecture06">Lecture 6</a>#.
 
   Formalizes Abbott §3.2–3.3: open and closed subsets of ℝ, limit points,
   closures, and the relationship between open/closed sets. *)

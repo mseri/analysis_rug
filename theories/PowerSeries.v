@@ -1,6 +1,6 @@
 (** * RUG.Analysis.PowerSeries — Power series and radius of convergence.
 
-  Lecture 13 (lecture13_power_series.mv).
+  #<a href="../../index.html##lecture13">Lecture 13</a>#.
 
   Formalizes Abbott §6.5: radius of convergence, Abel's theorem,
   term-by-term differentiation and integration of power series. *)

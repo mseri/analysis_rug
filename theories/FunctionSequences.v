@@ -1,6 +1,6 @@
 (** * RUG.Analysis.FunctionSequences — Sequences of functions.
 
-  Lectures 11–12 (lecture11_pointwise.mv, lecture12_uniform.mv).
+  #<a href="../../index.html##lecture11">Lecture 11</a># and #<a href="../../index.html##lecture12">Lecture 12</a>#.
 
   Formalizes Abbott §6.2–6.4: pointwise and uniform convergence,
   the Weierstrass M-test, and the interchange of limits with

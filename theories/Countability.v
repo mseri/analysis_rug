@@ -1,6 +1,6 @@
 (** * RUG.Analysis.Countability — Countable and uncountable sets.
 
-  Lecture 2 (lecture02_countability.mv).
+  #<a href="../../index.html##lecture02">Lecture 2</a>#.
 
   Formalizes Abbott §1.5: injections, countability of ℕ, ℤ, ℕ×ℕ,
   and Cantor's theorem on the non-existence of a surjection A → 𝒫(A). *)

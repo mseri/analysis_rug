@@ -8,6 +8,8 @@ Topics:
 - Abbott §6.3: Uniform convergence and differentiation
 - Abbott §6.4: Series of functions
 
+Formalization: [`FunctionSequences.v`](docs/rocq/RUG.Analysis.FunctionSequences.html), [`Series.v`](docs/rocq/RUG.Analysis.Series.html)
+
 ---
 
 # Uniform convergence

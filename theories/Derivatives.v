@@ -1,6 +1,6 @@
 (** * RUG.Analysis.Derivatives — Differentiability and the mean value theorem.
 
-  Lecture 10 (lecture10_derivatives.mv).
+  #<a href="../../index.html##lecture10">Lecture 10</a>#.
 
   Formalizes Abbott §5.2–5.3: differentiability at a point,
   differentiable implies continuous, Fermat's theorem on local extrema,

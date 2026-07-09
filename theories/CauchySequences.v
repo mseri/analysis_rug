@@ -1,6 +1,6 @@
 (** * RUG.Analysis.CauchySequences — Cauchy sequences and completeness of ℝ.
 
-  Lecture 5 (lecture05_series.mv), first part.
+  #<a href="../../index.html##lecture05">Lecture 5</a>#, first part.
 
   Formalizes Abbott §2.6 (Cauchy criterion for sequences): a real sequence
   converges iff it is Cauchy. The forward direction is elementary; the converse

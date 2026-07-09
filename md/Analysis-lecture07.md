@@ -7,6 +7,8 @@ date: "Lecture 7, Friday 29 November 2023"
 Topics:
 - Abbott §3.3. Compact sets
 
+Formalization: [`Topology.v`](docs/rocq/RUG.Analysis.Topology.html), [`Compactness.v`](docs/rocq/RUG.Analysis.Compactness.html)
+
 ---
 
 # Recap: open and closed sets

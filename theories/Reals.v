@@ -1,6 +1,6 @@
 (** * RUG.Analysis.Reals — The real number system.
 
-  Lecture 1 (lecture01_reals.mv).
+  #<a href="../../index.html##lecture01">Lecture 1</a>#.
 
   Formalizes Abbott §1.2–1.4: upper/lower bounds, supremum/infimum,
   the axiom of completeness, and its consequences (Archimedean property,

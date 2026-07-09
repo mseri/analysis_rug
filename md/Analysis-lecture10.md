@@ -9,6 +9,8 @@ Topics:
 - Abbott §5.3: Mean value theorem
 - Abbott §5.4: A continuous, nowhere differentiable function
 
+Formalization: [`Derivatives.v`](docs/rocq/RUG.Analysis.Derivatives.html)
+
 ---
 
 # Derivatives

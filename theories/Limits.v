@@ -1,6 +1,6 @@
 (** * RUG.Analysis.Limits — Functional limits (ε-δ definition).
 
-  Lecture 8 (lecture08_limits.mv).
+  #<a href="../../index.html##lecture08">Lecture 8</a>#.
 
   Formalizes Abbott §4.2: the ε-δ definition of [lim_{x→c} f(x) = L],
   uniqueness of limits, algebraic limit theorem for functions, and

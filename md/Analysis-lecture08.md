@@ -8,6 +8,8 @@ Topics:
 - Abbott §4.2. Limits of functions
 - Abbott §4.3. Continuity
 
+Formalization: [`Limits.v`](docs/rocq/RUG.Analysis.Limits.html), [`Continuity.v`](docs/rocq/RUG.Analysis.Continuity.html)
+
 ---
 
 # Functional limits

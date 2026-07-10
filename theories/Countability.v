@@ -56,54 +56,117 @@ Qed.
 (** ** ℤ is countable *)
 
 Definition g_Z : Z → ℕ :=
-  fun n => if (n >=? 0)%Z then Z.to_nat (2 * n)%Z
-           else Z.to_nat ((-2) * n - 1)%Z.
-
+  fun n =>
+    match n with
+    | Z0 => 0%nat
+    | Zpos p => Z.to_nat (2 * Z.pos p)%Z
+    | Zneg p => Z.to_nat ((-2) * Z.neg p - 1)%Z
+    end.
+  
 Lemma g_Z_injective : g_Z is injective.
 Proof.
-  (* Case analysis on integer signs; Z2Nat.inj + lia needed for each case *)
-  (* WaterProof has no Z case-split or Z.to_nat reasoning tactic *)
-  ltac1:(
-    unfold injective, g_Z;
-    intros n1 _ n2 _ H;
-    destruct ((n1 >=? 0)%Z) eqn:E1; destruct ((n2 >=? 0)%Z) eqn:E2;
-    try apply Z.geb_le in E1;
-    try apply Z.geb_le in E2;
-    try (rewrite <- Bool.not_true_iff_false in E1;
-         rewrite Z.geb_le in E1; apply Z.lt_nge in E1);
-    try (rewrite <- Bool.not_true_iff_false in E2;
-         rewrite Z.geb_le in E2; apply Z.lt_nge in E2);
-    (* Now E1, E2 are numerical: 0 ≤ n1 / n1 < 0 and 0 ≤ n2 / n2 < 0 *)
-    (* apply Z2Nat.inj in H generates side goals 0≤A and 0≤B which lia closes;
-       then lia closes the main goal (n1=n2 or False from parity mismatch) *)
-    apply Z2Nat.inj in H; lia
-  ).
+  We need to show that ∀ n1 ∈ Z, ∀ n2 ∈ Z,
+    g_Z(n1) = g_Z(n2) ⇨ n1 = n2.
+  Take n1, n2 ∈ Z. Assume that g_Z(n1) = g_Z(n2) as (Hinj).
+  destruct n1 as [|p1|p1], n2 as [|p2|p2]; try (exfalso; discriminate Hinj).
+  - (* n1 = Z0, n2 = Z0 *)
+    reflexivity.
+  - (* n1 = Z0, n2 = Zpos p2 *)
+    We argue by contradiction.
+    Assume that 0%Z ≠ Z.pos p2.
+    By Hinj it holds that (&
+      0%nat = g_Z(0%Z) = g_Z(Z.pos p2)
+    ).
+    Contradiction.
+  - (* n1 = Z0, n2 = Zneg p2 *)
+    We argue by contradiction.
+    Assume that 0%Z ≠ Z.neg p2.
+        By Hinj it holds that (&
+      0%nat = g_Z(0%Z) = g_Z(Z.neg p2)
+    ).
+    Contradiction.
+  - (* n1 = Zpos p1, n2 = Z0 *)
+    We argue by contradiction.
+    Assume that Z.pos p1 ≠ 0%Z.
+    By Hinj it holds that (&
+      g_Z(Z.pos p1) = g_Z(0%Z) = 0%nat
+    ).
+    Contradiction.
+  - (* n1 = Zpos p1, n2 = Zpos p2 *)
+    It holds that g_Z (Z.pos p1) = Z.to_nat (2 * Z.pos p1)%Z.
+    It holds that g_Z (Z.pos p2) = Z.to_nat (2 * Z.pos p2)%Z.
+    By Hinj it holds that (&
+      Z.to_nat (2 * Z.pos p1)%Z
+      = g_Z(Z.pos p1) = g_Z(Z.pos p2)
+      = Z.to_nat (2 * Z.pos p2)%Z
+    ).
+    We conclude that Z.pos p1 = Z.pos p2.
+  - (* n1 = Zpos p1, n2 = Zneg p2 *)
+    We argue by contradiction.
+    Assume that Z.pos p1 ≠ Z.neg p2.
+    It holds that g_Z (Z.pos p1) = Z.to_nat (2 * Z.pos p1)%Z.
+    It holds that g_Z (Z.neg p2) = Z.to_nat ((-2) * Z.neg p2 - 1)%Z.
+    It holds that
+      g_Z(Z.pos p1) ≠ g_Z(Z.neg p2).
+    Contradiction.
+  - (* n1 = Zneg p1, n2 = Z0 *)
+    We argue by contradiction.
+    Assume that Z.neg p1 ≠ 0%Z.
+    By Hinj it holds that (&  
+      g_Z(Z.neg p1) = g_Z(0%Z) = 0%nat
+    ).
+    Contradiction.
+  - (* n1 = Zneg p1, n2 = Zpos p2 *)
+    We argue by contradiction.
+    Assume that Z.neg p1 ≠ Z.pos p2.
+    It holds that g_Z (Z.neg p1) = Z.to_nat ((-2) * Z.neg p1 - 1)%Z.
+    It holds that g_Z (Z.pos p2) = Z.to_nat (2 * Z.pos p2)%Z.
+    It holds that
+      g_Z(Z.neg p1) ≠ g_Z(Z.pos p2).
+    By Hinj it holds that
+      g_Z(Z.neg p1) = g_Z(Z.pos p2).
+    Contradiction.
+  - (* n1 = Zneg p1, n2 = Zneg p2 *)
+    It holds that g_Z (Z.neg p1) = Z.to_nat ((-2) * Z.neg p1 - 1)%Z.
+    It holds that g_Z (Z.neg p2) = Z.to_nat ((-2) * Z.neg p2 - 1)%Z.
+    By Hinj it holds that (&
+      Z.to_nat ((-2) * Z.neg p1 - 1)%Z
+      = g_Z(Z.neg p1) = g_Z(Z.neg p2)
+      = Z.to_nat ((-2) * Z.neg p2 - 1)%Z
+    ).
+    We conclude that Z.neg p1 = Z.neg p2.
 Qed.
 
 Lemma Z_countable : countable Z.
 Proof.
   It suffices to show that ∃ f : Z → ℕ, f is injective.
   Choose f := g_Z.
-  By g_Z_injective we conclude that g_Z is injective.
+  By g_Z_injective we conclude that f is injective.
 Qed.
 
 (** ** ℕ × ℕ is countable (Cantor pairing) *)
 
-Definition cantor_pair (mn : nat * nat) : ℕ :=
-  let m := fst mn in
-  let n := snd mn in
-  (m + n) * (m + n + 1) / 2 + n.
+Definition cantor_pair (mn : ℕ * ℕ) : ℕ :=
+  let m := fst mn : ℕ in
+  let n := snd mn : ℕ in
+  (m + n) * (m + n + 1%nat) / 2 + n.
 
-Lemma NxN_countable : countable (nat * nat)%type.
+(** This is already defined in Arith.Cantor
+    as [Cantor.to_nat], we are going to use that.
+    The code in Rocq is not so bad, look for [Cantor.to_nat_inj].
+
+    I was not able to do a fully-Waterproof version
+    using the cantor_pair as defined above. *)
+
+Lemma NxN_countable : countable (ℕ * ℕ).
 Proof.
-  It suffices to show that ∃ f : (nat * nat)%type → ℕ, f is injective.
+  It suffices to show that ∃ f : (ℕ * ℕ) → ℕ, f is injective.
   Choose f := Cantor.to_nat.
+  We need to show that ∀ a ∈ (nat * nat)%type, ∀ b ∈ (nat * nat)%type,
+    f(a) = f(b) ⇨ a = b.
+  Take a, b ∈ (nat * nat)%type. Assume that f(a) = f(b).
   (* Cantor.to_nat_inj : ∀ p q, to_nat p = to_nat q → p = q *)
-  ltac1:(
-    unfold injective;
-    intros p1 _ p2 _ H;
-    exact (Cantor.to_nat_inj p1 p2 H)
-  ).
+  By Cantor.to_nat_inj we conclude that a = b.
 Qed.
 
 (** ** Cantor's theorem *)
@@ -116,27 +179,34 @@ Qed.
 Lemma cantors_theorem (A : Type) (g : A → (A → Prop)) :
     ¬ g is surjective.
 Proof.
-  (* Diagonal argument: define B x = ¬ g x x; surjectivity gives x0 with g x0 = B,
-     then g x0 x0 = B x0 = ¬ g x0 x0, a contradiction.
-     ltac1 needed: WaterProof has no function extensionality or classical case-split *)
-  ltac1:(
-    intro Hsurj;
-    unfold surjective in Hsurj;
-    pose (B := fun x : A => ~ g x x);
-    destruct (Hsurj B (mem_subset_full_set B)) as [x0 [_ Hx0]];
-    (* g x0 = B implies (g x0) x0 = B x0, i.e., g x0 x0 = ~ g x0 x0 *)
-    assert (H1 : g x0 x0 = B x0) by (rewrite Hx0; reflexivity);
-    unfold B in H1; cbv beta in H1;
-    (* H1 : g x0 x0 = ¬ g x0 x0
-       rewrite H1 in p changes p : g x0 x0 to p : ¬ g x0 x0 = g x0 x0 -> False;
-       saving a copy q first lets us apply p q : False *)
-    assert (Hfn : g x0 x0 -> False) by
-      (intro p; pose proof p as q; rewrite H1 in p; exact (p q));
-    (* rewrite H1 in goal g x0 x0 gives ¬ g x0 x0 = g x0 x0 -> False,
-       closed by Hfn *)
-    assert (Hpos : g x0 x0) by (rewrite H1; exact Hfn);
-    exact (Hfn Hpos)
-  ).
+  We argue by contradiction.
+  Assume that ¬ ¬ g is surjective.
+  It holds that g is surjective.
+  It holds that ∀ y ∈ (A → Prop), ∃ x ∈ A, g x = y as (Hsurj).
+  Define B := fun x => ¬ g x x.
+  By Hsurj it holds that ∃ x0 ∈ A, g x0 = B.
+  Obtain such a x0.
+  It holds that g x0 = B.
+  We claim that (g x0 x0 ↔ ¬ g x0 x0).
+  { We show both directions. 
+    - We need to show that g(x0, x0) ⇨ ¬ g(x0, x0).
+      Assume that g x0 x0 as (Hg).
+      It holds that (&
+        g x0 x0 = B x0 = ¬ g x0 x0
+      ).
+      It holds that g x0 x0 = ¬ g x0 x0 as (Heq).
+      rewrite Heq in Hg.
+      By Hg we conclude that ¬ g x0 x0.
+    - We need to show that ¬ g(x0, x0) ⇨ g(x0, x0).
+      Assume that ¬ g x0 x0 as (Hng).
+      It holds that (&
+        (¬ g x0 x0) = B x0 = g x0 x0
+      ).
+      It holds that (¬ g x0 x0) = g x0 x0 as (Heq).
+      rewrite Heq in Hng.
+      By Hng we conclude that g x0 x0.
+  }
+  Contradiction.
 Qed.
 
 (** ** ℝ is uncountable *)

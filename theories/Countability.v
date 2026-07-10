@@ -33,8 +33,12 @@ Definition double (n : ℕ) : ℕ := 2 * n.
 
 Lemma even_injection : double is injective.
 Proof.
-  (* lia needed: WaterProof automation cannot unfold `double` and solve nat arithmetic *)
-  ltac1:(unfold injective; intros a _ b _ H; unfold double in H; lia).
+  We need to show that ∀ a ∈ ℕ, ∀ b ∈ ℕ,
+    double(a) = double(b) ⇨ a = b.
+  Take a, b ∈ ℕ.
+  Assume that (2 * a)%nat = (2 * b)%nat.
+  (* By Nat.mul_cancel_l *)
+  We conclude that a = b.
 Qed.
 
 (** ** ℕ is countable *)
@@ -43,8 +47,10 @@ Lemma nat_countable : countable ℕ.
 Proof.
   It suffices to show that ∃ f : ℕ → ℕ, f is injective.
   Choose f := (fun n : ℕ => n).
-  (* identity function is injective: equal inputs give equal outputs *)
-  ltac1:(unfold injective; intros a _ b _ H; exact H).
+  We need to show that ∀ a ∈ ℕ, ∀ b ∈ ℕ,
+    f(a) = f(b) ⇨ a = b.
+  Take a, b ∈ ℕ. Assume that f(a) = f(b).
+  We conclude that a = b.
 Qed.
 
 (** ** ℤ is countable *)

@@ -20,6 +20,94 @@ Open Scope subset_scope.
 Set Default Goal Selector "!".
 Set Bullet Behavior "Waterproof Relaxed Subproofs".
 
+Lemma Rdiv_lt_compat_r (r1 : ℝ) (r2 : ℝ) (r3 : ℝ) :
+  r1 < r2 → 0 < r3 → r1 / r3 < r2 / r3.
+Proof.
+  Assume that r1 < r2 as (Hlt).
+  Assume that 0 < r3 as (Hc).
+  By Rmult_lt_compat_r it holds that r1 * / r3 < r2 * / r3.
+  It holds that r1 * / r3 = r1 / r3. It holds that r2 * / r3 = r2 / r3.
+  We conclude that r1 / r3 < r2 / r3.
+Qed.
+
+(** This lemma provides a trivial property for
+    natural number, but since we are mixing different
+    representations of ℕ, we need to help the compiler
+    to juggle them. *)
+Lemma le_succ_cases (n N1 : ℕ) :
+  n ≤ S N1 -> n = S N1 \/ n ≤ N1.
+Proof.
+Assume that n ≤ S N1 as (H).
+(* I'd like to do
+   By (Nat.eq_dec n (S N1)) it holds that n = S N1 ∨ n ≠ S N1.
+   but it raises lots of warnings, so I do it manually. *)
+destruct (Nat.eq_dec n (S N1)) as [Heq | Hneq].
+- left. We conclude that n = S N1.
+- right.
+  It holds that (n ≤ S N1)%nat as (Hle_nat).
+  It holds that (n ≤ N1)%nat as (Hle_nat_succ).
+  We conclude that n ≤ N1.
+Qed.
+
+(** This computes the maximum of the absolute values
+    of the first N+1 terms of the sequence. *)
+Fixpoint partial_max (a : ℕ → R) (N1 : ℕ) : ℝ :=
+  match N1 with
+  | O => Rabs (a 0%nat)
+  | S k => Rmax (partial_max a k) (Rabs (a (S k)))
+  end.
+
+Lemma partial_max_spec (a : ℕ → R) :
+  ∀ N1 ∈ ℕ, ∀ n ∈ ℕ,
+  n ≤ N1 -> | a n | ≤ partial_max a N1.
+Proof.
+  We use induction on N1.
+  - We first show the base case ∀ n ∈ ℕ,
+      n ≤ 0%nat ⇨ |a(n)| ≤ partial_max(a, 0%nat).
+    Take n ∈ ℕ. Assume that n ≤ 0%nat.
+    
+    It holds that (n ≤ 0)%nat.
+    By Nat.le_0_r it holds that n = 0%nat.
+    It holds that |a(n)| = |a(0%nat)|.
+    
+    It holds that |a(0%nat)| = partial_max(a, 0%nat).
+    
+    By Nat.eq_le_incl we conclude that |a(n)| ≤ partial_max(a, 0%nat).
+
+  - We now show the induction step.
+    Take N1 ∈ ℕ.
+    Assume that ∀ n ∈ ℕ, n ≤ N1 ⇨ |a(n)| ≤ partial_max(a, N1) as (IHN1).
+    Take n ∈ ℕ. Assume that n ≤ (N1 + 1)%nat.
+    
+    It holds that (N1 + 1)%nat = S N1.
+    It holds that S N1 = (N1 + 1)%nat.
+
+    It holds that
+      partial_max(a, S N1)
+      = Rmax(partial_max(a, N1), |a (S N1)|).
+    
+    By le_succ_cases it holds that n = S N1 ∨ n ≤ N1.
+    Either n = S N1 or n ≤ N1.
+    * Case n = S N1.
+      It holds that (&
+        |a(n)|
+        = |a(S N1)|
+        ≤ Rmax(partial_max(a, N1), |a(S N1)|)
+        = partial_max(a, S N1)
+      ).
+      It holds that partial_max(a, S N1) = partial_max(a, (N1 + 1)%nat).
+      We conclude that |a(n)| ≤ partial_max(a, (N1 + 1)%nat).
+    * Case n ≤ N1.
+      By IHN1 it holds that |a(n)| ≤ partial_max(a, N1).
+      It holds that (&
+        partial_max(a, N1)
+        ≤ Rmax(partial_max(a, N1), |a(S N1)|)
+        = partial_max(a, S N1)
+        = partial_max(a, (N1 + 1)%nat)
+      ).
+      We conclude that |a(n)| ≤ partial_max(a, (N1 + 1)%nat).
+Qed.
+
 (** ** Convergence of a sequence
 
     Definition: [(aₙ)] _converges_ to [a] if
@@ -92,24 +180,7 @@ Qed.
 Definition bounded_sequence (a : ℕ → ℝ) :=
   ∃ M ∈ ℝ, M > 0 ∧ ∀ n ∈ ℕ, | a n | ≤ M.
 
-(** This lemma provides a trivial property for
-    natural number, but since we are mixing different
-    representations of ℕ, we need to help the compiler
-    to juggle them. *)
-Lemma le_succ_cases (n N1 : ℕ) :
-  n ≤ S N1 -> n = S N1 \/ n ≤ N1.
-Proof.
-Assume that n ≤ S N1 as (H).
-(* I'd like to do
-   By (Nat.eq_dec n (S N1)) it holds that n = S N1 ∨ n ≠ S N1.
-   but it raises lots of warnings, so I do it manually. *)
-destruct (Nat.eq_dec n (S N1)) as [Heq | Hneq].
-- left. We conclude that n = S N1.
-- right.
-  It holds that (n ≤ S N1)%nat as (Hle_nat).
-  It holds that (n ≤ N1)%nat as (Hle_nat_succ).
-  We conclude that n ≤ N1.
-Qed.
+
 
 (** Theorem: Every convergent sequence is bounded. *)
 Lemma convergent_sequence_is_bounded (a : ℕ → ℝ) (L : ℝ) :
@@ -128,84 +199,25 @@ Proof.
       < 1 + | L |
     ).
   }
-  
-  (** This computes the maximum of the absolute values
-      of the first N+1 terms of the sequence. *)
-  Fixpoint partial_max (a : ℕ → R) (N1 : ℕ) : ℝ :=
-    match N1 with
-    | O => Rabs (a 0%nat)
-    | S k => Rmax (partial_max a k) (Rabs (a (S k)))
-    end.
 
-  Lemma partial_max_spec (a : ℕ → R) :
-   ∀ N1 ∈ ℕ, ∀ n ∈ ℕ,
-    n ≤ N1 -> | a n | ≤ partial_max a N1.
-  Proof.
-    We use induction on N1.
-    - We first show the base case ∀ n ∈ ℕ,
-        n ≤ 0%nat ⇨ |a(n)| ≤ partial_max(a, 0%nat).
-      Take n ∈ ℕ. Assume that n ≤ 0%nat.
-      
-      It holds that (n ≤ 0)%nat.
-      By Nat.le_0_r it holds that n = 0%nat.
-      It holds that |a(n)| = |a(0%nat)|.
-      
-      It holds that |a(0%nat)| = partial_max(a, 0%nat).
-      
-      By Nat.eq_le_incl we conclude that |a(n)| ≤ partial_max(a, 0%nat).
-
-    - We now show the induction step.
-      Take N1 ∈ ℕ.
-      Assume that ∀ n ∈ ℕ, n ≤ N1 ⇨ |a(n)| ≤ partial_max(a, N1) as (IHN1).
-      Take n ∈ ℕ. Assume that n ≤ (N1 + 1)%nat.
-      
-      It holds that (N1 + 1)%nat = S N1.
-      It holds that S N1 = (N1 + 1)%nat.
-
-      It holds that
-        partial_max(a, S N1)
-        = Rmax(partial_max(a, N1), |a (S N1)|).
-      
-      By le_succ_cases it holds that n = S N1 ∨ n ≤ N1.
-      Either n = S N1 or n ≤ N1.
-      - Case n = S N1.
-        It holds that (&
-          |a(n)|
-          = |a(S N1)|
-          ≤ Rmax(partial_max(a, N1), |a(S N1)|)
-          = partial_max(a, S N1)
-        ).
-        It holds that partial_max(a, S N1) = partial_max(a, (N1 + 1)%nat).
-        We conclude that |a(n)| ≤ partial_max(a, (N1 + 1)%nat).
-      - Case n ≤ N1.
-        By IHN1 it holds that |a(n)| ≤ partial_max(a, N1).
-        It holds that (&
-          partial_max(a, N1)
-          ≤ Rmax(partial_max(a, N1), |a(S N1)|)
-          = partial_max(a, S N1)
-          = partial_max(a, (N1 + 1)%nat)
-        ).
-        We conclude that |a(n)| ≤ partial_max(a, (N1 + 1)%nat).
-    Qed.
-
-    By partial_max_spec it holds that ∀ n ∈ ℕ, n ≤ N1 ⇨ |a(n)| ≤ partial_max(a, N1).
-    We need to show that ∃ M ∈ ℝ, M > 0 ∧ ∀ n ∈ ℕ, | a n | ≤ M.    
-    Choose M := Rmax (partial_max a N1) (1 + | L |). { Indeed, M ∈ ℝ. }
-    We need to show that M > 0 ∧ (∀ n ∈ ℕ, |a(n)| ≤ M).
-    We show both statements.
-    - We conclude that M > 0.
-    - We need to show that ∀ n ∈ ℕ, |a(n)| ≤ M.
-      Take n ∈ ℕ.
-      Either n ≤ N1 or n > N1.
-      - Case n ≤ N1.
-        By partial_max_spec it holds that |a(n)| ≤ partial_max(a, N1).
-        We conclude that |a n| ≤ M.
-      - Case n > N1.
-        It holds that n ≥ N1.
-        It holds that (&
-          | a n | < 1 + | L | ≤ M
-        ).
-        We conclude that |a n| ≤ M.
+  By partial_max_spec it holds that ∀ n ∈ ℕ, n ≤ N1 ⇨ |a(n)| ≤ partial_max(a, N1).
+  We need to show that ∃ M ∈ ℝ, M > 0 ∧ ∀ n ∈ ℕ, | a n | ≤ M.    
+  Choose M := Rmax (partial_max a N1) (1 + | L |). { Indeed, M ∈ ℝ. }
+  We need to show that M > 0 ∧ (∀ n ∈ ℕ, |a(n)| ≤ M).
+  We show both statements.
+  - We conclude that M > 0.
+  - We need to show that ∀ n ∈ ℕ, |a(n)| ≤ M.
+    Take n ∈ ℕ.
+    Either n ≤ N1 or n > N1.
+    - Case n ≤ N1.
+      By partial_max_spec it holds that |a(n)| ≤ partial_max(a, N1).
+      We conclude that |a n| ≤ M.
+    - Case n > N1.
+      It holds that n ≥ N1.
+      It holds that (&
+        | a n | < 1 + | L | ≤ M
+      ).
+      We conclude that |a n| ≤ M.
 Qed.
 
 (** ** Algebraic limit theorem *)
@@ -287,21 +299,39 @@ Proof.
   It holds that n ≥ Na. It holds that n ≥ Nb.
   It holds that | a n | ≤ Ma.
 
-  It holds that (&
-    | a n * b n - (m * l) |
-    = | a n * b n - a n * l + a n * l - m * l |
-    = | a n * (b n - l) + (a n - m) * l |
-  ).
+  We claim that | a n * b n - (m * l) | ≤ | a n | * | b n - l | + | a n - m | * | l |.
+  {
+    It holds that (&
+      | a n * b n - (m * l) |
+      = | a n * b n - a n * l + a n * l - m * l |
+      = | a n * (b n - l) + (a n - m) * l |
+    ) as (Hinner).
 
-  By Rabs_triang it holds that
-    | a n * (b n - l) + (a n - m) * l |
-    ≤ | a n * (b n - l) | + | (a n - m) * l |.
+    By Rabs_triang it holds that
+      | a n * (b n - l) + (a n - m) * l |
+      ≤ | a n * (b n - l) | + | (a n - m) * l |
+    as (Htriang).
+    
+    By Hinner and Htriang it holds that
+      | a n * b n - (m * l) |
+      ≤ | a n * (b n - l) | + | (a n - m) * l |.
 
-  By Ha' it holds that | a n - m | < ε / (2 * (| l | + 1)) as (HAn_l).
-  By Hb' it holds that | b n - l | < ε / (2 * Ma).
+    By Rabs_mult it holds that
+      | a n * (b n - l) | = | a n | * | b n - l |.
+    By Rabs_mult it holds that
+      | (a n - m) * l | = | a n - m | * | l |.
+    By Rabs_mult it holds that
+    | a n * (b n - l) | + | (a n - m) * l |
+      = | a n | * | b n - l | + | a n - m | * | l |.
+    
+    We conclude that
+      | a n * b n - (m * l) |
+      ≤ | a n | * | b n - l | + | a n - m | * | l |.
+  }
 
   We claim that | a n | * | b n - l | ≤ ε / 2.
   {
+    By Hb' it holds that | b n - l | < ε / (2 * Ma).
     By Rmult_div_r it holds that Ma * ε / Ma = ε.
     By Rmult_comm and Rdiv_mult_distr it holds that (&
       Ma * (ε / (2 * Ma))
@@ -323,25 +353,57 @@ Proof.
 
   We claim that | a n - m | * | l | < ε / 2.
   { 
+    It holds that | l | ≥ 0.
+    It holds that | l | + 1 > 0.
+    It holds that | l | + 1 ≠ 0.
+    By Rdiv_diag it holds that
+      (| l | + 1) / (| l | + 1) = 1.
+    It holds that | l | < | l | + 1.
+
+    By Rdiv_lt_compat_r it holds that
+      | l | / (| l | + 1) < (| l | + 1) / (| l | + 1)
+    as (Hl_lt).
+    
+    By Hl_lt it holds that (&
+      | l | / (| l | + 1)
+      <  (| l | + 1) / (| l | + 1)
+      = 1
+    ) as (Hl_lt1).
+
+    It holds that 2 * (| l | + 1) > 0.
+    By Rmult_comm it holds that
+      | l | / (2 * (| l | + 1)) = | l | / ((| l | + 1) * 2).
+    By Rdiv_mult_distr it holds that
+      | l | / ((| l | + 1) * 2) = | l | / (| l | + 1) / 2.
+    By Hl_lt1 and Rdiv_lt_compat_r it holds that
+      | l | / (2 * (| l | + 1)) < 1 / 2
+    as (Hl_lt_half).
+
+    By Ha' it holds that
+      | a n - m | < ε / (2 * (| l | + 1))
+    as (HAn_l).
+
     By Rmult_le_compat_r and HAn_l it holds that
       | a n - m | * | l |
-      < (ε / (2 * (| l | + 1))) * | l |.
-    It holds that | l | + 1 > 0.
-    It holds that | l | ≥ 0.
-    It holds that | l | < | l | + 1.
-    Rmult_lt_compat_r it holds that (&
-      | l | / (| l | + 1)
-      < (| l | + 1) / (| l | + 1)
-      = 1
-    ).
-    It holds that
+      ≤ ε / (2 * (| l | + 1)) * | l |.
+
+    It holds that 
       ε / (2 * (| l | + 1)) * | l |
-      = (ε / 2) * (| l | / (| l | + 1)).
-    It holds that
-      (ε / (2 * (| l | + 1))) * | l | < ε / 2.
+      = ε * | l | / (2 * (| l | + 1)).
+
+    By Rmult_lt_compat_l and Hl_lt_half it holds that (&
+      ε / (2 * (| l | + 1)) * | l |
+      = ε * | l | / (2 * (| l | + 1))
+      < ε * 1 / 2 = ε / 2
+    ) as (HSecondTerm).
+
+    By HAn_l and HSecondTerm we conclude that
+      | a n - m | * | l | < ε / 2.
   }
+
   It holds that (&
-    | a n | * | b n - l | + | a n - m | * | l |
+    | a n * b n - (m * l) |
+    ≤ | a n | * | b n - l | + | a n - m | * | l |
     <  ε / 2 + ε / 2 = ε
   ).
 

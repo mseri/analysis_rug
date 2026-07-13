@@ -7,8 +7,7 @@
 
 From Stdlib Require Import Reals.Reals.
 From Stdlib Require Import Reals.SeqProp.
-From Stdlib Require Import micromega.Lia.
-From Stdlib Require Import micromega.Lra.
+
 From Waterproof Require Export Libs.Analysis.Sequences.
 Require Export RUG.Analysis.Reals.
 
@@ -23,38 +22,202 @@ Set Bullet Behavior "Waterproof Relaxed Subproofs".
 
 (** ** Convergence of a sequence
 
-    Definition: [(aₙ)] converges to [a] if
-    [∀ ε > 0, ∃ N, ∀ n ≥ N, |aₙ - a| < ε]. We write [aₙ → a] or
-    [a = lim_{n→∞} aₙ]. In Waterproof, [a_n ⟶ a] is equivalent to [Un_cv a_n a]. *)
+    Definition: [(aₙ)] _converges_ to [a] if
+    [∀ ε > 0, ∃ N, ∀ n ≥ N, |aₙ - a| < ε].
+    We write [aₙ → a] or [a = lim_{n→∞} aₙ].
+
+    In Waterproof, [a_n ⟶ a] is equivalent to [Un_cv a_n a]. *)
 
 (** ** Constant and harmonic sequences *)
 
 (** The constant sequence with value [c]. *)
 Definition constant_seq (c : ℝ) := fun (n : ℕ) => c.
 
-(** Theorem 3.1: a constant sequence [aₙ = c] converges to [c]. *)
+(** A constant sequence [aₙ = c] converges to [c]. *)
 Lemma constant_seq_converges (c : ℝ) : (fun _ : ℕ => c) ⟶ c.
 Proof.
-  By lim_const_seq we conclude that (fun _ : ℕ => c) ⟶ c.
+  (** This is in Waterproof already, so we could just do
+     By lim_const_seq we conclude that (fun _ : ℕ => c) ⟶ c.*)
+  Define s := constant_seq c.
+  We need to show
+    ∀ ε > 0, ∃ N1 ∈ ℕ, ∀ n ≥ N1, ｜s(n) - c｜ < ε.
+  Take ε > 0. Choose N1 := O. { Indeed, N1 ∈ ℕ. }
+
+  We need to show that ∀ n ≥ N1, ｜s(n) - c｜ < ε.
+  Take n ≥ N1.
+  It holds that s n = c.
+  We conclude that (&
+    |s n - c| 
+    = | c - c |
+    = |0| = 0 < ε
+  ).   
 Qed.
 
 (** The harmonic sequence. *)
 Definition harmonic := fun (n : ℕ) => 1 / (n + 1).
 
-(** Theorem 3.2: the sequence [1/(n+1)] converges to [0]. *)
+(** The sequence [1/(n+1)] converges to [0]. *)
 Lemma harmonic_to_0 : (fun n : ℕ => Rdiv 1 (INR n + 1)) ⟶ 0.
 Proof.
-  By lim_d_0 we conclude that (fun n : ℕ => Rdiv 1 (INR n + 1)) ⟶ 0.
+  (** This is in Waterproof already, we could prove it with
+      By lim_d_0 we conclude that (fun n : ℕ => Rdiv 1 (INR n + 1)) ⟶ 0.
+      The proof below is an adaptation of the proof in Waterproof. *)
+  We need to show
+      ∀ ε > 0, ∃ N1 ∈ ℕ, ∀ n ≥ N1, ｜harmonic(n) - 0｜ < ε.
+  Take ε > 0.
+  By the Archimedean property it holds that ∃ n1 ∈ ℕ, n1 > / ε.
+  Obtain such an n1. Choose N1 := n1. { Indeed, N1 ∈ ℕ. }
+  We need to show that ∀ n ≥ N1, ｜harmonic(n) - 0｜ < ε.
+  
+  Take n ≥ N1.
+  We need to show that Rabs (1 / (n + 1) - 0) < ε.
+  It suffices to show that -ε < 1 / (n + 1) - 0 < ε.
+  We show both -ε < 1 / (n + 1) - 0 and 1 / (n + 1) - 0 < ε.
+  - It holds that 0 < n + 1. (* n + 1 > 0 is difficult?*)
+    We conclude that (&
+      -ε < 0 < / (n + 1) = 1 / (n + 1) - 0
+    ).
+  - We claim that / ε < n + 1.
+    { We conclude that (& / ε < n1 <= n <= n + 1 ). }
+    We conclude that (&
+      1 / (n + 1) - 0 = / (n + 1) 
+      < / / ε = ε
+    ).
+Qed.
+
+(** ** Bounded sequences *)
+
+(** A sequence [(aₙ)] is _bounded_ if there exists [M > 0] such that
+    [|aₙ| ≤ M] for all [n]. *)
+Definition bounded_sequence (a : ℕ → ℝ) :=
+  ∃ M ∈ ℝ, M > 0 ∧ ∀ n ∈ ℕ, | a n | ≤ M.
+
+(** This lemma provides a trivial property for
+    natural number, but since we are mixing different
+    representations of ℕ, we need to help the compiler
+    to juggle them. *)
+Lemma le_succ_cases (n N1 : ℕ) :
+  n ≤ S N1 -> n = S N1 \/ n ≤ N1.
+Proof.
+Assume that n ≤ S N1 as (H).
+(* I'd like to do
+   By (Nat.eq_dec n (S N1)) it holds that n = S N1 ∨ n ≠ S N1.
+   but it raises lots of warnings, so I do it manually. *)
+destruct (Nat.eq_dec n (S N1)) as [Heq | Hneq].
+- left. We conclude that n = S N1.
+- right.
+  It holds that (n ≤ S N1)%nat as (Hle_nat).
+  It holds that (n ≤ N1)%nat as (Hle_nat_succ).
+  We conclude that n ≤ N1.
+Qed.
+
+(** Theorem: Every convergent sequence is bounded. *)
+Lemma convergent_sequence_is_bounded (a : ℕ → ℝ) (L : ℝ) :
+  a ⟶ L → bounded_sequence a.
+Proof.
+  Assume that a ⟶ L.
+  It holds that ∀ ε > 0, ∃ N1 ∈ ℕ, ∀ n ≥ N1, | a n - L | < ε as (HC). 
+  It holds that ∃ N1 ∈ ℕ, ∀ n ≥ N1, | a n - L | < 1 as (H1).
+  Obtain such an N1.
+  We claim that ∀ n ≥ N1, | a n | < 1 + | L |.
+  { Take n ≥ N1.
+    By Rabs_triang_inv it holds that | a n | ≤ | a n - L | + | L |.
+    We conclude that (&
+      | a n |
+      ≤ | a n - L | + | L |
+      < 1 + | L |
+    ).
+  }
+  
+  (** This computes the maximum of the absolute values
+      of the first N+1 terms of the sequence. *)
+  Fixpoint partial_max (a : ℕ → R) (N1 : ℕ) : ℝ :=
+    match N1 with
+    | O => Rabs (a 0%nat)
+    | S k => Rmax (partial_max a k) (Rabs (a (S k)))
+    end.
+
+  Lemma partial_max_spec (a : ℕ → R) :
+   ∀ N1 ∈ ℕ, ∀ n ∈ ℕ,
+    n ≤ N1 -> | a n | ≤ partial_max a N1.
+  Proof.
+    We use induction on N1.
+    - We first show the base case ∀ n ∈ ℕ,
+        n ≤ 0%nat ⇨ |a(n)| ≤ partial_max(a, 0%nat).
+      Take n ∈ ℕ. Assume that n ≤ 0%nat.
+      
+      It holds that (n ≤ 0)%nat.
+      By Nat.le_0_r it holds that n = 0%nat.
+      It holds that |a(n)| = |a(0%nat)|.
+      
+      It holds that |a(0%nat)| = partial_max(a, 0%nat).
+      
+      By Nat.eq_le_incl we conclude that |a(n)| ≤ partial_max(a, 0%nat).
+
+    - We now show the induction step.
+      Take N1 ∈ ℕ.
+      Assume that ∀ n ∈ ℕ, n ≤ N1 ⇨ |a(n)| ≤ partial_max(a, N1) as (IHN1).
+      Take n ∈ ℕ. Assume that n ≤ (N1 + 1)%nat.
+      
+      It holds that (N1 + 1)%nat = S N1.
+      It holds that S N1 = (N1 + 1)%nat.
+
+      It holds that
+        partial_max(a, S N1)
+        = Rmax(partial_max(a, N1), |a (S N1)|).
+      
+      By le_succ_cases it holds that n = S N1 ∨ n ≤ N1.
+      Either n = S N1 or n ≤ N1.
+      - Case n = S N1.
+        It holds that (&
+          |a(n)|
+          = |a(S N1)|
+          ≤ Rmax(partial_max(a, N1), |a(S N1)|)
+          = partial_max(a, S N1)
+        ).
+        It holds that partial_max(a, S N1) = partial_max(a, (N1 + 1)%nat).
+        We conclude that |a(n)| ≤ partial_max(a, (N1 + 1)%nat).
+      - Case n ≤ N1.
+        By IHN1 it holds that |a(n)| ≤ partial_max(a, N1).
+        It holds that (&
+          partial_max(a, N1)
+          ≤ Rmax(partial_max(a, N1), |a(S N1)|)
+          = partial_max(a, S N1)
+          = partial_max(a, (N1 + 1)%nat)
+        ).
+        We conclude that |a(n)| ≤ partial_max(a, (N1 + 1)%nat).
+    Qed.
+
+    By partial_max_spec it holds that ∀ n ∈ ℕ, n ≤ N1 ⇨ |a(n)| ≤ partial_max(a, N1).
+    We need to show that ∃ M ∈ ℝ, M > 0 ∧ ∀ n ∈ ℕ, | a n | ≤ M.    
+    Choose M := Rmax (partial_max a N1) (1 + | L |). { Indeed, M ∈ ℝ. }
+    We need to show that M > 0 ∧ (∀ n ∈ ℕ, |a(n)| ≤ M).
+    We show both statements.
+    - We conclude that M > 0.
+    - We need to show that ∀ n ∈ ℕ, |a(n)| ≤ M.
+      Take n ∈ ℕ.
+      Either n ≤ N1 or n > N1.
+      - Case n ≤ N1.
+        By partial_max_spec it holds that |a(n)| ≤ partial_max(a, N1).
+        We conclude that |a n| ≤ M.
+      - Case n > N1.
+        It holds that n ≥ N1.
+        It holds that (&
+          | a n | < 1 + | L | ≤ M
+        ).
+        We conclude that |a n| ≤ M.
 Qed.
 
 (** ** Algebraic limit theorem *)
 
-(** Theorem 3.3 (algebraic limit theorem, sum): if [aₙ → m] and [bₙ → l] then
-    [aₙ + bₙ → m + l].
+(** _Algebraic limit theorem_ (sum):
+    If [aₙ → m] and [bₙ → l] then [aₙ + bₙ → m + l].
 
     Proof idea: the triangle inequality shows
-    [|(aₙ + bₙ) - (m + l)| ≤ |aₙ - m| + |bₙ - l|]. Choosing [N₁] and [N₂] so that
-    the individual errors are below [ε/2] makes the sum below [ε]. *)
+    [|(aₙ + bₙ) - (m + l)| ≤ |aₙ - m| + |bₙ - l|].
+
+    Choosing [N₁] and [N₂] so that the individual errors are
+    below [ε/2] makes the sum below [ε]. *)
 Lemma algebraic_limit_theorem_sum (a b : ℕ → ℝ) (m l : ℝ) :
     a ⟶ m → b ⟶ l → (fun n => a n + b n) ⟶ (m + l).
 Proof.
@@ -85,25 +248,113 @@ Proof.
   We conclude that (| c n - (m + l) | < ε).
 Qed.
 
-(** If [a ⟶ m] and [b ⟶ l], then [(a * b) ⟶ (m * l)]. *)
-Lemma algebraic_limit_product (a b : ℕ → ℝ) (m l : ℝ) :
+(** _Algebraic limit theorem_ (product):
+    If [a ⟶ m] and [b ⟶ l], then [(a * b) ⟶ (m * l)]. *)
+Lemma algebraic_limit_theorem_product (a b : ℕ → ℝ) (m l : ℝ) :
     a ⟶ m → b ⟶ l → (fun n => a n * b n) ⟶ (m * l).
 Proof.
-  intros Ha Hb.
-  destruct (convergence_equivalence a m) as [fwd_a _].
-  destruct (convergence_equivalence b l) as [fwd_b _].
-  destruct (convergence_equivalence (fun n => a n * b n) (m * l)) as [_ bwd].
-  apply bwd. apply CV_mult.
-  - exact (fwd_a Ha).
-  - exact (fwd_b Hb).
+  Assume that a ⟶ m as (Ha).
+  By convergent_sequence_is_bounded it holds that bounded_sequence a.
+  It holds that ∃ Ma ∈ ℝ, Ma > 0 ∧ ∀ n ∈ ℕ, | a n | ≤ Ma as (HMa).
+  Obtain such a Ma.
+  It holds that Ma > 0 as (HMa_pos).
+  Assume that b ⟶ l as (Hb).
+
+  We need to show that (fun n => a n * b n) ⟶ (m * l).
+  We need to show that
+    ∀ ε > 0, ∃ N1 ∈ ℕ, ∀ n ≥ N1,
+      | a n * b n - (m * l) | < ε.
+  Take ε > 0.
+  We need to show that
+    ∃ N1 ∈ ℕ, ∀ n ≥ N1,
+      | a n * b n - m * l| < ε.
+  
+  (** Some algebraic operation need to be aided a bit,
+      for instance, here we need first to show that
+      division by 2 * Ma and 2 * | l | is positive. *)
+  It holds that / (2 * Ma) > 0.
+  It holds that / (2 * (| l | + 1)) > 0.
+  It holds that ε / (2 * Ma) > 0. It holds that ε / (2 * (| l | + 1)) > 0.
+  It holds that
+    ∃ Na ∈ ℕ, ∀ n ≥ Na, | a n - m | < ε / (2 * (| l | + 1)) as (Ha').
+  Obtain such a Na.
+  It holds that ∃ Nb ∈ ℕ, ∀ n ≥ Nb, | b n - l | < ε / (2 * Ma) as (Hb').
+  Obtain such a Nb.
+  
+  Choose N1 := max Na Nb. { Indeed, N1 ∈ ℕ. }
+  We need to show that ∀ n ≥ N1, | a n * b n - (m * l) | < ε.
+  Take n ≥ N1.
+  It holds that n ≥ Na. It holds that n ≥ Nb.
+  It holds that | a n | ≤ Ma.
+
+  It holds that (&
+    | a n * b n - (m * l) |
+    = | a n * b n - a n * l + a n * l - m * l |
+    = | a n * (b n - l) + (a n - m) * l |
+  ).
+
+  By Rabs_triang it holds that
+    | a n * (b n - l) + (a n - m) * l |
+    ≤ | a n * (b n - l) | + | (a n - m) * l |.
+
+  By Ha' it holds that | a n - m | < ε / (2 * (| l | + 1)) as (HAn_l).
+  By Hb' it holds that | b n - l | < ε / (2 * Ma).
+
+  We claim that | a n | * | b n - l | ≤ ε / 2.
+  {
+    By Rmult_div_r it holds that Ma * ε / Ma = ε.
+    By Rmult_comm and Rdiv_mult_distr it holds that (&
+      Ma * (ε / (2 * Ma))
+      = Ma * ε /(2 * Ma)
+      = Ma * ε / (Ma * 2)
+      = Ma * ε / Ma / 2
+      = ε / 2
+    ) as (HMa_bound).
+    By HMa_pos and Rmult_le_compat_r it holds that
+      | a n | * | b n - l | ≤ Ma * | b n - l |.
+    By Hb' and Rmult_le_compat_l it holds that (&
+      | a n | * | b n - l |
+      ≤ Ma * | b n - l |
+      ≤ Ma * (ε / (2 * Ma))
+    ) as (HFirstTerm).
+    By HFirstTerm and HMa_bound we conclude that
+      | a n | * | b n - l | ≤ ε / 2.
+  }
+
+  We claim that | a n - m | * | l | < ε / 2.
+  { 
+    By Rmult_le_compat_r and HAn_l it holds that
+      | a n - m | * | l |
+      < (ε / (2 * (| l | + 1))) * | l |.
+    It holds that | l | + 1 > 0.
+    It holds that | l | ≥ 0.
+    It holds that | l | < | l | + 1.
+    Rmult_lt_compat_r it holds that (&
+      | l | / (| l | + 1)
+      < (| l | + 1) / (| l | + 1)
+      = 1
+    ).
+    It holds that
+      ε / (2 * (| l | + 1)) * | l |
+      = (ε / 2) * (| l | / (| l | + 1)).
+    It holds that
+      (ε / (2 * (| l | + 1))) * | l | < ε / 2.
+  }
+  It holds that (&
+    | a n | * | b n - l | + | a n - m | * | l |
+    <  ε / 2 + ε / 2 = ε
+  ).
+
+  We conclude that | a n * b n - (m * l) | < ε.
 Qed.
 
 (** ** Order limit theorem *)
 
-(** Theorem 3.4 (order limit theorem): if [aₙ → L] and [aₙ ≤ M] for all [n],
-    then [L ≤ M].
+(** _Order limit theorem_
+    If [aₙ → L] and [aₙ ≤ M] for all [n], then [L ≤ M].
 
-    Proof idea: if [L > M], then taking [ε = L - M > 0] we would have
+    Proof idea:
+    if [L > M], then taking [ε = L - M > 0] we would have
     [|aₙ - L| < ε] for large [n], implying [aₙ > L - ε = M], contradicting the
     hypothesis. *)
 Lemma order_limit_theorem (a : ℕ → ℝ) (L M : ℝ) :
@@ -116,10 +367,12 @@ Qed.
 
 (** ** Squeeze theorem *)
 
-(** Theorem 3.5 (squeeze theorem): if [a ⟶ L], [c ⟶ L], and
-    [aₙ ≤ bₙ ≤ cₙ] for all [n], then [b ⟶ L].
+(** _Squeeze theorem_
 
-    Proof idea: for any [ε > 0], choose [N₁] and [N₂] so that [|aₙ - L| < ε] and
+    If [a ⟶ L], [c ⟶ L], and [aₙ ≤ bₙ ≤ cₙ] for all [n], then [b ⟶ L].
+
+    Proof idea: 
+    for any [ε > 0], choose [N₁] and [N₂] so that [|aₙ - L| < ε] and
     [|cₙ - L| < ε] for [n ≥ max(N₁, N₂)]. Then
     [L - ε < aₙ ≤ bₙ ≤ cₙ < L + ε], so [|bₙ - L| < ε]. *)
 Lemma squeeze_theorem (a b c : ℕ → ℝ) (L : ℝ) :

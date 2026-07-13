@@ -67,12 +67,12 @@ Proof.
     Take n ∈ ℕ. Assume that n ≤ 0%nat.
     
     It holds that (n ≤ 0)%nat.
-    By Nat.le_0_r it holds that n = 0%nat.
+    It holds that n = 0%nat.
     It holds that |a(n)| = |a(0%nat)|.
     
     It holds that |a(0%nat)| = partial_max(a, 0%nat).
     
-    By Nat.eq_le_incl we conclude that |a(n)| ≤ partial_max(a, 0%nat).
+    We conclude that |a(n)| ≤ partial_max(a, 0%nat).
 
   - We now show the induction step.
     Take N1 ∈ ℕ.
@@ -192,7 +192,7 @@ Proof.
   Obtain such an N1.
   We claim that ∀ n ≥ N1, | a n | < 1 + | L |.
   { Take n ≥ N1.
-    By Rabs_triang_inv it holds that | a n | ≤ | a n - L | + | L |.
+    It holds that | a n | ≤ | a n - L | + | L |.
     We conclude that (&
       | a n |
       ≤ | a n - L | + | L |
@@ -320,7 +320,7 @@ Proof.
       | a n * (b n - l) | = | a n | * | b n - l |.
     By Rabs_mult it holds that
       | (a n - m) * l | = | a n - m | * | l |.
-    By Rabs_mult it holds that
+    It holds that
     | a n * (b n - l) | + | (a n - m) * l |
       = | a n | * | b n - l | + | a n - m | * | l |.
     

@@ -1,4 +1,5 @@
 - Ensure content of all lectures fully appears in the .v files
 - Shift all lectures left by one now that we removed lecture 2 for the SAY
 - Complete all formalizations and ensire proofs use Waterproof syntax as much as possible
-- Add the remaining 3 exercises once the library is stable
+- Move helpers back into Waterproof
+- Document Search and SearchPattern

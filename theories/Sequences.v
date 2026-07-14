@@ -410,6 +410,25 @@ Proof.
   We conclude that | a n * b n - (m * l) | < ε.
 Qed.
 
+(** _Algebraic limit theorem_ (scalar multiplication):
+    If [aₙ → m] and [c ∈ ℝ], then [(c·aₙ) → c·m].
+
+   Proof idea: |c·aₙ - c·m| = |c|·|aₙ - m|. For ε > 0, choose N so that |aₙ - m| < ε/|c| (if c ≠ 0; if c = 0, any N works). *)
+Lemma algebraic_limit_theorem_const_mult (a : ℕ → ℝ) (m c : ℝ) :
+    a ⟶ m → (fun n => c * a n) ⟶ (c * m).
+Proof.
+  Admitted.
+
+(** _Algebraic limit theorem_ (quotient):
+    If [aₙ → m], [bₙ → l] and [l ≠ 0] (and [bₙ ≠ 0] for all n), then [(aₙ/bₙ) → m/l].
+
+    Proof idea: use the identity [aₙ/bₙ - m/l = (aₙ - m)/bₙ + m(bₙ - l)/(bₙ l)]
+    and the fact that [bₙ → l ≠ 0] implies [1/bₙ → 1/l]. *)
+Lemma algebraic_limit_theorem_quotient (a b : ℕ → ℝ) (m l : ℝ) :
+    a ⟶ m → b ⟶ l → l ≠ 0 → (∀ n, b n ≠ 0) → (fun n => (a n) / (b n)) ⟶ (m / l).
+Proof.
+  Admitted.
+
 (** ** Order limit theorem *)
 
 (** _Order limit theorem_
@@ -426,6 +445,33 @@ Proof.
   Assume that ∀ n ∈ ℕ, a n ≤ M as (HM).
   By upp_bd_seq_is_upp_bd_lim we conclude that L ≤ M.
 Qed.
+
+(** _Order limit theorem_ (part 2):
+    If [aₙ → a] and [bₙ → b] and [aₙ ≤ bₙ] for all [n], then [a ≤ b].
+
+    Proof idea: Since [aₙ ≤ bₙ], we have [bₙ - aₙ ≥ 0], so by part 1, [b - a ≥ 0]. *)
+Lemma order_limit_theorem_le (a b : ℕ → ℝ) (A B : ℝ) :
+    a ⟶ A → b ⟶ B → (∀ n ∈ ℕ, a n ≤ b n) → A ≤ B.
+Proof.
+  Admitted.
+
+(** _Order limit theorem_ (part 3):
+    If [bₙ → b] and [c ≤ bₙ] for all [n], then [c ≤ b].
+
+    Proof idea: Apply part 2 with [aₙ = c] (constant sequence). *)
+Lemma order_limit_theorem_const_le (b : ℕ → ℝ) (c B : ℝ) :
+    b ⟶ B → (∀ n ∈ ℕ, c ≤ b n) → c ≤ B.
+Proof.
+  Admitted.
+
+(** _Order limit theorem_ (part 4):
+    If [aₙ → a] and [aₙ ≤ c] for all [n], then [a ≤ c].
+
+    Proof idea: Apply part 2 with [bₙ = c] (constant sequence). *)
+Lemma order_limit_theorem_le_const (a : ℕ → ℝ) (A c : ℝ) :
+    a ⟶ A → (∀ n ∈ ℕ, a n ≤ c) → A ≤ c.
+Proof.
+  Admitted.
 
 (** ** Squeeze theorem *)
 

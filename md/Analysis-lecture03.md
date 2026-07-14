@@ -8,7 +8,7 @@ Topics:
 - Abbott §2.2. The limit of a sequence
 - Abbott §2.3. The algebraic and order limit theorems
 
-Formalization: [`Sequences.v`](docs/rocq/RUG.Analysis.Sequences.html)
+Formalization: [`Sequences.v`](docs/rocq/RUG.Analysis.Sequences.html), [`SequenceExamples.v`](docs/rocq/RUG.Analysis.SequenceExamples.html)
 
 ---
 

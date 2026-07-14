@@ -19,11 +19,6 @@ Part of the material, for instance the tutorial, is based on the one available f
 
 This repository also contains an edited version of the Waterproof tutorial, `tutorial.mv`, which explains how to use Waterproof's custom proof language with very simple examples.
 
-## Note
-
-Currently, some material requires an extended Waterproof version, which can be found on [this branch in my fork](https://github.com/mseri/coq-waterproof/tree/rug-analysis-9.1).
-Once this is integrated in Waterproof, or appropriately moved in this repository, everything below should work. At the moment it requires manual installs that I am happy to explain individually but I will not detail here.
-
 # Quickstart
 
 ## Quickstart (in browser)

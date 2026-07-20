@@ -38,9 +38,9 @@ Lemma le_succ_cases (n N1 : ℕ) :
   n ≤ S N1 -> n = S N1 \/ n ≤ N1.
 Proof.
 Assume that n ≤ S N1 as (H).
-(* I'd like to do
+(** I'd like to do
    By (Nat.eq_dec n (S N1)) it holds that n = S N1 ∨ n ≠ S N1.
-   but it raises lots of warnings, so I do it manually. *)
+   but it is not working, so I do it manually. *)
 destruct (Nat.eq_dec n (S N1)) as [Heq | Hneq].
 - left. We conclude that n = S N1.
 - right.
@@ -419,7 +419,7 @@ Lemma algebraic_limit_theorem_const_mult (b : ℕ → ℝ) (m c : ℝ) :
 Proof.
   Assume that b ⟶ m as (Hb).
   Define a := constant_seq c.
-  By constant_seq_converges c it holds that a ⟶ c.
+  By (constant_seq_converges c) it holds that a ⟶ c.
   By algebraic_limit_theorem_product it holds that
     (fun n => a n * b n) ⟶ (c * m).
   We conclude that (fun n => c * b n) ⟶ (c * m).
@@ -452,9 +452,9 @@ Proof.
     We need to show that ∀ ε > 0, ∃ N1 ∈ ℕ, ∀ n ≥ N1, | - a n - (- L) | < ε.
     Take ε > 0.
     By Hneg it holds that ∃ N1 ∈ ℕ, ∀ n ≥ N1, | -1 * a n - (-1 * L) | < ε.
-    Obtain such a N1. Choose N2 := N1. { Indeed, N2 ∈ ℕ. }
-    We need to show that ∀ n ≥ N2, | - a n - (- L) | < ε.
-    Take n ≥ N2.
+    Obtain such a N1. Choose (N1). { Indeed, N1 ∈ ℕ. }
+    We need to show that ∀ n ≥ N1, | - a n - (- L) | < ε.
+    Take n ≥ N1.
     By Ropp_plus_distr and Rabs_Ropp it holds that (&
       | - 1 * a n - (-1 * L) | 
       = |- 1 * (a n - L) |
@@ -548,8 +548,9 @@ Proof.
   (* Even case: n = 2*N1 *)
   It holds that (2 * N1)%nat ≥ N1.
   By HN it holds that (| (-1)^(2 * N1) - L | < 1).
-  By (pow_1_even N1) it holds that ((-1)^(2 * N1) = 1).
+  By pow_1_even it holds that ((-1)^(2 * N1) = 1).
   It holds that (| 1 - L | < 1).
+
   By Rabs_def2 it holds that (1 - L < 1 ∧ -1 < 1 - L).
   - It holds that (1 - L < 1).
   - It holds that (-1 < 1 - L).
@@ -558,14 +559,15 @@ Proof.
   It holds that (S (2 * N1)%nat ≥ N1).
   By HN it holds that (| (-1)^(S(2 * N1)%nat) - L | < 1).
   (* To remove the warning above you can instead do this: *)
-  We claim that ((-1)^(S (2 * N1)%nat) = - 1).
-  { apply pow_1_odd. }
+  By pow_1_odd it holds that ((-1)^(S (2 * N1)%nat) = - 1).
   It holds that (| -1 - L | < 1).
+
   By Rabs_def2 it holds that (-1 - L < 1 ∧ -1 < -1 - L).
   - It holds that (-1 - L < 1).
   - It holds that (-1 < -1 - L).
 
   (* Contradiction: 1 - L < 1  ⇨  L > 0   and   -1 < -1 - L  ⇨  L < 0 *)
-  Since (1 - L < 1) ∧ (-1 < -1 - L) it holds that (0 < L ∧ L < 0).
+  Since (1 - L < 1) ∧ (-1 < -1 - L) it holds that
+    (0 < L ∧ L < 0).
   Contradiction.
 Qed.

@@ -146,23 +146,25 @@ Proof.
         ⇨ ∀ eps, eps > 0 ⇨ ∃ N, ∀ n, ∀ m, (n ≥ N)%nat ⇨ (m ≥ N)%nat ⇨ ｜a(n) - a(m)｜ < eps.
     Assume that a is _Cauchy_ as (HC).
     Take eps > 0. It holds that eps > 0 as (Heps).
-    destruct (HC eps Heps) as [N1 H'].
-    destruct H' as [HN1_in HN1].
-    exists N1.
-    intros n m Hn Hm.
-    unfold Rdist.
-    apply HN1 with (n := n) (m := m); assumption.
+    It holds that ∃ N1 ∈ ℕ, ∀ n ≥ N1, ∀ m ≥ N1, |a(n) - a(m)| < eps as (H').
+    Obtain such a N1. Choose N := N1.
+    Take n : ℕ. Take m : ℕ. 
+    Assume that (n ≥ N1)%nat as (Hn) and (m ≥ N1)%nat as (Hm).
+    By H' we conclude that ｜a(n) - a(m)｜ < eps.
+
   - We need to show that (∀ eps, eps > 0 ⇨ ∃ N, ∀ n, ∀ m,
           (n ≥ N)%nat ⇨ (m ≥ N)%nat ⇨ ｜a(n) - a(m)｜ < eps)
         ⇨ a is _Cauchy_.
     Assume that ∀ eps, eps > 0 ⇨ ∃ N, ∀ n, ∀ m,
           (n ≥ N)%nat ⇨ (m ≥ N)%nat ⇨ ｜a(n) - a(m)｜ < eps as (HC).
-    intros eps Heps.
-    destruct (HC eps Heps) as [N1 HN].
+    We need to show that ∀ ε > 0, ∃ N1 ∈ ℕ, ∀ n ≥ N1, ∀ m ≥ N1, |a n - a m| < ε.
+    Take ε > 0.
+    By HC it holds that ∃ N1, ∀ n, ∀ m, (n ≥ N1)%nat ⇨ (m ≥ N1)%nat ⇨ ｜a(n) - a(m)｜ < ε.
+    Obtain such a N1.
     Choose N2 := N1%nat. { Indeed, N2 ∈ ℕ. }
-    We need to show that ∀ n ≥ N2, ∀ m ≥ N2, |a(n) - a(m)| < eps.
-    intros n Hn m Hm.
-    We conclude that | a n - a m | < eps.
+    We need to show that ∀ n ≥ N2, ∀ m ≥ N2, |a(n) - a(m)| < ε.
+    Take n ≥ N2. Take m ≥ N2.
+    By HC we conclude that |a(n) - a(m)| < ε.
 Qed.
 
 (** Every Cauchy sequence is bounded. *)

@@ -250,6 +250,9 @@ Proof.
     Either (n ≤ k)%nat or (k ≤ n)%nat.
     
     - Case (n ≤ k)%nat.
+      (* nondecr_ge: ∀ a,
+          (∀ n ∈ ℕ, a(n) ≤ a((n + 1)%nat))
+          ⇨ ∀ n ∈ ℕ, ∀ m ∈ ℕ, (m ≤ n)%nat ⇨ a(m) ≤ a(n) *)
       By nondecr_ge it holds that a n ≤ a k as (H1).
       It holds that a k ≤ bseq k as (H2).
       We conclude that (& y = a n ≤ a k ≤ bseq k).

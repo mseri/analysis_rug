@@ -414,20 +414,16 @@ Qed.
     If [aₙ → m] and [c ∈ ℝ], then [(c·aₙ) → c·m].
 
    Proof idea: |c·aₙ - c·m| = |c|·|aₙ - m|. For ε > 0, choose N so that |aₙ - m| < ε/|c| (if c ≠ 0; if c = 0, any N works). *)
-Lemma algebraic_limit_theorem_const_mult (a : ℕ → ℝ) (m c : ℝ) :
-    a ⟶ m → (fun n => c * a n) ⟶ (c * m).
+Lemma algebraic_limit_theorem_const_mult (b : ℕ → ℝ) (m c : ℝ) :
+    b ⟶ m → (fun n => c * b n) ⟶ (c * m).
 Proof.
-  Admitted.
-
-(** _Algebraic limit theorem_ (quotient):
-    If [aₙ → m], [bₙ → l] and [l ≠ 0] (and [bₙ ≠ 0] for all n), then [(aₙ/bₙ) → m/l].
-
-    Proof idea: use the identity [aₙ/bₙ - m/l = (aₙ - m)/bₙ + m(bₙ - l)/(bₙ l)]
-    and the fact that [bₙ → l ≠ 0] implies [1/bₙ → 1/l]. *)
-Lemma algebraic_limit_theorem_quotient (a b : ℕ → ℝ) (m l : ℝ) :
-    a ⟶ m → b ⟶ l → l ≠ 0 → (∀ n, b n ≠ 0) → (fun n => (a n) / (b n)) ⟶ (m / l).
-Proof.
-  Admitted.
+  Assume that b ⟶ m as (Hb).
+  Define a := constant_seq c.
+  By constant_seq_converges c it holds that a ⟶ c.
+  By algebraic_limit_theorem_product it holds that
+    (fun n => a n * b n) ⟶ (c * m).
+  We conclude that (fun n => c * b n) ⟶ (c * m).
+Qed.
 
 (** ** Order limit theorem *)
 
@@ -446,32 +442,64 @@ Proof.
   By upp_bd_seq_is_upp_bd_lim we conclude that L ≤ M.
 Qed.
 
-(** _Order limit theorem_ (part 2):
+Lemma neg_limit (a : ℕ → ℝ) (L : ℝ) :
+    a ⟶ L → (fun n => - a n) ⟶ - L.
+Proof.
+  Assume that a ⟶ L as (Ha).
+  It holds that ∀ n ∈ ℕ, -1 * a n = - a n. It holds that -1 * L = - L.
+  By algebraic_limit_theorem_const_mult it holds that
+      (fun n => -1 * a n) ⟶ -1 * L as (Hneg).
+    We need to show that ∀ ε > 0, ∃ N1 ∈ ℕ, ∀ n ≥ N1, | - a n - (- L) | < ε.
+    Take ε > 0.
+    By Hneg it holds that ∃ N1 ∈ ℕ, ∀ n ≥ N1, | -1 * a n - (-1 * L) | < ε.
+    Obtain such a N1. Choose N2 := N1. { Indeed, N2 ∈ ℕ. }
+    We need to show that ∀ n ≥ N2, | - a n - (- L) | < ε.
+    Take n ≥ N2.
+    By Ropp_plus_distr and Rabs_Ropp it holds that (&
+      | - 1 * a n - (-1 * L) | 
+      = |- 1 * (a n - L) |
+      = | a n - L |
+    ).
+    By Hneg it holds that | -1 * a n - (-1 * L) | < ε.
+    We conclude that | - a n - (- L) | < ε.
+Qed.
+
+(** _Order limit theorem_ (general form):
     If [aₙ → a] and [bₙ → b] and [aₙ ≤ bₙ] for all [n], then [a ≤ b].
 
-    Proof idea: Since [aₙ ≤ bₙ], we have [bₙ - aₙ ≥ 0], so by part 1, [b - a ≥ 0]. *)
+    Proof idea: Since [aₙ ≤ bₙ], we have [bₙ - aₙ ≥ 0], so by part 1, [b - a ≥ 0].
+    Given how we defined the order limit theorem though,
+    we will need to reverse all the inequalities. *)
 Lemma order_limit_theorem_le (a b : ℕ → ℝ) (A B : ℝ) :
     a ⟶ A → b ⟶ B → (∀ n ∈ ℕ, a n ≤ b n) → A ≤ B.
 Proof.
-  Admitted.
+  Assume that a ⟶ A as (Ha).
+  Assume that b ⟶ B as (Hb).
+  Assume that ∀ n ∈ ℕ, a n ≤ b n as (Hab).
+  By neg_limit it holds that (fun n => - b n) ⟶ - B.
+  Define c := fun n => a n - b n.
+  By algebraic_limit_theorem_sum it holds that
+    c ⟶ (A - B).
+  By Hab it holds that ∀ n ∈ ℕ, c n ≤ 0.
+  It holds that (fun n => c n) ⟶ (A - B).
+  By (order_limit_theorem c (A-B) 0) it holds that A - B ≤ 0.
+  We conclude that A ≤ B.
+Qed.
 
-(** _Order limit theorem_ (part 3):
+(** _Order limit theorem_  (lower bound form):
     If [bₙ → b] and [c ≤ bₙ] for all [n], then [c ≤ b].
 
     Proof idea: Apply part 2 with [aₙ = c] (constant sequence). *)
 Lemma order_limit_theorem_const_le (b : ℕ → ℝ) (c B : ℝ) :
     b ⟶ B → (∀ n ∈ ℕ, c ≤ b n) → c ≤ B.
 Proof.
-  Admitted.
-
-(** _Order limit theorem_ (part 4):
-    If [aₙ → a] and [aₙ ≤ c] for all [n], then [a ≤ c].
-
-    Proof idea: Apply part 2 with [bₙ = c] (constant sequence). *)
-Lemma order_limit_theorem_le_const (a : ℕ → ℝ) (A c : ℝ) :
-    a ⟶ A → (∀ n ∈ ℕ, a n ≤ c) → A ≤ c.
-Proof.
-  Admitted.
+  Assume that b ⟶ B as (Hb).
+  Assume that ∀ n ∈ ℕ, c ≤ b n as (Hcb).
+  Define a := constant_seq c.
+  By constant_seq_converges c it holds that a ⟶ c.
+  By (order_limit_theorem_le a b c B) it holds that c ≤ B.
+  We conclude that c ≤ B.
+Qed.
 
 (** ** Squeeze theorem *)
 
@@ -493,6 +521,9 @@ Proof.
   Assume that c ⟶ L as (Hc).
   Assume that ∀ n ∈ ℕ, a n ≤ b n as (Hab).
   Assume that ∀ n ∈ ℕ, b n ≤ c n as (Hbc).
+  (** This is in Waterproof already, we could prove it with
+      By squeeze_theorem it holds that b ⟶ L. 
+      It is a good exercise to try and formalize it yourselves! *)
   By squeeze_theorem we conclude that b ⟶ L.
 Qed.
 

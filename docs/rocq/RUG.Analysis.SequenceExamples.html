@@ -1,0 +1,279 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link href="coqdoc.css" rel="stylesheet" type="text/css" />
+<title>RUG.Analysis.SequenceExamples</title>
+</head>
+
+<body>
+
+<div id="page">
+
+<div id="header">
+</div>
+
+<div id="main">
+
+<h1 class="libtitle">Library RUG.Analysis.SequenceExamples</h1>
+
+<div class="code">
+</div>
+
+<div class="doc">
+<a id="lab67"></a><h1 class="section">RUG.Analysis.SequenceExamples — Examples of sequence limits.</h1>
+
+
+<div class="paragraph"> </div>
+
+  <a href="../../index.html#lecture03">Lecture 3</a>.
+
+<div class="paragraph"> </div>
+
+  Contains examples from Lecture 3: specific limit computations and standard limits.
+  Formalizes examples from Abbott §2.2–2.3.
+
+<div class="paragraph"> </div>
+
+  Note: All proofs are admitted and will be filled in later.
+  Note: In Rocq/Coq, natural numbers start from 0, but our sequences correspond
+  to Abbott's sequences starting from n=1. We use (n+1) or (INR n + 1) consistently. 
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">Stdlib</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="library">Reals.Reals</span>.<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">Stdlib</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="library">Reals.SeqProp</span>.<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">Stdlib</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="library">Reals.Rpower</span>.<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">Stdlib</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="library">Arith.Factorial</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">Waterproof</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Export</span> <span class="id" title="library">Libs.Analysis.Sequences</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Export</span> <a class="idref" href="RUG.Analysis.Sequences.html#"><span class="id" title="library">RUG.Analysis.Sequences</span></a>.<br/>
+
+<br/>
+<span class="id" title="var">Waterproof</span> <span class="id" title="var">Enable</span> <span class="id" title="var">Automation</span> <span class="id" title="var">RealsAndIntegers</span>.<br/>
+<span class="id" title="var">Waterproof</span> <span class="id" title="var">Enable</span> <span class="id" title="var">Automation</span> <span class="id" title="var">Intuition</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Open</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">R_scope</span>.<br/>
+<span class="id" title="keyword">Open</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">subset_scope</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Set</span> <span class="id" title="var">Default</span> <span class="id" title="keyword">Goal</span> <span class="id" title="var">Selector</span> "!".<br/>
+<span class="id" title="keyword">Set</span> <span class="id" title="var">Bullet</span> <span class="id" title="var">Behavior</span> "Waterproof Relaxed Subproofs".<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a id="lab68"></a><h2 class="section">Basic limit examples from lecture 3</h2>
+
+<div class="paragraph"> </div>
+
+<a id="lab69"></a><h2 class="section">Example: limit of (6n+7)/(3n+1)</h2>
+
+
+<div class="paragraph"> </div>
+
+  Claim:  (where n starts from 1 in Abbott).
+
+<div class="paragraph"> </div>
+
+  In Rocq, we use (n+1) to match Abbott's indexing: the sequence is
+  $\frac{6(n+1)+7}{3(n+1)+1} = \frac{6n+13}{3n+4}$ for n:ℕ.
+
+<div class="paragraph"> </div>
+
+  Proof sketch:
+  
+
+<div class="paragraph"> </div>
+
+  For any ε &gt; 0, choose N such that 1/(N+1) &lt; 3ε/5. Then for n ≥ N,
+  $\frac{5}{3(n+1)} \leq \frac{5}{3(N+1)} &lt; \varepsilon.$ 
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <a id="limit_6n_plus_7_over_3n_plus_1" class="idref" href="#limit_6n_plus_7_over_3n_plus_1"><span class="id" title="lemma">limit_6n_plus_7_over_3n_plus_1</span></a> : <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="notation">(</span><span class="id" title="keyword">fun</span> <a id="n:1" class="idref" href="#n:1"><span class="id" title="binder">n</span></a> : <span class="id" title="notation">ℕ</span> ⇒ <span class="id" title="notation">(</span>6 <span class="id" title="notation">×</span> <span class="id" title="notation">(</span><span class="id" title="definition">INR</span> <a class="idref" href="RUG.Analysis.SequenceExamples.html#n:1"><span class="id" title="variable">n</span></a> <span class="id" title="notation">+</span> 1<span class="id" title="notation">)</span> <span class="id" title="notation">+</span> 7<span class="id" title="notation">)</span> <span class="id" title="notation">/</span> <span class="id" title="notation">(</span>3 <span class="id" title="notation">×</span> <span class="id" title="notation">(</span><span class="id" title="definition">INR</span> <a class="idref" href="RUG.Analysis.SequenceExamples.html#n:1"><span class="id" title="variable">n</span></a> <span class="id" title="notation">+</span> 1<span class="id" title="notation">)</span> <span class="id" title="notation">+</span> 1<span class="id" title="notation">)</span><span class="id" title="notation">)</span> <span class="id" title="notation">⟶</span> 2.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a id="lab70"></a><h2 class="section">Standard limits from lecture 3</h2>
+
+<div class="paragraph"> </div>
+
+<a id="lab71"></a><h2 class="section">Standard limit: 1/n → 0</h2>
+
+
+<div class="paragraph"> </div>
+
+  Claim:  (where n starts from 1 in Abbott).
+
+<div class="paragraph"> </div>
+
+  In Rocq, we use (n+1) to match Abbott's indexing: the sequence is 1/(n+1).
+
+<div class="paragraph"> </div>
+
+  Proof sketch: For ε &gt; 0, by Archimedean property, there exists N such that
+  N &gt; 1/ε. Then for n ≥ N, we have n+1 &gt; N ≥ 1/ε, so 1/(n+1) &lt; ε. 
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <a id="standard_limit_1_over_n" class="idref" href="#standard_limit_1_over_n"><span class="id" title="lemma">standard_limit_1_over_n</span></a> : <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="notation">(</span><span class="id" title="keyword">fun</span> <a id="n:2" class="idref" href="#n:2"><span class="id" title="binder">n</span></a> : <span class="id" title="notation">ℕ</span> ⇒ 1 <span class="id" title="notation">/</span> <span class="id" title="notation">(</span><span class="id" title="definition">INR</span> <a class="idref" href="RUG.Analysis.SequenceExamples.html#n:2"><span class="id" title="variable">n</span></a> <span class="id" title="notation">+</span> 1<span class="id" title="notation">)</span><span class="id" title="notation">)</span> <span class="id" title="notation">⟶</span> 0.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a id="lab72"></a><h2 class="section">Standard limit: 1/n^2 → 0</h2>
+
+
+<div class="paragraph"> </div>
+
+  Claim:  (where n starts from 1 in Abbott).
+
+<div class="paragraph"> </div>
+
+  In Rocq, we use (n+1) to match Abbott's indexing: the sequence is 1/(n+1)^2.
+
+<div class="paragraph"> </div>
+
+  Proof sketch: For ε &gt; 0, by Archimedean property, there exists N such that
+  N &gt; 1/√ε. Then for n ≥ N, we have n+1 &gt; N ≥ 1/√ε, so (n+1)^2 &gt; 1/ε,
+  and thus 1/(n+1)^2 &lt; ε. 
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <a id="standard_limit_1_over_n_squared" class="idref" href="#standard_limit_1_over_n_squared"><span class="id" title="lemma">standard_limit_1_over_n_squared</span></a> : <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="notation">(</span><span class="id" title="keyword">fun</span> <a id="n:3" class="idref" href="#n:3"><span class="id" title="binder">n</span></a> : <span class="id" title="notation">ℕ</span> ⇒ 1 <span class="id" title="notation">/</span> <span class="id" title="notation">(</span><span class="id" title="definition">INR</span> <a class="idref" href="RUG.Analysis.SequenceExamples.html#n:3"><span class="id" title="variable">n</span></a> <span class="id" title="notation">+</span> 1<span class="id" title="notation">)^</span>2<span class="id" title="notation">)</span> <span class="id" title="notation">⟶</span> 0.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a id="lab73"></a><h2 class="section">Standard limit: c^n → 0 for |c| &lt; 1</h2>
+
+
+<div class="paragraph"> </div>
+
+  Claim:  when -1 &lt; c &lt; 1.
+
+<div class="paragraph"> </div>
+
+  Note: In Rocq, we start from n=0, but the behavior for large n is the same.
+  The sequence c^0, c^1, c^2, ... converges to 0.
+
+<div class="paragraph"> </div>
+
+  Proof sketch: Let |c| = 1/(1+δ) where δ &gt; 0. Then |c^n| = 1/(1+δ)^n.
+  By Bernoulli's inequality, (1+δ)^n ≥ 1 + n·δ ≥ n·δ (for n ≥ 1),
+  so |c^n| ≤ 1/(n·δ) → 0. 
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <a id="standard_limit_c_to_n" class="idref" href="#standard_limit_c_to_n"><span class="id" title="lemma">standard_limit_c_to_n</span></a> (<a id="c:4" class="idref" href="#c:4"><span class="id" title="binder">c</span></a> : <span class="id" title="notation">ℝ</span>) :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;-1 <span class="id" title="notation">&lt;</span> <a class="idref" href="RUG.Analysis.SequenceExamples.html#c:4"><span class="id" title="variable">c</span></a> <span class="id" title="notation">→</span> <a class="idref" href="RUG.Analysis.SequenceExamples.html#c:4"><span class="id" title="variable">c</span></a> <span class="id" title="notation">&lt;</span> 1 <span class="id" title="notation">→</span> <span class="id" title="notation">(</span><span class="id" title="keyword">fun</span> <a id="n:5" class="idref" href="#n:5"><span class="id" title="binder">n</span></a> : <span class="id" title="notation">ℕ</span> ⇒ <a class="idref" href="RUG.Analysis.SequenceExamples.html#c:4"><span class="id" title="variable">c</span></a><span class="id" title="notation">^</span><a class="idref" href="RUG.Analysis.SequenceExamples.html#n:5"><span class="id" title="variable">n</span></a><span class="id" title="notation">)</span> <span class="id" title="notation">⟶</span> 0.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a id="lab74"></a><h2 class="section">Standard limit: nth root of c → 1 for c &gt; 0</h2>
+
+
+<div class="paragraph"> </div>
+
+  Claim:  for any c &gt; 0 (where n starts from 1 in Abbott).
+
+<div class="paragraph"> </div>
+
+  In Rocq, we use (n+1) to match Abbott's indexing. Note that Rpower is used for real exponentiation.
+
+<div class="paragraph"> </div>
+
+  Proof sketch: If c = 1, trivial. If c &gt; 1, let c = 1+h with h &gt; 0.
+  By Bernoulli, (1+h)^n ≥ 1 + n·h, so √<span class="inlinecode"><span class="id" title="var">n</span>+1</span>{c} = (1+h)^(1/(n+1)) ≤ (1 + n·h)^(1/(n+1)).
+  Taking logs and using l'Hôpital's rule shows the limit is 1.
+  For 0 &lt; c &lt; 1, use 1/c &gt; 1 and √<span class="inlinecode"><span class="id" title="var">n</span>+1</span>{c} = 1/√<span class="inlinecode"><span class="id" title="var">n</span>+1</span>{1/c}. 
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <a id="standard_limit_nth_root_of_c" class="idref" href="#standard_limit_nth_root_of_c"><span class="id" title="lemma">standard_limit_nth_root_of_c</span></a> (<a id="c:6" class="idref" href="#c:6"><span class="id" title="binder">c</span></a> : <span class="id" title="notation">ℝ</span>) :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="RUG.Analysis.SequenceExamples.html#c:6"><span class="id" title="variable">c</span></a> <span class="id" title="notation">&gt;</span> 0 <span class="id" title="notation">→</span> <span class="id" title="notation">(</span><span class="id" title="keyword">fun</span> <a id="n:7" class="idref" href="#n:7"><span class="id" title="binder">n</span></a> : <span class="id" title="notation">ℕ</span> ⇒ <span class="id" title="definition">Rpower</span> <a class="idref" href="RUG.Analysis.SequenceExamples.html#c:6"><span class="id" title="variable">c</span></a> (1 <span class="id" title="notation">/</span> <span class="id" title="notation">(</span><span class="id" title="definition">INR</span> <a class="idref" href="RUG.Analysis.SequenceExamples.html#n:7"><span class="id" title="variable">n</span></a> <span class="id" title="notation">+</span> 1<span class="id" title="notation">)</span>)<span class="id" title="notation">)</span> <span class="id" title="notation">⟶</span> 1.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a id="lab75"></a><h2 class="section">Standard limit: nth root of n → 1</h2>
+
+
+<div class="paragraph"> </div>
+
+  Claim:  (where n starts from 1 in Abbott).
+
+<div class="paragraph"> </div>
+
+  In Rocq, we use (n+1) to match Abbott's indexing. Note that Rpower is used for real exponentiation.
+
+<div class="paragraph"> </div>
+
+  Proof sketch: For n ≥ 1, we have 1 &lt; √<span class="inlinecode"><span class="id" title="var">n</span>+1</span>{n+1}. Consider ln(√<span class="inlinecode"><span class="id" title="var">n</span>+1</span>{n+1}) = ln(n+1)/(n+1) → 0,
+  so √<span class="inlinecode"><span class="id" title="var">n</span>+1</span>{n+1} = e^(ln(n+1)/(n+1)) → e^0 = 1. 
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <a id="standard_limit_nth_root_of_n" class="idref" href="#standard_limit_nth_root_of_n"><span class="id" title="lemma">standard_limit_nth_root_of_n</span></a> : <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="notation">(</span><span class="id" title="keyword">fun</span> <a id="n:8" class="idref" href="#n:8"><span class="id" title="binder">n</span></a> : <span class="id" title="notation">ℕ</span> ⇒ <span class="id" title="definition">Rpower</span> <span class="id" title="notation">(</span><span class="id" title="definition">INR</span> <a class="idref" href="RUG.Analysis.SequenceExamples.html#n:8"><span class="id" title="variable">n</span></a> <span class="id" title="notation">+</span> 1<span class="id" title="notation">)</span> <span class="id" title="notation">(</span>1 <span class="id" title="notation">/</span> <span class="id" title="notation">(</span><span class="id" title="definition">INR</span> <a class="idref" href="RUG.Analysis.SequenceExamples.html#n:8"><span class="id" title="variable">n</span></a> <span class="id" title="notation">+</span> 1<span class="id" title="notation">)</span><span class="id" title="notation">)</span><span class="id" title="notation">)</span> <span class="id" title="notation">⟶</span> 1.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a id="lab76"></a><h2 class="section">Standard limit: n! / n^n → 0</h2>
+
+
+<div class="paragraph"> </div>
+
+  Claim:  (where n starts from 1 in Abbott).
+
+<div class="paragraph"> </div>
+
+  In Rocq, we use (n+1) to match Abbott's indexing. We use Stdlib.Arith.Factorial.fact
+  which computes factorial of natural numbers.
+
+<div class="paragraph"> </div>
+
+  Proof sketch: Note that n! / n^n = ∏_{k=1}^n (k/n) ≤ (1/√n)^(n/2) by pairing
+  terms k and n-k: (k/n)·((n-k)/n) = k(n-k)/n^2 ≤ 1/4 for k = n/2.
+  So n! / n^n ≤ (1/4)^(n/2) → 0. 
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <a id="standard_limit_n_factorial_over_n_to_n" class="idref" href="#standard_limit_n_factorial_over_n_to_n"><span class="id" title="lemma">standard_limit_n_factorial_over_n_to_n</span></a> : <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="notation">(</span><span class="id" title="keyword">fun</span> <a id="n:9" class="idref" href="#n:9"><span class="id" title="binder">n</span></a> : <span class="id" title="notation">ℕ</span> ⇒ <span class="id" title="definition">INR</span> <span class="id" title="notation">(</span><span class="id" title="definition">Stdlib.Arith.Factorial.fact</span> <span class="id" title="notation">(</span><a class="idref" href="http://rocq-prover.org/doc/V9.1.1/stdlib//Corelib.Init.Datatypes.html#S"><span class="id" title="constructor">S</span></a> <a class="idref" href="RUG.Analysis.SequenceExamples.html#n:9"><span class="id" title="variable">n</span></a><span class="id" title="notation">))</span> <span class="id" title="notation">/</span> <span class="id" title="notation">(</span><span class="id" title="definition">INR</span> <span class="id" title="notation">(</span><a class="idref" href="http://rocq-prover.org/doc/V9.1.1/stdlib//Corelib.Init.Datatypes.html#S"><span class="id" title="constructor">S</span></a> <a class="idref" href="RUG.Analysis.SequenceExamples.html#n:9"><span class="id" title="variable">n</span></a><span class="id" title="notation">)</span><span class="id" title="notation">)^(</span><a class="idref" href="http://rocq-prover.org/doc/V9.1.1/stdlib//Corelib.Init.Datatypes.html#S"><span class="id" title="constructor">S</span></a> <a class="idref" href="RUG.Analysis.SequenceExamples.html#n:9"><span class="id" title="variable">n</span></a><span class="id" title="notation">)</span><span class="id" title="notation">)</span> <span class="id" title="notation">⟶</span> 0.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>.<br/>
+</div>
+</div>
+
+<div id="footer">
+<hr/><a href="index.html">Index</a><hr/>This page has been generated by <a href="http://rocq-prover.org/">coqdoc</a>
+</div>
+
+</div>
+
+</body>
+</html>

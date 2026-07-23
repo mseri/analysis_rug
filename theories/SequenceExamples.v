@@ -5,7 +5,9 @@
   Contains examples from Lecture 3: specific limit computations and standard limits.
   Formalizes examples from Abbott §2.2–2.3.
 
-  Note: All proofs are admitted and will be filled in later.
+  Note: The rational-limit example and the standard limits 1/n, 1/n^2 and c^n
+  are fully proved. The nth-root limits and n!/n^n are still admitted: they
+  require logarithm/l'Hôpital-style machinery not yet developed here.
   Note: In Rocq/Coq, natural numbers start from 0, but our sequences correspond
   to Abbott's sequences starting from n=1. We use (n+1) or (INR n + 1) consistently. *)
 
@@ -47,10 +49,57 @@ Set Bullet Behavior "Waterproof Relaxed Subproofs".
 
   For any ε > 0, choose N such that 1/(N+1) < 3ε/5. Then for n ≥ N,
   $$\frac{5}{3(n+1)} \leq \frac{5}{3(N+1)} < \varepsilon.$$ *)
-Lemma limit_6n_plus_7_over_3n_plus_1 : 
+Lemma limit_6n_plus_7_over_3n_plus_1 :
     (fun n : ℕ => (6 * (INR n + 1) + 7) / (3 * (INR n + 1) + 1)) ⟶ 2.
 Proof.
-  Admitted.
+  We need to show that
+    ∀ ε > 0, ∃ N1 ∈ ℕ, ∀ n ≥ N1,
+      | (6 * (INR n + 1) + 7) / (3 * (INR n + 1) + 1) - 2 | < ε.
+  Take ε > 0.
+  It holds that 3 * ε / 5 > 0 as (Heps).
+  By archimedean_2 it holds that
+    ∃ n1 : ℕ, 1 / (INR n1 + 1) < 3 * ε / 5 as (Hn1).
+  Obtain such an n1.
+  Choose N1 := n1. { Indeed, N1 ∈ ℕ. }
+  We need to show that ∀ n ≥ N1,
+    | (6 * (INR n + 1) + 7) / (3 * (INR n + 1) + 1) - 2 | < ε.
+  Take n ≥ N1.
+  It holds that INR n ≥ INR n1 as (Hnn1).
+  By pos_INR it holds that INR n ≥ 0 as (Hn0).
+  By pos_INR it holds that INR n1 ≥ 0 as (Hn10).
+  It holds that 3 * (INR n + 1) + 1 > 0 as (Hden).
+  It holds that 3 * (INR n1 + 1) > 0 as (Hden1).
+  (** The error simplifies to [5 / (3(n+1)+1)], which is positive. *)
+  It holds that
+    (6 * (INR n + 1) + 7) / (3 * (INR n + 1) + 1) - 2
+    = 5 / (3 * (INR n + 1) + 1) as (Hval).
+  It holds that 0 < 5 / (3 * (INR n + 1) + 1) as (Hvalpos).
+  It holds that
+    | (6 * (INR n + 1) + 7) / (3 * (INR n + 1) + 1) - 2 |
+    = 5 / (3 * (INR n + 1) + 1) as (Habs).
+  It holds that 3 * (INR n1 + 1) < 3 * (INR n + 1) + 1 as (Hchain).
+  By Rinv_lt_contravar it holds that
+    / (3 * (INR n + 1) + 1) < / (3 * (INR n1 + 1)) as (Hinv).
+  It holds that
+    5 / (3 * (INR n + 1) + 1) = 5 * / (3 * (INR n + 1) + 1) as (Hd1).
+  It holds that
+    5 / (3 * (INR n1 + 1)) = 5 * / (3 * (INR n1 + 1)) as (Hd2).
+  It holds that
+    5 / (3 * (INR n + 1) + 1) < 5 / (3 * (INR n1 + 1)) as (Hb1).
+  It holds that
+    5 / (3 * (INR n1 + 1)) = (5 / 3) * (1 / (INR n1 + 1)) as (Hb2).
+  It holds that
+    (5 / 3) * (1 / (INR n1 + 1)) < (5 / 3) * (3 * ε / 5) as (Hb3).
+  It holds that (5 / 3) * (3 * ε / 5) = ε as (Hb4).
+  We conclude that (&
+    | (6 * (INR n + 1) + 7) / (3 * (INR n + 1) + 1) - 2 |
+    = 5 / (3 * (INR n + 1) + 1)
+    < 5 / (3 * (INR n1 + 1))
+    = (5 / 3) * (1 / (INR n1 + 1))
+    < (5 / 3) * (3 * ε / 5)
+    = ε
+  ).
+Qed.
 
 
 (** ** Standard limits from lecture 3 *)
@@ -64,10 +113,13 @@ Proof.
 
   Proof sketch: For ε > 0, by Archimedean property, there exists N such that
   N > 1/ε. Then for n ≥ N, we have n+1 > N ≥ 1/ε, so 1/(n+1) < ε. *)
-Lemma standard_limit_1_over_n : 
+Lemma standard_limit_1_over_n :
     (fun n : ℕ => 1 / (INR n + 1)) ⟶ 0.
 Proof.
-  Admitted.
+  (** This is exactly the harmonic sequence, already proved in
+      [Analysis.Sequences]. *)
+  By harmonic_to_0 we conclude that (fun n : ℕ => 1 / (INR n + 1)) ⟶ 0.
+Qed.
 
 
 (** ** Standard limit: 1/n^2 → 0
@@ -79,10 +131,33 @@ Proof.
   Proof sketch: For ε > 0, by Archimedean property, there exists N such that
   N > 1/√ε. Then for n ≥ N, we have n+1 > N ≥ 1/√ε, so (n+1)^2 > 1/ε,
   and thus 1/(n+1)^2 < ε. *)
-Lemma standard_limit_1_over_n_squared : 
+Lemma standard_limit_1_over_n_squared :
     (fun n : ℕ => 1 / (INR n + 1)^2) ⟶ 0.
 Proof.
-  Admitted.
+  (** Squeeze [0 ≤ 1/(n+1)^2 ≤ 1/(n+1)] between the constant [0]
+      sequence and the harmonic sequence, both of which converge to [0]. *)
+  apply (squeeze_theorem
+    (fun _ : ℕ => 0)
+    (fun n : ℕ => 1 / (INR n + 1)^2)
+    (fun n : ℕ => 1 / (INR n + 1)) 0).
+  - By constant_seq_converges we conclude that (fun _ : ℕ => 0) ⟶ 0.
+  - By harmonic_to_0 we conclude that (fun n : ℕ => 1 / (INR n + 1)) ⟶ 0.
+  - Take n ∈ ℕ.
+    It holds that INR n + 1 > 0 as (Hpos).
+    It holds that (INR n + 1)^2 > 0.
+    We conclude that 0 ≤ 1 / (INR n + 1)^2.
+  - Take n ∈ ℕ.
+    By pos_INR it holds that INR n ≥ 0 as (Hn0).
+    It holds that INR n + 1 ≥ 1 as (Hge1).
+    It holds that INR n + 1 > 0 as (Hpos).
+    It holds that (INR n + 1)^2 = (INR n + 1) * (INR n + 1) as (Hsq).
+    It holds that (INR n + 1) ≤ (INR n + 1)^2 as (Hle).
+    By Rinv_le_contravar it holds that
+      / (INR n + 1)^2 ≤ / (INR n + 1) as (Hinv).
+    It holds that 1 / (INR n + 1)^2 = / (INR n + 1)^2 as (He1).
+    It holds that 1 / (INR n + 1) = / (INR n + 1) as (He2).
+    We conclude that 1 / (INR n + 1)^2 ≤ 1 / (INR n + 1).
+Qed.
 
 
 (** ** Standard limit: c^n → 0 for |c| < 1
@@ -98,7 +173,22 @@ Proof.
 Lemma standard_limit_c_to_n (c : ℝ) :
     -1 < c → c < 1 → (fun n : ℕ => c^n) ⟶ 0.
 Proof.
-  Admitted.
+  Assume that -1 < c as (Hlo).
+  Assume that c < 1 as (Hhi).
+  It holds that | c | < 1 as (Habs).
+  We need to show that ∀ ε > 0, ∃ N1 ∈ ℕ, ∀ n ≥ N1, | c^n - 0 | < ε.
+  Take ε > 0.
+  (** [pow_lt_1_zero] from the standard library gives exactly the
+      threshold we need for a base of absolute value less than 1. *)
+  By pow_lt_1_zero it holds that
+    ∃ Nm : ℕ, ∀ n : ℕ, (n ≥ Nm)%nat ⇨ | c^n | < ε as (HN).
+  Obtain such an Nm.
+  Choose N1 := Nm. { Indeed, N1 ∈ ℕ. }
+  We need to show that ∀ n ≥ N1, | c^n - 0 | < ε.
+  Take n ≥ N1.
+  By HN it holds that | c^n | < ε.
+  We conclude that | c^n - 0 | < ε.
+Qed.
 
 
 (** ** Standard limit: nth root of c → 1 for c > 0

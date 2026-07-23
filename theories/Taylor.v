@@ -40,17 +40,20 @@ Fixpoint T_exp (n : nat) (x : R) : R :=
 (** [T₀(x) = 1]. *)
 Lemma T_exp_0 (x : R) : T_exp 0%nat x = 1.
 Proof.
-  Admitted.
+  We conclude that T_exp 0%nat x = 1.
+Qed.
 
 (** [T₁(x) = 1 + x]. *)
 Lemma T_exp_1 (x : R) : T_exp 1%nat x = 1 + x.
 Proof.
-  Admitted.
+  ltac1:(simpl; lra).
+Qed.
 
 (** [T₂(x) = 1 + x + x²/2]. *)
 Lemma T_exp_2 (x : R) : T_exp 2%nat x = 1 + x + x ^ 2 / 2.
 Proof.
-  Admitted.
+  ltac1:(simpl; lra).
+Qed.
 
 (** ** Taylor series and Lagrange remainder *)
 
@@ -75,7 +78,7 @@ Definition lagrange_remainder (f : ℝ → ℝ) (d : ℕ → ℝ) (a : ℝ) (n :
     Proof idea: between consecutive zeros of [df k], Rolle's theorem produces a
     zero of [df (S k)]; iterating [n] times leaves a single zero of [df n]. *)
 Lemma generalized_rolle (df : ℕ → ℝ → ℝ) (n : ℕ) (pts : ℕ → ℝ)
-    (Hstep : ∀ k : ℕ, ∀ y : ℝ,
+    (Hstep : ∀ k ∈ ℕ, ∀ y ∈ ℝ,
         ∃ Hd : derivable_pt (df k) y, derive_pt (df k) y Hd = df (S k) y)
     (Hincr : ∀ k : ℕ, (k < n)%nat → pts k < pts (S k))
     (Hzero : ∀ k : ℕ, (k ≤ n)%nat → df 0%nat (pts k) = 0) :
@@ -95,7 +98,7 @@ Proof.
 Theorem taylor_theorem_lagrange
     (f : ℝ → ℝ) (df : ℕ → ℝ → ℝ) (a x : ℝ) (n : ℕ)
     (H0 : df 0%nat = f)
-    (Hstep : ∀ k : ℕ, ∀ y : ℝ,
+    (Hstep : ∀ k ∈ ℕ, ∀ y ∈ ℝ,
         ∃ Hd : derivable_pt (df k) y, derive_pt (df k) y Hd = df (S k) y) :
     ∃ c : ℝ, Rmin a x < c ∧ c < Rmax a x ∧
       f x = sum_f_R0 (fun k => df k a / INR (fact k) * (x - a) ^ k) n

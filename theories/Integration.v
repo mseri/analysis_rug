@@ -34,17 +34,17 @@ Set Bullet Behavior "Waterproof Relaxed Subproofs".
     of [n + 1] nodes [x₀ = a < x₁ < ⋯ < xₙ = b]. We represent the nodes by a
     function [x : ℕ → ℝ], using only the indices [0 … n]. *)
 Definition is_partition (a b : ℝ) (n : ℕ) (x : ℕ → ℝ) : Prop :=
-    x 0%nat = a ∧ x n = b ∧ (∀ i : ℕ, (i < n)%nat → x i < x (S i)).
+    x 0%nat = a ∧ x n = b ∧ (∀ i ∈ ℕ, (i < n)%nat → x i < x (S i)).
 
 (** [mi] is the *infimum* of [f] on the [i]-th cell [[xᵢ, xᵢ₊₁]]. *)
 Definition is_inf_on_cell (f : ℝ → ℝ) (x : ℕ → ℝ) (i : ℕ) (mi : ℝ) : Prop :=
-    (∀ t : ℝ, x i ≤ t ∧ t ≤ x (S i) → mi ≤ f t) ∧
-    (∀ w : ℝ, (∀ t : ℝ, x i ≤ t ∧ t ≤ x (S i) → w ≤ f t) → w ≤ mi).
+    (∀ t ∈ ℝ, x i ≤ t ∧ t ≤ x (S i) → mi ≤ f t) ∧
+    (∀ w ∈ ℝ, (∀ t ∈ ℝ, x i ≤ t ∧ t ≤ x (S i) → w ≤ f t) → w ≤ mi).
 
 (** [Mi] is the *supremum* of [f] on the [i]-th cell [[xᵢ, xᵢ₊₁]]. *)
 Definition is_sup_on_cell (f : ℝ → ℝ) (x : ℕ → ℝ) (i : ℕ) (Mi : ℝ) : Prop :=
-    (∀ t : ℝ, x i ≤ t ∧ t ≤ x (S i) → f t ≤ Mi) ∧
-    (∀ w : ℝ, (∀ t : ℝ, x i ≤ t ∧ t ≤ x (S i) → f t ≤ w) → Mi ≤ w).
+    (∀ t ∈ ℝ, x i ≤ t ∧ t ≤ x (S i) → f t ≤ Mi) ∧
+    (∀ w ∈ ℝ, (∀ t ∈ ℝ, x i ≤ t ∧ t ≤ x (S i) → f t ≤ w) → Mi ≤ w).
 
 (** The *lower sum* [L(f, P) = ∑ mᵢ · (xᵢ₊₁ - xᵢ)], where [mᵢ] is the infimum of
     [f] on the [i]-th cell. *)
@@ -59,7 +59,7 @@ Definition upper_sum (n : ℕ) (x M : ℕ → ℝ) : ℝ :=
 (** A partition [Q] (with [m] cells, nodes [y]) *refines* [P] (with [n] cells,
     nodes [x]) if every node of [P] is also a node of [Q]. *)
 Definition refines (n : ℕ) (x : ℕ → ℝ) (m : ℕ) (y : ℕ → ℝ) : Prop :=
-    ∀ i : ℕ, (i ≤ n)%nat → ∃ j : ℕ, (j ≤ m)%nat ∧ y j = x i.
+    ∀ i ∈ ℕ, (i ≤ n)%nat → ∃ j ∈ ℕ, (j ≤ m)%nat ∧ y j = x i.
 
 (** ** Refinement inequalities *)
 
@@ -73,8 +73,8 @@ Lemma refinement_increases_lower_sum (f : ℝ → ℝ) (a b : ℝ)
     (n : ℕ) (x mx : ℕ → ℝ) (m : ℕ) (y my : ℕ → ℝ)
     (HP : is_partition a b n x) (HQ : is_partition a b m y)
     (Href : refines n x m y)
-    (Hmx : ∀ i : ℕ, (i < n)%nat → is_inf_on_cell f x i (mx i))
-    (Hmy : ∀ j : ℕ, (j < m)%nat → is_inf_on_cell f y j (my j)) :
+    (Hmx : ∀ i ∈ ℕ, (i < n)%nat → is_inf_on_cell f x i (mx i))
+    (Hmy : ∀ j ∈ ℕ, (j < m)%nat → is_inf_on_cell f y j (my j)) :
     lower_sum n x mx ≤ lower_sum m y my.
 Proof.
   Admitted.
@@ -88,8 +88,8 @@ Lemma refinement_decreases_upper_sum (f : ℝ → ℝ) (a b : ℝ)
     (n : ℕ) (x Mx : ℕ → ℝ) (m : ℕ) (y My : ℕ → ℝ)
     (HP : is_partition a b n x) (HQ : is_partition a b m y)
     (Href : refines n x m y)
-    (HMx : ∀ i : ℕ, (i < n)%nat → is_sup_on_cell f x i (Mx i))
-    (HMy : ∀ j : ℕ, (j < m)%nat → is_sup_on_cell f y j (My j)) :
+    (HMx : ∀ i ∈ ℕ, (i < n)%nat → is_sup_on_cell f x i (Mx i))
+    (HMy : ∀ j ∈ ℕ, (j < m)%nat → is_sup_on_cell f y j (My j)) :
     upper_sum m y My ≤ upper_sum n x Mx.
 Proof.
   Admitted.
@@ -100,10 +100,10 @@ Lemma refinement_inequalities (f : ℝ → ℝ) (a b : ℝ)
     (n : ℕ) (x mx Mx : ℕ → ℝ) (m : ℕ) (y my My : ℕ → ℝ)
     (HP : is_partition a b n x) (HQ : is_partition a b m y)
     (Href : refines n x m y)
-    (Hmx : ∀ i : ℕ, (i < n)%nat → is_inf_on_cell f x i (mx i))
-    (HMx : ∀ i : ℕ, (i < n)%nat → is_sup_on_cell f x i (Mx i))
-    (Hmy : ∀ j : ℕ, (j < m)%nat → is_inf_on_cell f y j (my j))
-    (HMy : ∀ j : ℕ, (j < m)%nat → is_sup_on_cell f y j (My j)) :
+    (Hmx : ∀ i ∈ ℕ, (i < n)%nat → is_inf_on_cell f x i (mx i))
+    (HMx : ∀ i ∈ ℕ, (i < n)%nat → is_sup_on_cell f x i (Mx i))
+    (Hmy : ∀ j ∈ ℕ, (j < m)%nat → is_inf_on_cell f y j (my j))
+    (HMy : ∀ j ∈ ℕ, (j < m)%nat → is_sup_on_cell f y j (My j)) :
     lower_sum n x mx ≤ lower_sum m y my ∧
     lower_sum m y my ≤ upper_sum m y My ∧
     upper_sum m y My ≤ upper_sum n x Mx.
@@ -119,8 +119,8 @@ Proof.
 Lemma lower_sum_le_upper_sum (f : ℝ → ℝ) (a b : ℝ)
     (n1 : ℕ) (x1 m1 : ℕ → ℝ) (n2 : ℕ) (x2 M2 : ℕ → ℝ)
     (HP1 : is_partition a b n1 x1) (HP2 : is_partition a b n2 x2)
-    (Hm1 : ∀ i : ℕ, (i < n1)%nat → is_inf_on_cell f x1 i (m1 i))
-    (HM2 : ∀ i : ℕ, (i < n2)%nat → is_sup_on_cell f x2 i (M2 i)) :
+    (Hm1 : ∀ i ∈ ℕ, (i < n1)%nat → is_inf_on_cell f x1 i (m1 i))
+    (HM2 : ∀ i ∈ ℕ, (i < n2)%nat → is_sup_on_cell f x2 i (M2 i)) :
     lower_sum n1 x1 m1 ≤ upper_sum n2 x2 M2.
 Proof.
   Admitted.
@@ -130,29 +130,29 @@ Proof.
 (** [S] is *a lower sum of [f] on [[a, b]]*: it is [L(f, P)] for some partition
     [P] with infimum data. *)
 Definition lower_sum_of (f : ℝ → ℝ) (a b s : ℝ) : Prop :=
-    ∃ n : ℕ, ∃ x : ℕ → ℝ, ∃ m : ℕ → ℝ,
+    ∃ n ∈ ℕ, ∃ x : ℕ → ℝ, ∃ m : ℕ → ℝ,
       is_partition a b n x ∧
-      (∀ i : ℕ, (i < n)%nat → is_inf_on_cell f x i (m i)) ∧
+      (∀ i ∈ ℕ, (i < n)%nat → is_inf_on_cell f x i (m i)) ∧
       s = lower_sum n x m.
 
 (** [S] is *an upper sum of [f] on [[a, b]]*. *)
 Definition upper_sum_of (f : ℝ → ℝ) (a b s : ℝ) : Prop :=
-    ∃ n : ℕ, ∃ x : ℕ → ℝ, ∃ M : ℕ → ℝ,
+    ∃ n ∈ ℕ, ∃ x : ℕ → ℝ, ∃ M : ℕ → ℝ,
       is_partition a b n x ∧
-      (∀ i : ℕ, (i < n)%nat → is_sup_on_cell f x i (M i)) ∧
+      (∀ i ∈ ℕ, (i < n)%nat → is_sup_on_cell f x i (M i)) ∧
       s = upper_sum n x M.
 
 (** The *lower integral* [L(f) = sup { L(f, P) : P }] is the least upper bound of
     all lower sums. *)
 Definition is_lower_integral (f : ℝ → ℝ) (a b L : ℝ) : Prop :=
-    (∀ s : ℝ, lower_sum_of f a b s → s ≤ L) ∧
-    (∀ W : ℝ, (∀ s : ℝ, lower_sum_of f a b s → s ≤ W) → L ≤ W).
+    (∀ s ∈ ℝ, lower_sum_of f a b s → s ≤ L) ∧
+    (∀ W ∈ ℝ, (∀ s ∈ ℝ, lower_sum_of f a b s → s ≤ W) → L ≤ W).
 
 (** The *upper integral* [U(f) = inf { U(f, P) : P }] is the greatest lower bound
     of all upper sums. *)
 Definition is_upper_integral (f : ℝ → ℝ) (a b U : ℝ) : Prop :=
-    (∀ s : ℝ, upper_sum_of f a b s → U ≤ s) ∧
-    (∀ W : ℝ, (∀ s : ℝ, upper_sum_of f a b s → W ≤ s) → W ≤ U).
+    (∀ s ∈ ℝ, upper_sum_of f a b s → U ≤ s) ∧
+    (∀ W ∈ ℝ, (∀ s ∈ ℝ, upper_sum_of f a b s → W ≤ s) → W ≤ U).
 
 (** _The lower integral does not exceed the upper integral_: [L(f) ≤ U(f)].
 
@@ -170,7 +170,7 @@ Proof.
 (** [f] is *Darboux/Riemann integrable* on [[a, b]] when its upper and lower
     integrals coincide; the common value is [∫_a^b f]. *)
 Definition riemann_integrable_darboux (f : ℝ → ℝ) (a b : ℝ) : Prop :=
-    ∃ V : ℝ, is_lower_integral f a b V ∧ is_upper_integral f a b V.
+    ∃ V ∈ ℝ, is_lower_integral f a b V ∧ is_upper_integral f a b V.
 
 (** _Darboux criterion_ (Abbott 7.2.8): [f] is integrable on [[a, b]] iff for
     every [ε > 0] there is a partition [P] with [U(f, P) - L(f, P) < ε].
@@ -182,10 +182,10 @@ Definition riemann_integrable_darboux (f : ℝ → ℝ) (a b : ℝ) : Prop :=
     [[0,1]], since [U(f, P) = 1] and [L(f, P) = 0] for every [P].) *)
 Lemma darboux_criterion (f : ℝ → ℝ) (a b : ℝ) :
     riemann_integrable_darboux f a b ⇔
-    (∀ ε > 0, ∃ n : ℕ, ∃ x : ℕ → ℝ, ∃ m : ℕ → ℝ, ∃ M : ℕ → ℝ,
+    (∀ ε > 0, ∃ n ∈ ℕ, ∃ x : ℕ → ℝ, ∃ m : ℕ → ℝ, ∃ M : ℕ → ℝ,
       is_partition a b n x ∧
-      (∀ i : ℕ, (i < n)%nat → is_inf_on_cell f x i (m i)) ∧
-      (∀ i : ℕ, (i < n)%nat → is_sup_on_cell f x i (M i)) ∧
+      (∀ i ∈ ℕ, (i < n)%nat → is_inf_on_cell f x i (m i)) ∧
+      (∀ i ∈ ℕ, (i < n)%nat → is_sup_on_cell f x i (M i)) ∧
       upper_sum n x M - lower_sum n x m < ε).
 Proof.
   Admitted.
@@ -233,7 +233,7 @@ Proof.
     [∑ (Mᵢ - mᵢ)·Δx = (f(b) - f(a))·(b - a)/n → 0]. The Darboux criterion then
     applies. (The decreasing case is symmetric.) *)
 Lemma monotone_integrable (f : ℝ → ℝ) (a b : ℝ) (Hab : a ≤ b)
-    (Hmono : ∀ x : ℝ, ∀ y : ℝ, a ≤ x → x ≤ y → y ≤ b → f x ≤ f y) :
+    (Hmono : ∀ x ∈ ℝ, ∀ y ∈ ℝ, a ≤ x → x ≤ y → y ≤ b → f x ≤ f y) :
     Riemann_integrable f a b.
 Proof.
   Admitted.
@@ -249,8 +249,8 @@ Proof.
     consecutive integrals, so the series and the improper integral converge
     together. (Terms indexed as [f(k+1)] to match Rocq indexing.) *)
 Lemma integral_test (f : ℝ → ℝ)
-    (Hpos : ∀ x : ℝ, 1 ≤ x → 0 ≤ f x)
-    (Hdec : ∀ x : ℝ, ∀ y : ℝ, 1 ≤ x → x ≤ y → f y ≤ f x)
+    (Hpos : ∀ x ∈ ℝ, 1 ≤ x → 0 ≤ f x)
+    (Hdec : ∀ x ∈ ℝ, ∀ y ∈ ℝ, 1 ≤ x → x ≤ y → f y ≤ f x)
     (Hint : ∀ n : ℕ, Riemann_integrable f 1 (INR n + 1)) :
     (∃ L : ℝ, (fun n : ℕ => sum_f_R0 (fun k => f (INR k + 1)) n) ⟶ L) ⇔
     (∃ B : ℝ, ∀ n : ℕ, ∀ pr : Riemann_integrable f 1 (INR n + 1),

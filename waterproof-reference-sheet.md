@@ -211,6 +211,8 @@ By f_increasing we conclude that & 2 < f(0) ≤ f(1).
 12. **Case bullets without signposting.** After `Either ... or ...` each bullet must begin `Case (…).`; after `We show both statements/directions`, each bullet must begin with `We need to show that (…).` — omitting these is an error by design.
 13. **`Obtain` scope.** `Obtain such an n` only destructs the most recently introduced existential hypothesis; otherwise use `Obtain n according to (label)`.
 14. **Leaving `Help.` / `Expand ...` in the final script.** They are interactive aids; remove them (in graded notebooks they may be flagged).
+15. **Grouped binders in `∀`/`∃`.** The unicode `∀`/`∃` notations reject a single binder group with several names or several typed groups: `∀ x y : ℝ, P` and `∃ (phi : ℕ → ℕ) (x : ℝ), P` fail with "The reference y/x was not found in the current environment". Write each binder separately — `∀ x, ∀ y` / `∃ phi : ℕ → ℕ, ∃ x : ℝ` — or use the membership form `∀ x ∈ ℝ, ∀ y ∈ ℝ, P`. (Note `Take x, y : ℝ` *is* fine — this restriction is on the statement notation, not the `Take` tactic.)
+16. **`Type`-sorted binders in `∀`.** `∀ I : Type, P` (e.g. quantifying over the index type of an open cover) fails the `∀` notation with a "pat"/`True` elaboration error. Use ASCII `forall (I : Type), P` for `Type`/`Set`-sorted binders; the unicode `∀` is meant for element-level (`ℝ`, `ℕ`, set-membership) quantification.
 
 ---
 

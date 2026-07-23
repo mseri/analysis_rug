@@ -48,7 +48,8 @@ Lemma integral_order (f g : ℝ → ℝ) (a b : ℝ) (Hab : a ≤ b)
     (Hle : ∀ x : ℝ, a ≤ x ∧ x ≤ b → f x ≤ g x) :
     RiemannInt prf ≤ RiemannInt prg.
 Proof.
-  Admitted.
+  ltac1:(apply integral_monotone; exact Hle).
+Qed.
 
 (** _Triangle inequality for integrals_: [|f|] is integrable and
     [|∫_a^b f| ≤ ∫_a^b |f|] (for [a ≤ b]).

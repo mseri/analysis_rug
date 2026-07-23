@@ -7,6 +7,7 @@
   continuity and integration for uniformly convergent sequences. *)
 
 From Stdlib Require Import Reals.Reals.
+From Stdlib Require Import Reals.RiemannInt.
 From Stdlib Require Import micromega.Lra.
 Require Export RUG.Analysis.Continuity.
 Require Export RUG.Analysis.Lib.UniformConvergence.
@@ -105,12 +106,20 @@ Proof.
 
 (** ** Term-by-term integration *)
 
-(** If [(fₙ) ⇉ g] uniformly on [[a, b]] and each [fₙ] is integrable,
-    then the integrals converge to [∫ g]. *)
-Theorem uniform_limit_integral (fn : ℕ → ℝ → ℝ) (g : ℝ → ℝ) (A : subset ℝ)
-    (Hunif : converges_uniformly fn g A)
-    (Hfn : ∀ n ∈ ℕ, ∀ x ∈ A, continuity_pt (fn n) x) :
-    ∀ x ∈ A, continuity_pt g x.
+(** _Interchange of limit and integral_ (Abbott 6.4.1): if [(fₙ) ⇉ g] uniformly
+    on [[a, b]] and each [fₙ] is integrable, then [g] is integrable and
+    [∫_a^b fₙ → ∫_a^b g].
+
+    Here [I n = ∫_a^b fₙ] and [Ig = ∫_a^b g] are the recorded integral values.
+
+    Proof idea: uniform convergence lets the error [∫|fₙ - g| ≤ (b - a)·‖fₙ - g‖∞]
+    be made arbitrarily small, so the integrals converge. *)
+Theorem uniform_limit_integral (fn : ℕ → ℝ → ℝ) (g : ℝ → ℝ) (a b : ℝ) (Hab : a ≤ b)
+    (Hunif : converges_uniformly fn g (fun x => a ≤ x ∧ x ≤ b))
+    (I : ℕ → ℝ) (Ig : ℝ)
+    (HI : ∀ n : ℕ, ∀ pr : Riemann_integrable (fn n) a b, I n = RiemannInt pr)
+    (HIg : ∀ pr : Riemann_integrable g a b, Ig = RiemannInt pr) :
+    I ⟶ Ig.
 Proof.
   Admitted.
 
@@ -165,7 +174,7 @@ Lemma uniform_convergence_sup_characterization
     (fn : ℕ → ℝ → ℝ) (g : ℝ → ℝ) (A : subset ℝ) :
     converges_uniformly fn g A ⇔
     (∃ M : ℕ → ℝ,
-      (∀ n : ℕ, ∀ x : ℝ, A x → Rabs (fn n x - g x) ≤ M n) ∧ M ⟶ 0).
+      (∀ n ∈ ℕ, ∀ x ∈ ℝ, A x → Rabs (fn n x - g x) ≤ M n) ∧ M ⟶ 0).
 Proof.
   Admitted.
 
@@ -235,11 +244,11 @@ Proof.
     [(fₙ - fₘ)(x) - (fₙ - fₘ)(y) = ((dfnₙ - dfnₘ)(ξ))·(x - y)] for some [ξ]. *)
 Lemma differentiability_transfer_lemma
     (fn : ℕ → ℝ → ℝ) (dfn : ℕ → ℝ → ℝ) (a b : ℝ) (Hab : a < b)
-    (Hderiv : ∀ n : ℕ, ∀ x : ℝ, a ≤ x → x ≤ b →
+    (Hderiv : ∀ n ∈ ℕ, ∀ x ∈ ℝ, a ≤ x → x ≤ b →
         ∃ Hd : derivable_pt (fn n) x, derive_pt (fn n) x Hd = dfn n x)
     (Hdcauchy : ∀ ε > 0, ∃ N1 ∈ ℕ, ∀ n ≥ N1, ∀ m ≥ N1, ∀ x : ℝ,
         a ≤ x → x ≤ b → Rabs (dfn n x - dfn m x) < ε) :
-    ∀ ε > 0, ∃ N1 ∈ ℕ, ∀ n ≥ N1, ∀ m ≥ N1, ∀ x : ℝ, ∀ y : ℝ,
+    ∀ ε > 0, ∃ N1 ∈ ℕ, ∀ n ≥ N1, ∀ m ≥ N1, ∀ x ∈ ℝ, ∀ y ∈ ℝ,
       a ≤ x → x ≤ b → a ≤ y → y ≤ b →
       Rabs ((fn n x - fn m x) - (fn n y - fn m y)) ≤ ε * Rabs (x - y).
 Proof.
@@ -255,7 +264,7 @@ Proof.
     is differentiable with [g' = h = lim dfnₙ]. *)
 Theorem uniform_differentiability_theorem
     (fn : ℕ → ℝ → ℝ) (dfn : ℕ → ℝ → ℝ) (g h : ℝ → ℝ) (a b : ℝ) (Hab : a < b)
-    (Hderiv : ∀ n : ℕ, ∀ x : ℝ, a ≤ x → x ≤ b →
+    (Hderiv : ∀ n ∈ ℕ, ∀ x ∈ ℝ, a ≤ x → x ≤ b →
         ∃ Hd : derivable_pt (fn n) x, derive_pt (fn n) x Hd = dfn n x)
     (Hpt : ∃ x0 : ℝ, a ≤ x0 ∧ x0 ≤ b ∧ (fun n => fn n x0) ⟶ g x0)
     (Hdunif : converges_uniformly dfn h (fun x => a ≤ x ∧ x ≤ b)) :
@@ -314,7 +323,7 @@ Proof.
     intervals are essential. *)
 Theorem termwise_differentiability_series
     (fn : ℕ → ℝ → ℝ) (dfn : ℕ → ℝ → ℝ) (g h : ℝ → ℝ) (a b : ℝ) (Hab : a < b)
-    (Hderiv : ∀ n : ℕ, ∀ x : ℝ, a ≤ x → x ≤ b →
+    (Hderiv : ∀ n ∈ ℕ, ∀ x ∈ ℝ, a ≤ x → x ≤ b →
         ∃ Hd : derivable_pt (fn n) x, derive_pt (fn n) x Hd = dfn n x)
     (Hpt : ∃ x0 : ℝ, a ≤ x0 ∧ x0 ≤ b ∧
         (fun n => series_partial_sums fn n x0) ⟶ g x0)

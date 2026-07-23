@@ -135,7 +135,7 @@ Theorem nested_compact_intersection_nonempty
     (K : ℕ → (ℝ → Prop))
     (HK_nonempty : ∀ n : ℕ, ∃ x : ℝ, K n x)
     (HK_compact  : ∀ n : ℕ, (K n) is _compact_)
-    (HK_nested   : forall n m : ℕ, (n ≤ m)%nat → ∀ x : ℝ, K m x → K n x) :
+    (HK_nested   : ∀ n ∈ ℕ, ∀ m ∈ ℕ, (n ≤ m)%nat → ∀ x ∈ ℝ, K m x → K n x) :
     ∃ x : ℝ, ∀ n : ℕ, K n x.
 Proof.
   Admitted.

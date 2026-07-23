@@ -210,7 +210,7 @@ Proof.
     points simultaneously:
     [∀ ε > 0, ∃ δ > 0, ∀ x y ∈ A, |x - y| < δ ⇒ |f(x) - f(y)| < ε]. *)
 Definition uniformly_continuous_on (f : ℝ → ℝ) (A : ℝ → Prop) : Prop :=
-    ∀ ε > 0, ∃ δ > 0, ∀ x : ℝ, ∀ y : ℝ,
+    ∀ ε > 0, ∃ δ > 0, ∀ x ∈ ℝ, ∀ y ∈ ℝ,
       A x → A y → Rabs (x - y) < δ → Rabs (f x - f y) < ε.
 
 (** *Sequential criterion for non-uniform continuity*: [f] fails to be

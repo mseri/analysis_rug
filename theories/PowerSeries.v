@@ -29,12 +29,13 @@ Notation "∑" := partial_sums (at level 50) : R_scope.
 (** The radius of convergence of [∑ aₙ xⁿ] is the supremum of all [r ≥ 0]
     for which the series converges. *)
 
-(** A power series converging at [x₀] converges absolutely on [(-|x₀|, |x₀|)].
+(** _Convergence at [x₀] implies absolute convergence inside_: a power series
+    converging at [x₀] converges absolutely on [(-|x₀|, |x₀|)].
 
     Proof idea: from convergence at [x₀] the terms [aₙ x₀ⁿ] are bounded, say
     [|aₙ x₀ⁿ| ≤ M]. Then [|aₙ xⁿ| = |aₙ x₀ⁿ| · |x/x₀|ⁿ ≤ M · |x/x₀|ⁿ], and
     [|x/x₀| < 1] gives a convergent geometric bound. *)
-Lemma abel_lemma (a : ℕ → ℝ) (x0 : ℝ)
+Lemma power_series_converges_absolutely_inside (a : ℕ → ℝ) (x0 : ℝ)
     (H : ∃ L : ℝ, ∑ (fun n => a n * x0 ^ n) ⟶ L)
     (x : ℝ) (Hx : Rabs x < Rabs x0) :
     ∃ L : ℝ, ∑ (fun n => Rabs (a n * x ^ n)) ⟶ L.
@@ -91,8 +92,8 @@ Proof.
     converges absolutely at every [x] with [|x| < R].
 
     Proof idea: pick [r] with [|x| < r < R] (e.g. [r = (|x| + R)/2]); the series
-    converges at [r], so [abel_lemma] with [x₀ = r] gives absolute convergence
-    at [x]. *)
+    converges at [r], so [power_series_converges_absolutely_inside] with
+    [x₀ = r] gives absolute convergence at [x]. *)
 Lemma power_series_abs_convergent (a : ℕ → ℝ) (R : ℝ) (HR : R > 0)
     (Hcv_inside : ∀ r : ℝ, 0 < r → r < R →
       ∃ L : ℝ, ∑ (fun n => a n * r ^ n) ⟶ L)

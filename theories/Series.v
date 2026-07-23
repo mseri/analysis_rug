@@ -578,7 +578,11 @@ Qed.
 Lemma nth_term_test_divergence (a : ℕ → ℝ) (Hnz : ¬ (a ⟶ 0)) :
     ¬ (∃ L : ℝ, partial_sums a ⟶ L).
 Proof.
-  Admitted.
+  Assume that ∃ L : ℝ, partial_sums a ⟶ L as (H).
+  Obtain such an L.
+  By series_convergent_terms_zero it holds that a ⟶ 0.
+  Contradiction.
+Qed.
 
 (** ** Two classical series from Lecture 4 *)
 

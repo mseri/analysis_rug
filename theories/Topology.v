@@ -62,6 +62,18 @@ Lemma open_union (A B : ℝ → Prop)
 Proof.
   Admitted.
 
+(** ** Open sets under arbitrary union *)
+
+(** An arbitrary union of open sets is open.
+
+    Proof idea: for [x] in the union, [x ∈ U i] for some index [i]; openness of
+    [U i] gives a ball [V_ε(x) ⊆ U i], which is contained in the union. *)
+Lemma open_union_arbitrary (I : Type) (U : I → (ℝ → Prop))
+    (HU : ∀ i : I, (U i) is _open_) :
+    (fun x => ∃ i : I, U i x) is _open_.
+Proof.
+  Admitted.
+
 (** ** Closed intervals are closed *)
 
 (** Theorem 6.4: the closed interval [[a, b]] is a closed set.
@@ -132,5 +144,48 @@ Proof.
 Lemma closed_iff_contains_limit_points (A : ℝ → Prop) :
     A is _closed_ ⇔
     (∀ x : ℝ, (∀ ε > 0, ∃ y ∈ A, 0 < Rabs (y - x) < ε) → A x).
+Proof.
+  Admitted.
+
+(** ** Isolated points *)
+
+(** [x] is a *limit point* of [A] if every neighbourhood of [x] contains a
+    point of [A] distinct from [x]. *)
+Definition is_limit_point (A : ℝ → Prop) (x : ℝ) : Prop :=
+    ∀ ε > 0, ∃ y ∈ A, 0 < Rabs (y - x) < ε.
+
+(** A point [x ∈ A] is *isolated* in [A] if some neighbourhood of [x] meets [A]
+    only at [x] itself — equivalently, [x ∈ A] is not a limit point of [A]. *)
+Definition is_isolated_point (A : ℝ → Prop) (x : ℝ) : Prop :=
+    A x ∧ ∃ ε > 0, ∀ y ∈ A, Rabs (y - x) < ε → y = x.
+
+(** ** Closure *)
+
+(** The *closure* [Ā] of [A] is [A] together with all its limit points. *)
+Definition closure (A : ℝ → Prop) : ℝ → Prop :=
+    fun x => A x ∨ is_limit_point A x.
+
+(** The closure [Ā] is a closed set.
+
+    Proof idea: one shows [Ā] contains all of its own limit points. A limit
+    point of [Ā] is approximated arbitrarily well by points of [Ā], each of
+    which is either in [A] or approximated by points of [A]; a diagonal argument
+    then produces points of [A] arbitrarily close, so the point is already in
+    [Ā]. *)
+Lemma closure_is_closed (A : ℝ → Prop) :
+    (closure A) is _closed_.
+Proof.
+  Admitted.
+
+(** Characterization of the closure: [x ∈ Ā] iff every neighbourhood of [x]
+    contains a point of [A]. Equivalently, iff there is a sequence in [A]
+    converging to [x].
+
+    Proof idea: if [x ∈ A] every ball trivially contains [x ∈ A]; if [x] is a
+    limit point every ball contains a point of [A] distinct from [x].
+    Conversely, if every ball meets [A] then either [x ∈ A] or [x] is a limit
+    point of [A]. *)
+Lemma closure_characterization (A : ℝ → Prop) (x : ℝ) :
+    closure A x ⇔ (∀ ε > 0, ∃ y ∈ A, Rabs (y - x) < ε).
 Proof.
   Admitted.

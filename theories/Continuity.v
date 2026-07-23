@@ -9,6 +9,7 @@
 From Stdlib Require Import Reals.Reals.
 From Stdlib Require Import Reals.Ranalysis5.
 From Stdlib Require Import Reals.Rtopology.
+From Stdlib Require Import Logic.ClassicalDescription.
 
 From Waterproof Require Export Notations.Common.
 From Waterproof Require Export Notations.Reals.
@@ -60,6 +61,91 @@ Lemma continuous_image_compact (phi : ℝ → ℝ) (X : ℝ → Prop)
     (HX : X is _compact_)
     (Hphi : ∀ x ∈ X, continuity_pt phi x) :
     (fun y => ∃ x ∈ X, y = phi x) is _compact_.
+Proof.
+  Admitted.
+
+(** ** Sequential characterization of continuity *)
+
+(** Continuity of [f] at [c] is the ε–δ statement
+    [∀ ε > 0, ∃ δ > 0, ∀ x, |x - c| < δ ⇒ |f(x) - f(c)| < ε], which in the
+    Stdlib is [continuity_pt f c]. *)
+
+(** *Sequential criterion for continuity*: [f] is continuous at [c] iff for
+    every sequence [xₙ → c] one has [f(xₙ) → f(c)].
+
+    Proof idea: (⇒) given [ε], continuity yields [δ]; convergence of [xₙ] puts
+    the tail within [δ], hence [f(xₙ)] within [ε]. (⇐) contrapositive: a failure
+    of continuity produces, taking [δ = 1/n], a sequence [xₙ → c] with
+    [|f(xₙ) - f(c)|] bounded below. *)
+Lemma continuity_sequential_characterization (f : ℝ → ℝ) (c : ℝ) :
+    continuity_pt f c ⇔
+    (∀ a : ℕ → ℝ, a ⟶ c → (fun n => f (a n)) ⟶ (f c)).
+Proof.
+  Admitted.
+
+(** *Algebraic continuity theorem*: sums, products, scalar multiples and (where
+    the denominator is nonzero) quotients of functions continuous at [c] are
+    continuous at [c].
+
+    Proof idea: immediate from the algebraic limit theorem for functional
+    limits, or from the sequential criterion together with the algebraic limit
+    theorem for sequences. *)
+Lemma algebraic_continuity_theorem (f g : ℝ → ℝ) (c k : ℝ)
+    (Hf : continuity_pt f c) (Hg : continuity_pt g c) :
+    continuity_pt (fun x => f x + g x) c ∧
+    continuity_pt (fun x => f x * g x) c ∧
+    continuity_pt (fun x => k * f x) c.
+Proof.
+  Admitted.
+
+(** ** Pathologies: the Dirichlet and Thomae functions *)
+
+(** A real number is *rational* if it can be written [p/q] with [q ≠ 0]. *)
+Definition is_rational (x : ℝ) : Prop :=
+    ∃ p : Z, ∃ q : Z, (q <> 0)%Z ∧ x = IZR p / IZR q.
+
+(** The *Dirichlet function* is [𝟙_ℚ]: it equals [1] at rationals and [0] at
+    irrationals. (Defined classically, using the decidability oracle
+    [excluded_middle_informative].) *)
+Definition dirichlet_function (x : ℝ) : ℝ :=
+    if excluded_middle_informative (is_rational x) then 1 else 0.
+
+(** The Dirichlet function is continuous at *no* point.
+
+    Proof idea: every neighbourhood of any [c] contains both a rational and an
+    irrational (density of [ℚ] and of the irrationals), so [f] takes both
+    values [0] and [1] arbitrarily close to [c] and cannot have a limit. *)
+Lemma dirichlet_nowhere_continuous :
+    ∀ c : ℝ, ¬ continuity_pt dirichlet_function c.
+Proof.
+  Admitted.
+
+(** *Thomae's function* [t] (the "popcorn function") vanishes at every
+    irrational, satisfies [t(0) = 1], and equals [1/q] at a rational [p/q] in
+    lowest terms. We characterize it by its defining values. *)
+
+(** Thomae's function is continuous at every irrational point.
+
+    Proof idea: fix an irrational [c] and [ε > 0]. Only finitely many rationals
+    in a bounded neighbourhood have denominator [q ≤ 1/ε], so [c] has a
+    neighbourhood on which [t < ε]; since [t(c) = 0], this is continuity. *)
+Lemma thomae_continuous_at_irrationals (t : ℝ → ℝ)
+    (Hirr : ∀ x : ℝ, ¬ is_rational x → t x = 0)
+    (Hpos : ∀ x : ℝ, is_rational x → t x > 0)
+    (Hsmall : ∀ ε > 0, ∀ M : ℝ, ∃ δ > 0, ∀ x : ℝ,
+        Rabs (x - M) < δ → is_rational x → t x < ε ∨ t x = t M) :
+    ∀ c : ℝ, ¬ is_rational c → continuity_pt t c.
+Proof.
+  Admitted.
+
+(** Thomae's function is discontinuous at every rational point.
+
+    Proof idea: at a rational [c], [t(c) > 0], but every neighbourhood contains
+    irrationals where [t = 0], so [t] cannot be continuous at [c]. *)
+Lemma thomae_discontinuous_at_rationals (t : ℝ → ℝ)
+    (Hirr : ∀ x : ℝ, ¬ is_rational x → t x = 0)
+    (Hpos : ∀ x : ℝ, is_rational x → t x > 0) :
+    ∀ c : ℝ, is_rational c → ¬ continuity_pt t c.
 Proof.
   Admitted.
 
@@ -117,5 +203,37 @@ Theorem continuous_on_compact_uniformly_continuous (f : ℝ → ℝ) (a b : ℝ)
     ∀ ε > 0, ∃ δ > 0, ∀ x ∈ ℝ, ∀ y ∈ ℝ,
       a ≤ x ∧ x ≤ b → a ≤ y ∧ y ≤ b →
       Rabs (x - y) < δ → Rabs (f x - f y) < ε.
+Proof.
+  Admitted.
+
+(** [f] is *uniformly continuous* on a set [A] if a single [δ] works for all
+    points simultaneously:
+    [∀ ε > 0, ∃ δ > 0, ∀ x y ∈ A, |x - y| < δ ⇒ |f(x) - f(y)| < ε]. *)
+Definition uniformly_continuous_on (f : ℝ → ℝ) (A : ℝ → Prop) : Prop :=
+    ∀ ε > 0, ∃ δ > 0, ∀ x : ℝ, ∀ y : ℝ,
+      A x → A y → Rabs (x - y) < δ → Rabs (f x - f y) < ε.
+
+(** *Sequential criterion for non-uniform continuity*: [f] fails to be
+    uniformly continuous on [A] iff there exist sequences [(xₙ), (yₙ)] in [A]
+    with [|xₙ - yₙ| → 0] but [|f(xₙ) - f(yₙ)|] bounded away from [0].
+
+    Proof idea: negate the ε–δ definition and, for the "only if" direction, take
+    [δ = 1/n] to build the offending sequences. *)
+Lemma non_uniform_continuity_sequential_criterion (f : ℝ → ℝ) (A : ℝ → Prop) :
+    ¬ uniformly_continuous_on f A ⇔
+    (∃ x : ℕ → ℝ, ∃ y : ℕ → ℝ, ∃ ε0 : ℝ,
+      ε0 > 0 ∧ (∀ n : ℕ, A (x n)) ∧ (∀ n : ℕ, A (y n)) ∧
+      (fun n => x n - y n) ⟶ 0 ∧
+      (∀ n : ℕ, Rabs (f (x n) - f (y n)) ≥ ε0)).
+Proof.
+  Admitted.
+
+(** Exercise: [x ↦ √x] is uniformly continuous on [[0, ∞)].
+
+    Proof idea: use the inequality [|√x - √y| ≤ √|x - y|] (which follows from
+    [(√x - √y)² ≤ |x - y|] for [x, y ≥ 0]). Given [ε > 0], choosing [δ = ε²]
+    makes [|x - y| < δ ⇒ |√x - √y| < ε], with the same [δ] everywhere. *)
+Lemma sqrt_uniformly_continuous :
+    uniformly_continuous_on sqrt (fun x => 0 ≤ x).
 Proof.
   Admitted.

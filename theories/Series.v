@@ -12,6 +12,7 @@
 
 From Stdlib Require Import Reals.Reals.
 From Stdlib Require Import Reals.PartSum.
+From Stdlib Require Import Reals.Rpower.
 From Stdlib Require Import micromega.Lia.
 From Stdlib Require Import micromega.Lra.
 From Waterproof Require Import Libs.Analysis.Series.
@@ -566,3 +567,49 @@ Proof.
     { exact Heqseq. }
     exact Hdiff.
 Qed.
+
+(** ** The nth-term test for divergence *)
+
+(** _nth-term test (divergence form)_: if [aₙ] does not converge to [0], then
+    the series [∑ aₙ] diverges.
+
+    Proof idea: the contrapositive of [series_convergent_terms_zero]. If the
+    series converged its terms would tend to [0]. *)
+Lemma nth_term_test_divergence (a : ℕ → ℝ) (Hnz : ¬ (a ⟶ 0)) :
+    ¬ (∃ L : ℝ, partial_sums a ⟶ L).
+Proof.
+  Admitted.
+
+(** ** Two classical series from Lecture 4 *)
+
+(** _The series [∑ 1/k²] converges_.
+
+    Proof idea (Abbott): the partial sums are increasing and bounded above,
+    since [1/k² ≤ 1/(k(k-1)) = 1/(k-1) - 1/k] for [k ≥ 2], a telescoping bound
+    giving [Sₙ ≤ 2]. Monotone convergence then yields a limit. (Here the terms
+    are indexed as [1/(k+1)²] to match Rocq's [k : ℕ] starting at [0].) *)
+Lemma sum_one_over_k_sq_converges :
+    ∃ L : ℝ, partial_sums (fun k => 1 / (INR k + 1) ^ 2) ⟶ L.
+Proof.
+  Admitted.
+
+(** _The harmonic series [∑ 1/k] diverges_.
+
+    Proof idea (Abbott): grouping terms shows
+    [1/3 + 1/4 > 1/2], [1/5 + ⋯ + 1/8 > 1/2], and in general each dyadic block
+    contributes more than [1/2], so the partial sums are unbounded and cannot
+    converge. (Terms indexed as [1/(k+1)] to match Rocq indexing.) *)
+Lemma harmonic_series_diverges :
+    ¬ (∃ L : ℝ, partial_sums (fun k => 1 / (INR k + 1)) ⟶ L).
+Proof.
+  Admitted.
+
+(** _The p-series_: the series [∑ 1/kᵖ] converges iff [p > 1].
+
+    Proof idea: this follows from the integral test ([integral_test], in
+    [Analysis.Integration]) by comparison with [∫ 1/xᵖ dx], which is finite iff
+    [p > 1]. (Terms indexed as [1/(k+1)ᵖ]; real exponentiation is [Rpower].) *)
+Lemma p_series (p : ℝ) :
+    (∃ L : ℝ, partial_sums (fun k => 1 / Rpower (INR k + 1) p) ⟶ L) ⇔ p > 1.
+Proof.
+  Admitted.

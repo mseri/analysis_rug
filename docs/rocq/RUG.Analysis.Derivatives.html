@@ -22,7 +22,7 @@
 </div>
 
 <div class="doc">
-<a id="lab15"></a><h1 class="section">RUG.Analysis.Derivatives — Differentiability and the mean value theorem.</h1>
+<a id="lab18"></a><h1 class="section">RUG.Analysis.Derivatives — Differentiability and the mean value theorem.</h1>
 
 
 <div class="paragraph"> </div>
@@ -62,7 +62,7 @@
 </div>
 
 <div class="doc">
-<a id="lab16"></a><h2 class="section">Differentiable implies continuous</h2>
+<a id="lab19"></a><h2 class="section">Differentiable implies continuous</h2>
 
 <div class="paragraph"> </div>
 
@@ -81,7 +81,7 @@
 </div>
 
 <div class="doc">
-<a id="lab17"></a><h2 class="section">Fermat's theorem</h2>
+<a id="lab20"></a><h2 class="section">Fermat's theorem</h2>
 
 <div class="paragraph"> </div>
 
@@ -102,7 +102,7 @@
 </div>
 
 <div class="doc">
-<a id="lab18"></a><h2 class="section">Mean value theorem</h2>
+<a id="lab21"></a><h2 class="section">Mean value theorem</h2>
 
 <div class="paragraph"> </div>
 
@@ -129,7 +129,7 @@
 </div>
 
 <div class="doc">
-<a id="lab19"></a><h2 class="section">Consequence: zero derivative implies constant</h2>
+<a id="lab22"></a><h2 class="section">Consequence: zero derivative implies constant</h2>
 
 <div class="paragraph"> </div>
 
@@ -146,7 +146,7 @@
 </div>
 
 <div class="doc">
-<a id="lab20"></a><h2 class="section">MVT consequence: bound on function growth</h2>
+<a id="lab23"></a><h2 class="section">MVT consequence: bound on function growth</h2>
 
 <div class="paragraph"> </div>
 
@@ -163,7 +163,7 @@
 </div>
 
 <div class="doc">
-<a id="lab21"></a><h2 class="section">Derivative of the squaring function</h2>
+<a id="lab24"></a><h2 class="section">Derivative of the squaring function</h2>
 
 <div class="paragraph"> </div>
 
@@ -184,7 +184,7 @@
 </div>
 
 <div class="doc">
-<a id="lab22"></a><h2 class="section">Rolle's theorem</h2>
+<a id="lab25"></a><h2 class="section">Rolle's theorem</h2>
 
 <div class="paragraph"> </div>
 
@@ -212,7 +212,88 @@
 </div>
 
 <div class="doc">
-<a id="lab23"></a><h2 class="section">Positive derivative implies strictly increasing</h2>
+<a id="lab26"></a><h2 class="section">Darboux's theorem</h2>
+
+<div class="paragraph"> </div>
+
+ Theorem 10.6 (Darboux): derivatives have the intermediate value property.
+    If <span class="inlinecode"><span class="id" title="var">h</span></span> is differentiable on <span class="inlinecode">[<span class="id" title="var">a</span>,<span class="id" title="var">b</span>]</span> and <span class="inlinecode"><span class="id" title="var">v</span></span> lies strictly between <span class="inlinecode"><span class="id" title="var">h'</span>(<span class="id" title="var">a</span>)</span>
+    and <span class="inlinecode"><span class="id" title="var">h'</span>(<span class="id" title="var">b</span>)</span>, then <span class="inlinecode"><span class="id" title="var">h'</span>(<span class="id" title="var">c</span>)</span> <span class="inlinecode">=</span> <span class="inlinecode"><span class="id" title="var">v</span></span> for some <span class="inlinecode"><span class="id" title="var">c</span></span> <span class="inlinecode">∈</span> <span class="inlinecode">(<span class="id" title="var">a</span>,<span class="id" title="var">b</span>)</span> — even though <span class="inlinecode"><span class="id" title="var">h'</span></span> need
+    not be continuous.
+
+<div class="paragraph"> </div>
+
+    Proof idea: consider <span class="inlinecode"><span class="id" title="var">g</span>(<span class="id" title="var">x</span>)</span> <span class="inlinecode">=</span> <span class="inlinecode"><span class="id" title="var">h</span>(<span class="id" title="var">x</span>)</span> <span class="inlinecode">-</span> <span class="inlinecode"><span class="id" title="var">v</span>·<span class="id" title="var">x</span></span>, which is differentiable with
+    <span class="inlinecode"><span class="id" title="var">g'</span>(<span class="id" title="var">a</span>)</span> and <span class="inlinecode"><span class="id" title="var">g'</span>(<span class="id" title="var">b</span>)</span> of opposite sign. By the extreme value theorem <span class="inlinecode"><span class="id" title="var">g</span></span>
+    attains an interior extremum at some <span class="inlinecode"><span class="id" title="var">c</span></span> <span class="inlinecode">∈</span> <span class="inlinecode">(<span class="id" title="var">a</span>,<span class="id" title="var">b</span>)</span>, and Fermat's theorem gives
+    <span class="inlinecode"><span class="id" title="var">g'</span>(<span class="id" title="var">c</span>)</span> <span class="inlinecode">=</span> <span class="inlinecode">0</span>, i.e. <span class="inlinecode"><span class="id" title="var">h'</span>(<span class="id" title="var">c</span>)</span> <span class="inlinecode">=</span> <span class="inlinecode"><span class="id" title="var">v</span></span>. 
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <a id="darboux_theorem" class="idref" href="#darboux_theorem"><span class="id" title="lemma">darboux_theorem</span></a> (<a id="h:81" class="idref" href="#h:81"><span class="id" title="binder">h</span></a> : <span class="id" title="notation">ℝ</span> <span class="id" title="notation">→</span> <span class="id" title="notation">ℝ</span>) (<a id="a:82" class="idref" href="#a:82"><span class="id" title="binder">a</span></a> <a id="b:83" class="idref" href="#b:83"><span class="id" title="binder">b</span></a> <a id="v:84" class="idref" href="#v:84"><span class="id" title="binder">v</span></a> : <span class="id" title="notation">ℝ</span>) (<a id="Hab:85" class="idref" href="#Hab:85"><span class="id" title="binder">Hab</span></a> : <a class="idref" href="RUG.Analysis.Derivatives.html#a:82"><span class="id" title="variable">a</span></a> <span class="id" title="notation">&lt;</span> <a class="idref" href="RUG.Analysis.Derivatives.html#b:83"><span class="id" title="variable">b</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<a id="Hd:86" class="idref" href="#Hd:86"><span class="id" title="binder">Hd</span></a> : <span class="id" title="definition">derivable</span> <a class="idref" href="RUG.Analysis.Derivatives.html#h:81"><span class="id" title="variable">h</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<a id="Hva:87" class="idref" href="#Hva:87"><span class="id" title="binder">Hva</span></a> : <span class="id" title="definition">derive_pt</span> <a class="idref" href="RUG.Analysis.Derivatives.html#h:81"><span class="id" title="variable">h</span></a> <a class="idref" href="RUG.Analysis.Derivatives.html#a:82"><span class="id" title="variable">a</span></a> (<a class="idref" href="RUG.Analysis.Derivatives.html#Hd:86"><span class="id" title="variable">Hd</span></a> <a class="idref" href="RUG.Analysis.Derivatives.html#a:82"><span class="id" title="variable">a</span></a>) <span class="id" title="notation">&lt;</span> <a class="idref" href="RUG.Analysis.Derivatives.html#v:84"><span class="id" title="variable">v</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<a id="Hvb:88" class="idref" href="#Hvb:88"><span class="id" title="binder">Hvb</span></a> : <a class="idref" href="RUG.Analysis.Derivatives.html#v:84"><span class="id" title="variable">v</span></a> <span class="id" title="notation">&lt;</span> <span class="id" title="definition">derive_pt</span> <a class="idref" href="RUG.Analysis.Derivatives.html#h:81"><span class="id" title="variable">h</span></a> <a class="idref" href="RUG.Analysis.Derivatives.html#b:83"><span class="id" title="variable">b</span></a> (<a class="idref" href="RUG.Analysis.Derivatives.html#Hd:86"><span class="id" title="variable">Hd</span></a> <a class="idref" href="RUG.Analysis.Derivatives.html#b:83"><span class="id" title="variable">b</span></a>)) :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="notation">∃</span> <a id="c:89" class="idref" href="#c:89"><span class="id" title="binder"><span id="c:90" class="id">c</span></span></a><span class="id" title="notation">,</span> <a class="idref" href="RUG.Analysis.Derivatives.html#a:82"><span class="id" title="variable">a</span></a> <span class="id" title="notation">&lt;</span> <a class="idref" href="RUG.Analysis.Derivatives.html#c:89"><span class="id" title="variable">c</span></a> <span class="id" title="notation">∧</span> <a class="idref" href="RUG.Analysis.Derivatives.html#c:89"><span class="id" title="variable">c</span></a> <span class="id" title="notation">&lt;</span> <a class="idref" href="RUG.Analysis.Derivatives.html#b:83"><span class="id" title="variable">b</span></a> <span class="id" title="notation">∧</span> <span class="id" title="definition">derive_pt</span> <a class="idref" href="RUG.Analysis.Derivatives.html#h:81"><span class="id" title="variable">h</span></a> <a class="idref" href="RUG.Analysis.Derivatives.html#c:89"><span class="id" title="variable">c</span></a> (<a class="idref" href="RUG.Analysis.Derivatives.html#Hd:86"><span class="id" title="variable">Hd</span></a> <a class="idref" href="RUG.Analysis.Derivatives.html#c:89"><span class="id" title="variable">c</span></a>) <a class="idref" href="http://rocq-prover.org/doc/V9.1.1/stdlib//Corelib.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="RUG.Analysis.Derivatives.html#v:84"><span class="id" title="variable">v</span></a>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a id="lab27"></a><h2 class="section">A differentiability example</h2>
+
+<div class="paragraph"> </div>
+
+ Exercise: the function <span class="inlinecode"><span class="id" title="var">g</span>(<span class="id" title="var">x</span>)</span> <span class="inlinecode">=</span> <span class="inlinecode"><span class="id" title="var">x</span>²·<span class="id" title="var">sin</span>(1/<span class="id" title="var">x</span>)</span> for <span class="inlinecode"><span class="id" title="var">x</span></span> <span class="inlinecode">≠</span> <span class="inlinecode">0</span> and <span class="inlinecode"><span class="id" title="var">g</span>(0)</span> <span class="inlinecode">=</span> <span class="inlinecode">0</span> is
+    differentiable at <span class="inlinecode">0</span> with <span class="inlinecode"><span class="id" title="var">g'</span>(0)</span> <span class="inlinecode">=</span> <span class="inlinecode">0</span>, yet <span class="inlinecode"><span class="id" title="var">g'</span></span> is not continuous at <span class="inlinecode">0</span>.
+
+<div class="paragraph"> </div>
+
+    Proof idea: the difference quotient <span class="inlinecode"><span class="id" title="var">g</span>(<span class="id" title="var">x</span>)/<span class="id" title="var">x</span></span> <span class="inlinecode">=</span> <span class="inlinecode"><span class="id" title="var">x</span>·<span class="id" title="var">sin</span>(1/<span class="id" title="var">x</span>)</span> <span class="inlinecode">→</span> <span class="inlinecode">0</span> as <span class="inlinecode"><span class="id" title="var">x</span></span> <span class="inlinecode">→</span> <span class="inlinecode">0</span> by
+    the squeeze theorem, so <span class="inlinecode"><span class="id" title="var">g'</span>(0)</span> <span class="inlinecode">=</span> <span class="inlinecode">0</span>. For <span class="inlinecode"><span class="id" title="var">x</span></span> <span class="inlinecode">≠</span> <span class="inlinecode">0</span>,
+    <span class="inlinecode"><span class="id" title="var">g'</span>(<span class="id" title="var">x</span>)</span> <span class="inlinecode">=</span> <span class="inlinecode">2<span class="id" title="var">x</span>·<span class="id" title="var">sin</span>(1/<span class="id" title="var">x</span>)</span> <span class="inlinecode">-</span> <span class="inlinecode"><span class="id" title="var">cos</span>(1/<span class="id" title="var">x</span>)</span> has no limit as <span class="inlinecode"><span class="id" title="var">x</span></span> <span class="inlinecode">→</span> <span class="inlinecode">0</span>. 
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <a id="differentiable_example" class="idref" href="#differentiable_example"><span class="id" title="lemma">differentiable_example</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<a id="g:91" class="idref" href="#g:91"><span class="id" title="binder">g</span></a> : <span class="id" title="notation">ℝ</span> <span class="id" title="notation">→</span> <span class="id" title="notation">ℝ</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<a id="Hg:94" class="idref" href="#Hg:94"><span class="id" title="binder">Hg</span></a> : <span class="id" title="notation">∀</span> <a id="x:92" class="idref" href="#x:92"><span class="id" title="binder"><span id="x:93" class="id">x</span></span></a> <a id="x:93" class="idref" href="#x:93"><span class="id" title="binder">:</span></a> <a id="x:93" class="idref" href="#x:93"><span class="id" title="binder">ℝ</span></a><span class="id" title="notation">,</span> <a class="idref" href="RUG.Analysis.Derivatives.html#x:92"><span class="id" title="variable">x</span></a> <span class="id" title="notation">≠</span> 0 <span class="id" title="notation">→</span> <a class="idref" href="RUG.Analysis.Derivatives.html#g:91"><span class="id" title="variable">g</span></a> <a class="idref" href="RUG.Analysis.Derivatives.html#x:92"><span class="id" title="variable">x</span></a> <a class="idref" href="http://rocq-prover.org/doc/V9.1.1/stdlib//Corelib.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="RUG.Analysis.Derivatives.html#x:92"><span class="id" title="variable">x</span></a> <span class="id" title="notation">^</span> 2 <span class="id" title="notation">×</span> <span class="id" title="definition">sin</span> <span class="id" title="notation">(</span>1 <span class="id" title="notation">/</span> <a class="idref" href="RUG.Analysis.Derivatives.html#x:92"><span class="id" title="variable">x</span></a><span class="id" title="notation">)</span>) (<a id="Hg0:95" class="idref" href="#Hg0:95"><span class="id" title="binder">Hg0</span></a> : <a class="idref" href="RUG.Analysis.Derivatives.html#g:91"><span class="id" title="variable">g</span></a> 0 <a class="idref" href="http://rocq-prover.org/doc/V9.1.1/stdlib//Corelib.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> 0) :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="notation">∃</span> <a id="Hd:96" class="idref" href="#Hd:96"><span class="id" title="binder"><span id="Hd:97" class="id">Hd</span></span></a> <a id="Hd:97" class="idref" href="#Hd:97"><span class="id" title="binder">:</span></a> <a id="Hd:97" class="idref" href="#Hd:97"><span class="id" title="binder">derivable_pt</span></a> <a id="Hd:97" class="idref" href="#Hd:97"><span class="id" title="binder">g</span></a> <a id="Hd:97" class="idref" href="#Hd:97"><span class="id" title="binder">0</span></a><span class="id" title="notation">,</span> <span class="id" title="definition">derive_pt</span> <a class="idref" href="RUG.Analysis.Derivatives.html#g:91"><span class="id" title="variable">g</span></a> 0 <a class="idref" href="RUG.Analysis.Derivatives.html#Hd:96"><span class="id" title="variable">Hd</span></a> <a class="idref" href="http://rocq-prover.org/doc/V9.1.1/stdlib//Corelib.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> 0.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a id="lab28"></a><h2 class="section">A continuous nowhere-differentiable function</h2>
+
+<div class="paragraph"> </div>
+
+ Pathology: there exists a function <span class="inlinecode"><span class="id" title="var">f</span></span> <span class="inlinecode">:</span> <span class="inlinecode"><span class="id" title="var">ℝ</span></span> <span class="inlinecode">→</span> <span class="inlinecode"><span class="id" title="var">ℝ</span></span> that is continuous at every
+    point yet differentiable at no point.
+
+<div class="paragraph"> </div>
+
+    Proof idea (Weierstrass / Abbott's construction): let <span class="inlinecode"><span class="id" title="var">w</span>(<span class="id" title="var">x</span>)</span> be the
+    distance from <span class="inlinecode"><span class="id" title="var">x</span></span> to the nearest integer, and set
+    <span class="inlinecode"><span class="id" title="var">f</span>(<span class="id" title="var">x</span>)</span> <span class="inlinecode">=</span> <span class="inlinecode">∑</span> <span class="inlinecode">(1/2)ⁿ</span> <span class="inlinecode">·</span> <span class="inlinecode"><span class="id" title="var">w</span>(2ⁿ</span> <span class="inlinecode"><span class="id" title="var">x</span>)</span>. The series converges uniformly (Weierstrass
+    M-test) so <span class="inlinecode"><span class="id" title="var">f</span></span> is continuous; a careful estimate of difference quotients
+    along dyadic points shows <span class="inlinecode"><span class="id" title="var">f</span></span> is differentiable nowhere. 
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <a id="nowhere_differentiable_function" class="idref" href="#nowhere_differentiable_function"><span class="id" title="lemma">nowhere_differentiable_function</span></a> :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="notation">∃</span> <a id="f:98" class="idref" href="#f:98"><span class="id" title="binder"><span id="f:99" class="id">f</span></span></a> <a id="f:99" class="idref" href="#f:99"><span class="id" title="binder">:</span></a> <a id="f:99" class="idref" href="#f:99"><span class="id" title="binder">ℝ</span></a> <a id="f:99" class="idref" href="#f:99"><span class="id" title="binder">→</span></a> <a id="f:99" class="idref" href="#f:99"><span class="id" title="binder">ℝ</span></a><span class="id" title="notation">,</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="notation">(</span><span class="id" title="notation">∀</span> <a id="x:100" class="idref" href="#x:100"><span class="id" title="binder"><span id="x:101" class="id">x</span></span></a> <a id="x:101" class="idref" href="#x:101"><span class="id" title="binder">:</span></a> <a id="x:101" class="idref" href="#x:101"><span class="id" title="binder">ℝ</span></a><span class="id" title="notation">,</span> <span class="id" title="definition">continuity_pt</span> <a class="idref" href="RUG.Analysis.Derivatives.html#f:98"><span class="id" title="variable">f</span></a> <a class="idref" href="RUG.Analysis.Derivatives.html#x:100"><span class="id" title="variable">x</span></a><span class="id" title="notation">)</span> <span class="id" title="notation">∧</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="notation">(</span><span class="id" title="notation">∀</span> <a id="x:102" class="idref" href="#x:102"><span class="id" title="binder"><span id="x:103" class="id">x</span></span></a> <a id="x:103" class="idref" href="#x:103"><span class="id" title="binder">:</span></a> <a id="x:103" class="idref" href="#x:103"><span class="id" title="binder">ℝ</span></a><span class="id" title="notation">,</span> <span class="id" title="notation">¬</span> <span class="id" title="notation">(</span><span class="id" title="notation">∃</span> <a id="l:104" class="idref" href="#l:104"><span class="id" title="binder"><span id="l:105" class="id">l</span></span></a> <a id="l:105" class="idref" href="#l:105"><span class="id" title="binder">:</span></a> <a id="l:105" class="idref" href="#l:105"><span class="id" title="binder">ℝ</span></a><span class="id" title="notation">,</span> <span class="id" title="definition">derivable_pt_lim</span> <a class="idref" href="RUG.Analysis.Derivatives.html#f:98"><span class="id" title="variable">f</span></a> <a class="idref" href="RUG.Analysis.Derivatives.html#x:102"><span class="id" title="variable">x</span></a> <a class="idref" href="RUG.Analysis.Derivatives.html#l:104"><span class="id" title="variable">l</span></a><span class="id" title="notation">)</span><span class="id" title="notation">)</span>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a id="lab29"></a><h2 class="section">Positive derivative implies strictly increasing</h2>
 
 <div class="paragraph"> </div>
 
@@ -226,10 +307,10 @@
     and <span class="inlinecode"><span class="id" title="var">y</span></span> <span class="inlinecode">-</span> <span class="inlinecode"><span class="id" title="var">x</span></span> <span class="inlinecode">&gt;</span> <span class="inlinecode">0</span>, we get <span class="inlinecode">ψ(<span class="id" title="var">y</span>)</span> <span class="inlinecode">&gt;</span> <span class="inlinecode">ψ(<span class="id" title="var">x</span>)</span>. 
 </div>
 <div class="code">
-<span class="id" title="keyword">Lemma</span> <a id="positive_derivative_strictly_increasing" class="idref" href="#positive_derivative_strictly_increasing"><span class="id" title="lemma">positive_derivative_strictly_increasing</span></a> (<a id="psi:81" class="idref" href="#psi:81"><span class="id" title="binder">psi</span></a> : <span class="id" title="notation">ℝ</span> <span class="id" title="notation">→</span> <span class="id" title="notation">ℝ</span>) (<a id="Hd:82" class="idref" href="#Hd:82"><span class="id" title="binder">Hd</span></a> : <span class="id" title="definition">derivable</span> <a class="idref" href="RUG.Analysis.Derivatives.html#psi:81"><span class="id" title="variable">psi</span></a>)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;(<a id="a:83" class="idref" href="#a:83"><span class="id" title="binder">a</span></a> <a id="v:84" class="idref" href="#v:84"><span class="id" title="binder">v</span></a> : <span class="id" title="notation">ℝ</span>)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;(<a id="Hderiv_pos:87" class="idref" href="#Hderiv_pos:87"><span class="id" title="binder">Hderiv_pos</span></a> : <span class="id" title="notation">∀</span> <a id="x:85" class="idref" href="#x:85"><span class="id" title="binder"><span id="x:86" class="id">x</span></span></a> <a id="x:86" class="idref" href="#x:86"><span class="id" title="binder">:</span></a> <a id="x:86" class="idref" href="#x:86"><span class="id" title="binder">ℝ</span></a><span class="id" title="notation">,</span> <a class="idref" href="RUG.Analysis.Derivatives.html#a:83"><span class="id" title="variable">a</span></a> <span class="id" title="notation">&lt;</span> <a class="idref" href="RUG.Analysis.Derivatives.html#x:85"><span class="id" title="variable">x</span></a> <span class="id" title="notation">∧</span> <a class="idref" href="RUG.Analysis.Derivatives.html#x:85"><span class="id" title="variable">x</span></a> <span class="id" title="notation">&lt;</span> <a class="idref" href="RUG.Analysis.Derivatives.html#v:84"><span class="id" title="variable">v</span></a> <span class="id" title="notation">→</span> 0 <span class="id" title="notation">&lt;</span> <span class="id" title="definition">derive_pt</span> <a class="idref" href="RUG.Analysis.Derivatives.html#psi:81"><span class="id" title="variable">psi</span></a> <a class="idref" href="RUG.Analysis.Derivatives.html#x:85"><span class="id" title="variable">x</span></a> (<a class="idref" href="RUG.Analysis.Derivatives.html#Hd:82"><span class="id" title="variable">Hd</span></a> <a class="idref" href="RUG.Analysis.Derivatives.html#x:85"><span class="id" title="variable">x</span></a>)) :<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="notation">∀</span> <a id="x:88" class="idref" href="#x:88"><span class="id" title="binder"><span id="x:89" class="id"><span id="x:90" class="id"><span id="x:91" class="id">x</span></span></span></span></a> <span class="id" title="notation">∈</span> <span class="id" title="notation">ℝ</span><span class="id" title="notation">,</span> <span class="id" title="notation">∀</span> <a id="y:92" class="idref" href="#y:92"><span class="id" title="binder"><span id="y:93" class="id"><span id="y:94" class="id"><span id="y:95" class="id">y</span></span></span></span></a> <span class="id" title="notation">∈</span> <span class="id" title="notation">ℝ</span><span class="id" title="notation">,</span> <a class="idref" href="RUG.Analysis.Derivatives.html#a:83"><span class="id" title="variable">a</span></a> <span class="id" title="notation">≤</span> <a class="idref" href="RUG.Analysis.Derivatives.html#x:88"><span class="id" title="variable">x</span></a> <span class="id" title="notation">→</span> <a class="idref" href="RUG.Analysis.Derivatives.html#x:88"><span class="id" title="variable">x</span></a> <span class="id" title="notation">&lt;</span> <a class="idref" href="RUG.Analysis.Derivatives.html#y:92"><span class="id" title="variable">y</span></a> <span class="id" title="notation">→</span> <a class="idref" href="RUG.Analysis.Derivatives.html#y:92"><span class="id" title="variable">y</span></a> <span class="id" title="notation">≤</span> <a class="idref" href="RUG.Analysis.Derivatives.html#v:84"><span class="id" title="variable">v</span></a> <span class="id" title="notation">→</span> <a class="idref" href="RUG.Analysis.Derivatives.html#psi:81"><span class="id" title="variable">psi</span></a> <a class="idref" href="RUG.Analysis.Derivatives.html#x:88"><span class="id" title="variable">x</span></a> <span class="id" title="notation">&lt;</span> <a class="idref" href="RUG.Analysis.Derivatives.html#psi:81"><span class="id" title="variable">psi</span></a> <a class="idref" href="RUG.Analysis.Derivatives.html#y:92"><span class="id" title="variable">y</span></a>.<br/>
+<span class="id" title="keyword">Lemma</span> <a id="positive_derivative_strictly_increasing" class="idref" href="#positive_derivative_strictly_increasing"><span class="id" title="lemma">positive_derivative_strictly_increasing</span></a> (<a id="psi:106" class="idref" href="#psi:106"><span class="id" title="binder">psi</span></a> : <span class="id" title="notation">ℝ</span> <span class="id" title="notation">→</span> <span class="id" title="notation">ℝ</span>) (<a id="Hd:107" class="idref" href="#Hd:107"><span class="id" title="binder">Hd</span></a> : <span class="id" title="definition">derivable</span> <a class="idref" href="RUG.Analysis.Derivatives.html#psi:106"><span class="id" title="variable">psi</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<a id="a:108" class="idref" href="#a:108"><span class="id" title="binder">a</span></a> <a id="v:109" class="idref" href="#v:109"><span class="id" title="binder">v</span></a> : <span class="id" title="notation">ℝ</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<a id="Hderiv_pos:112" class="idref" href="#Hderiv_pos:112"><span class="id" title="binder">Hderiv_pos</span></a> : <span class="id" title="notation">∀</span> <a id="x:110" class="idref" href="#x:110"><span class="id" title="binder"><span id="x:111" class="id">x</span></span></a> <a id="x:111" class="idref" href="#x:111"><span class="id" title="binder">:</span></a> <a id="x:111" class="idref" href="#x:111"><span class="id" title="binder">ℝ</span></a><span class="id" title="notation">,</span> <a class="idref" href="RUG.Analysis.Derivatives.html#a:108"><span class="id" title="variable">a</span></a> <span class="id" title="notation">&lt;</span> <a class="idref" href="RUG.Analysis.Derivatives.html#x:110"><span class="id" title="variable">x</span></a> <span class="id" title="notation">∧</span> <a class="idref" href="RUG.Analysis.Derivatives.html#x:110"><span class="id" title="variable">x</span></a> <span class="id" title="notation">&lt;</span> <a class="idref" href="RUG.Analysis.Derivatives.html#v:109"><span class="id" title="variable">v</span></a> <span class="id" title="notation">→</span> 0 <span class="id" title="notation">&lt;</span> <span class="id" title="definition">derive_pt</span> <a class="idref" href="RUG.Analysis.Derivatives.html#psi:106"><span class="id" title="variable">psi</span></a> <a class="idref" href="RUG.Analysis.Derivatives.html#x:110"><span class="id" title="variable">x</span></a> (<a class="idref" href="RUG.Analysis.Derivatives.html#Hd:107"><span class="id" title="variable">Hd</span></a> <a class="idref" href="RUG.Analysis.Derivatives.html#x:110"><span class="id" title="variable">x</span></a>)) :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="notation">∀</span> <a id="x:113" class="idref" href="#x:113"><span class="id" title="binder"><span id="x:114" class="id"><span id="x:115" class="id"><span id="x:116" class="id">x</span></span></span></span></a> <span class="id" title="notation">∈</span> <span class="id" title="notation">ℝ</span><span class="id" title="notation">,</span> <span class="id" title="notation">∀</span> <a id="y:117" class="idref" href="#y:117"><span class="id" title="binder"><span id="y:118" class="id"><span id="y:119" class="id"><span id="y:120" class="id">y</span></span></span></span></a> <span class="id" title="notation">∈</span> <span class="id" title="notation">ℝ</span><span class="id" title="notation">,</span> <a class="idref" href="RUG.Analysis.Derivatives.html#a:108"><span class="id" title="variable">a</span></a> <span class="id" title="notation">≤</span> <a class="idref" href="RUG.Analysis.Derivatives.html#x:113"><span class="id" title="variable">x</span></a> <span class="id" title="notation">→</span> <a class="idref" href="RUG.Analysis.Derivatives.html#x:113"><span class="id" title="variable">x</span></a> <span class="id" title="notation">&lt;</span> <a class="idref" href="RUG.Analysis.Derivatives.html#y:117"><span class="id" title="variable">y</span></a> <span class="id" title="notation">→</span> <a class="idref" href="RUG.Analysis.Derivatives.html#y:117"><span class="id" title="variable">y</span></a> <span class="id" title="notation">≤</span> <a class="idref" href="RUG.Analysis.Derivatives.html#v:109"><span class="id" title="variable">v</span></a> <span class="id" title="notation">→</span> <a class="idref" href="RUG.Analysis.Derivatives.html#psi:106"><span class="id" title="variable">psi</span></a> <a class="idref" href="RUG.Analysis.Derivatives.html#x:113"><span class="id" title="variable">x</span></a> <span class="id" title="notation">&lt;</span> <a class="idref" href="RUG.Analysis.Derivatives.html#psi:106"><span class="id" title="variable">psi</span></a> <a class="idref" href="RUG.Analysis.Derivatives.html#y:117"><span class="id" title="variable">y</span></a>.<br/>
 <span class="id" title="keyword">Proof</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="var">Admitted</span>.<br/>
 </div>

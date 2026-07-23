@@ -152,3 +152,175 @@ Lemma geometric_series_uniform (r : ℝ) (Hr0 : 0 ≤ r) (Hr1 : r < 1) :
         (fun n x => sum_f_R0 (fun k => x ^ k) n) g (fun x => -r ≤ x ∧ x ≤ r).
 Proof.
   Admitted.
+
+(** ** The supremum characterization of uniform convergence *)
+
+(** _Mₙ-test_: [(fₙ) ⇉ g] uniformly on [A] iff there is a sequence [Mₙ → 0]
+    dominating the pointwise errors, [|fₙ(x) - g(x)| ≤ Mₙ] for all [x ∈ A].
+    (One may take [Mₙ = sup_{x ∈ A} |fₙ(x) - g(x)|].)
+
+    Proof idea: (⇒) the uniform threshold provides such a bounding [Mₙ].
+    (⇐) [Mₙ → 0] gives a single [N] making all errors [< ε] simultaneously. *)
+Lemma uniform_convergence_sup_characterization
+    (fn : ℕ → ℝ → ℝ) (g : ℝ → ℝ) (A : subset ℝ) :
+    converges_uniformly fn g A ⇔
+    (∃ M : ℕ → ℝ,
+      (∀ n : ℕ, ∀ x : ℝ, A x → Rabs (fn n x - g x) ≤ M n) ∧ M ⟶ 0).
+Proof.
+  Admitted.
+
+(** ** The example [fₙ(x) = xⁿ] *)
+
+(** [fₙ(x) = xⁿ] converges pointwise to [0] on [[0, 1)].
+
+    Proof idea: for fixed [0 ≤ x < 1], [xⁿ → 0] (geometric decay); the rate
+    depends on how close [x] is to [1]. *)
+Lemma x_pow_n_pointwise :
+    converges_pointwise (fun n x => x ^ n) (fun _ => 0)
+      (fun x => 0 ≤ x ∧ x < 1).
+Proof.
+  Admitted.
+
+(** The convergence [xⁿ → 0] on [[0, 1)] is *not* uniform.
+
+    Proof idea: for any [n], points [x] near [1] have [xⁿ] near [1], so
+    [sup_{x ∈ [0,1)} |xⁿ - 0| = 1] does not tend to [0]; equivalently the
+    [Mₙ]-test fails. *)
+Lemma x_pow_n_not_uniform :
+    ¬ (∃ g : ℝ → ℝ,
+        converges_uniformly (fun n x => x ^ n) g (fun x => 0 ≤ x ∧ x < 1)).
+Proof.
+  Admitted.
+
+(** ** The triangle (tent) sequence *)
+
+(** The *triangle sequence* [Tₙ] is the tent of height [n] and base
+    [(0, 2/n)] centred at [1/n]:
+    [Tₙ(x) = max(0, n - n²·|x - 1/n|)]. *)
+Definition triangle_sequence : ℕ → ℝ → ℝ :=
+    fun n x => Rmax 0 (INR n - (INR n) ^ 2 * Rabs (x - / INR n)).
+
+(** The triangle sequence converges pointwise to [0] on [[0, 1]], even though
+    each [Tₙ] has a spike of height [n].
+
+    Proof idea: [Tₙ(0) = 0] for all [n]; for a fixed [x > 0], once [2/n < x] the
+    support of [Tₙ] no longer contains [x], so [Tₙ(x) = 0] eventually. (This is
+    the standard example where [lim ∫ Tₙ ≠ ∫ lim Tₙ].) *)
+Lemma triangle_sequence_pointwise :
+    converges_pointwise triangle_sequence (fun _ => 0)
+      (fun x => 0 ≤ x ∧ x ≤ 1).
+Proof.
+  Admitted.
+
+(** ** Uniform convergence of [√(x² + 1/n)] *)
+
+(** Exercise: [fₙ(x) = √(x² + 1/n)] converges uniformly to [|x|] on all of [ℝ].
+
+    Proof idea: [0 ≤ √(x² + 1/n) - |x| = (1/n)/(√(x² + 1/n) + |x|) ≤ √(1/n)],
+    a bound independent of [x] tending to [0]. *)
+Lemma sqrt_x_sq_plus_1_over_n_uniform :
+    converges_uniformly (fun n x => sqrt (x ^ 2 + / INR n)) Rabs
+      (fun _ => True).
+Proof.
+  Admitted.
+
+(** ** Uniform convergence and differentiation *)
+
+(** _Differentiability transfer lemma_ (Abbott 6.3.1): if each [fₙ] is
+    differentiable on [[a, b]] with derivative [dfnₙ], and the derivatives
+    [(dfnₙ)] are uniformly Cauchy, then the differences [fₙ - fₘ] are uniformly
+    Lipschitz, with constant controlled by the derivative gap.
+
+    Proof idea: apply the mean value theorem to [fₙ - fₘ] on [[x, y]]:
+    [(fₙ - fₘ)(x) - (fₙ - fₘ)(y) = ((dfnₙ - dfnₘ)(ξ))·(x - y)] for some [ξ]. *)
+Lemma differentiability_transfer_lemma
+    (fn : ℕ → ℝ → ℝ) (dfn : ℕ → ℝ → ℝ) (a b : ℝ) (Hab : a < b)
+    (Hderiv : ∀ n : ℕ, ∀ x : ℝ, a ≤ x → x ≤ b →
+        ∃ Hd : derivable_pt (fn n) x, derive_pt (fn n) x Hd = dfn n x)
+    (Hdcauchy : ∀ ε > 0, ∃ N1 ∈ ℕ, ∀ n ≥ N1, ∀ m ≥ N1, ∀ x : ℝ,
+        a ≤ x → x ≤ b → Rabs (dfn n x - dfn m x) < ε) :
+    ∀ ε > 0, ∃ N1 ∈ ℕ, ∀ n ≥ N1, ∀ m ≥ N1, ∀ x : ℝ, ∀ y : ℝ,
+      a ≤ x → x ≤ b → a ≤ y → y ≤ b →
+      Rabs ((fn n x - fn m x) - (fn n y - fn m y)) ≤ ε * Rabs (x - y).
+Proof.
+  Admitted.
+
+(** _Differentiability theorem_ (Abbott 6.3.3): if each [fₙ] is differentiable
+    on [[a, b]] with derivative [dfnₙ], the derivatives converge uniformly to
+    [h], and [(fₙ)] converges at one point, then [(fₙ)] converges uniformly to a
+    limit [g] with [g' = h].
+
+    Proof idea: the transfer lemma makes [(fₙ)] uniformly Cauchy (hence
+    uniformly convergent to some [g]); a difference-quotient estimate shows [g]
+    is differentiable with [g' = h = lim dfnₙ]. *)
+Theorem uniform_differentiability_theorem
+    (fn : ℕ → ℝ → ℝ) (dfn : ℕ → ℝ → ℝ) (g h : ℝ → ℝ) (a b : ℝ) (Hab : a < b)
+    (Hderiv : ∀ n : ℕ, ∀ x : ℝ, a ≤ x → x ≤ b →
+        ∃ Hd : derivable_pt (fn n) x, derive_pt (fn n) x Hd = dfn n x)
+    (Hpt : ∃ x0 : ℝ, a ≤ x0 ∧ x0 ≤ b ∧ (fun n => fn n x0) ⟶ g x0)
+    (Hdunif : converges_uniformly dfn h (fun x => a ≤ x ∧ x ≤ b)) :
+    converges_uniformly fn g (fun x => a ≤ x ∧ x ≤ b) ∧
+    (∀ x : ℝ, a < x → x < b →
+        ∃ Hd : derivable_pt g x, derive_pt g x Hd = h x).
+Proof.
+  Admitted.
+
+(** ** Series of functions *)
+
+(** The partial sums [Sₙ(x) = ∑_{k=0}^n fₖ(x)] of a series of functions. *)
+Definition series_partial_sums (fn : ℕ → ℝ → ℝ) : ℕ → ℝ → ℝ :=
+    fun n x => sum_f_R0 (fun k => fn k x) n.
+
+(** The series [∑ fₙ] *converges uniformly* to [g] on [A] when its partial sums
+    do. *)
+Definition series_converges_uniformly
+    (fn : ℕ → ℝ → ℝ) (g : ℝ → ℝ) (A : subset ℝ) : Prop :=
+    converges_uniformly (series_partial_sums fn) g A.
+
+(** _Cauchy criterion for series of functions_: [∑ fₙ] converges uniformly on
+    [A] iff its partial sums are uniformly Cauchy — equivalently the tails
+    [∑_{k=n+1}^m fₖ] are uniformly small.
+
+    Proof idea: apply the Cauchy criterion for uniform convergence
+    ([uniform_cauchy_criterion]) to the sequence of partial sums. *)
+Lemma series_cauchy_criterion_functions (fn : ℕ → ℝ → ℝ) (A : subset ℝ) :
+    (∃ g : ℝ → ℝ, series_converges_uniformly fn g A) ⇔
+    (∀ ε > 0, ∃ N1 ∈ ℕ, ∀ n ≥ N1, ∀ m ≥ N1, ∀ x ∈ A,
+      Rabs (series_partial_sums fn n x - series_partial_sums fn m x) < ε).
+Proof.
+  Admitted.
+
+(** _Term-wise continuity of a series_: if each [fₙ] is continuous at [a] and
+    [∑ fₙ] converges uniformly on a neighbourhood of [a], then the sum is
+    continuous at [a].
+
+    Proof idea: each partial sum is continuous (finite sum of continuous
+    functions); apply [uniform_limit_continuous] to the partial sums. *)
+Theorem termwise_continuity_series
+    (fn : ℕ → ℝ → ℝ) (g : ℝ → ℝ) (a : ℝ)
+    (Hcont : ∀ n ∈ ℕ, continuity_pt (fn n) a)
+    (Hunif : ∃ A : subset ℝ, A a ∧ series_converges_uniformly fn g A) :
+    continuity_pt g a.
+Proof.
+  Admitted.
+
+(** _Term-wise differentiability of a series_ (Abbott 6.4.3): if each [fₙ] is
+    differentiable on [[a, b]] with derivative [dfnₙ], the series of derivatives
+    [∑ dfnₙ] converges uniformly to [h], and [∑ fₙ] converges at one point, then
+    [∑ fₙ] converges uniformly to a differentiable [g] with [g' = h].
+
+    Proof idea: apply [uniform_differentiability_theorem] to the partial sums,
+    whose derivatives are the partial sums of the derivative series. Compact
+    intervals are essential. *)
+Theorem termwise_differentiability_series
+    (fn : ℕ → ℝ → ℝ) (dfn : ℕ → ℝ → ℝ) (g h : ℝ → ℝ) (a b : ℝ) (Hab : a < b)
+    (Hderiv : ∀ n : ℕ, ∀ x : ℝ, a ≤ x → x ≤ b →
+        ∃ Hd : derivable_pt (fn n) x, derive_pt (fn n) x Hd = dfn n x)
+    (Hpt : ∃ x0 : ℝ, a ≤ x0 ∧ x0 ≤ b ∧
+        (fun n => series_partial_sums fn n x0) ⟶ g x0)
+    (Hdunif : series_converges_uniformly dfn h (fun x => a ≤ x ∧ x ≤ b)) :
+    series_converges_uniformly fn g (fun x => a ≤ x ∧ x ≤ b) ∧
+    (∀ x : ℝ, a < x → x < b →
+        ∃ Hd : derivable_pt g x, derive_pt g x Hd = h x).
+Proof.
+  Admitted.

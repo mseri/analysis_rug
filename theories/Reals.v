@@ -390,6 +390,17 @@ Proof.
     |(|x| - |y|)| ≤ |x - y|.
 Qed.
 
+(** Absolute-value bound: [|x| ≤ a] iff [-a ≤ x ≤ a].
+
+    Proof idea: if [|x| ≤ a] then both [x ≤ |x| ≤ a] and [-x ≤ |x| ≤ a], the
+    latter giving [-a ≤ x]. Conversely, [|x| = max{x, -x} ≤ a] whenever both
+    [x ≤ a] and [-x ≤ a]. This is the standard "unfolding" of an absolute-value
+    inequality used throughout the ε-arguments. *)
+Lemma abs_le_iff (x a : ℝ) :
+    |x| ≤ a ⇔ (- a ≤ x ∧ x ≤ a).
+Proof.
+  Admitted.
+
 (** ** Density of the rationals *)
 
 (** Density of the rationals: between any two reals [lo < hi] there is a rational

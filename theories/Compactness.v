@@ -6,6 +6,7 @@
   properties of compact sets, and the nested compact sets property. *)
 
 From Stdlib Require Import Reals.Reals.
+From Stdlib Require Import Lists.List.
 
 From Waterproof Require Export Notations.Common.
 From Waterproof Require Export Notations.Reals.
@@ -85,6 +86,43 @@ Theorem heine_borel (K : ℝ → Prop) :
 Proof.
   Admitted.
 
+(** ** Open covers and the finite subcover property *)
+
+(** *Sequential compactness*: every sequence in [K] has a subsequence
+    converging to a point of [K]. Here [phi] is a strictly increasing index
+    map. This is the "Bolzano–Weierstrass" notion of compactness used in the
+    lecture. *)
+Definition sequentially_compact (K : ℝ → Prop) : Prop :=
+    ∀ a : ℕ → ℝ, (∀ n : ℕ, a n ∈ K) →
+      ∃ phi : ℕ → ℕ, ∃ x : ℝ,
+        (∀ n : ℕ, (phi n < phi (S n))%nat) ∧ K x ∧
+        (fun k => a (phi k)) ⟶ x.
+
+(** An *open cover* of [K] is a family [(U i)] of open sets whose union
+    contains [K]. *)
+Definition open_cover {I : Type} (U : I → (ℝ → Prop)) (K : ℝ → Prop) : Prop :=
+    (∀ i : I, (U i) is _open_) ∧ (∀ x : ℝ, K x → ∃ i : I, U i x).
+
+(** [K] admits a *finite subcover* from [(U i)] if finitely many indices
+    [i₁, …, iₙ] already cover [K]. *)
+Definition has_finite_subcover {I : Type} (U : I → (ℝ → Prop)) (K : ℝ → Prop)
+    : Prop :=
+    ∃ l : list I, ∀ x : ℝ, K x → ∃ i : I, In i l ∧ U i x.
+
+(** *Heine–Borel (open-cover form)*: a set [K ⊆ ℝ] is sequentially compact iff
+    every open cover of [K] has a finite subcover.
+
+    Proof idea: (⇐) if [K] were not sequentially compact, a sequence with no
+    convergent-in-[K] subsequence yields an open cover with no finite subcover.
+    (⇒) sequential compactness gives [K] closed and bounded; a Lebesgue-number
+    argument extracts a finite subcover from any open cover. *)
+Theorem compact_iff_finite_subcover (K : ℝ → Prop) :
+    sequentially_compact K ⇔
+    (forall (I : Type) (U : I → (ℝ → Prop)),
+        open_cover U K → has_finite_subcover U K).
+Proof.
+  Admitted.
+
 (** ** Nested compact sets *)
 
 (** A decreasing sequence of nonempty compact sets has nonempty intersection.
@@ -93,13 +131,11 @@ Proof.
     [xₙ ∈ Kₙ], compactness of [K₀] gives a subsequence converging to some [x];
     since each [Kₙ] is closed and eventually contains the tail of the
     subsequence, [x ∈ Kₙ] for every [n]. *)
-(* TODO: Fix formalization
-    Theorem nested_compact_intersection_nonempty
+Theorem nested_compact_intersection_nonempty
     (K : ℕ → (ℝ → Prop))
-    (HK_nonempty : ∀ n : ℕ, K n ≠ ∅)
-    (HK_compact  : ∀ n : ℕ, K n is _compact_)
-    (HK_nested   : ∀ n m : ℕ, (n ≤ m)%nat → ∀ x : ℝ, K m x → K n x) :
+    (HK_nonempty : ∀ n : ℕ, ∃ x : ℝ, K n x)
+    (HK_compact  : ∀ n : ℕ, (K n) is _compact_)
+    (HK_nested   : forall n m : ℕ, (n ≤ m)%nat → ∀ x : ℝ, K m x → K n x) :
     ∃ x : ℝ, ∀ n : ℕ, K n x.
 Proof.
   Admitted.
-*)

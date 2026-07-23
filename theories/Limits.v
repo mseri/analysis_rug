@@ -66,6 +66,19 @@ Lemma lim_product (f g : ℝ → ℝ) (c L M : ℝ)
 Proof.
   Admitted.
 
+(** If [lim_{x→c} f(x) = L] and [lim_{x→c} g(x) = M] with [M ≠ 0], then
+    [lim_{x→c} (f / g)(x) = L / M].
+
+    Proof strategy: as for sequences, since [M ≠ 0] the quotient is controlled
+    near [c] where [g] stays away from [0]; combine with the product and sum
+    rules applied to [f · (1/g)]. *)
+Lemma lim_quotient (f g : ℝ → ℝ) (c L M : ℝ) (HM : M ≠ 0)
+    (Hf : _limit_ of f in c is L)
+    (Hg : _limit_ of g in c is M) :
+    _limit_ of (fun x => f x / g x) in c is (L / M).
+Proof.
+  Admitted.
+
 (** ** Sequential characterization *)
 
 (** [lim_{x→c} f(x) = L] iff for every sequence [(xₙ) → c] with [xₙ ≠ c],

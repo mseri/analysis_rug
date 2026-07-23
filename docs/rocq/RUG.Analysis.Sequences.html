@@ -22,7 +22,7 @@
 </div>
 
 <div class="doc">
-<a id="lab77"></a><h1 class="section">RUG.Analysis.Sequences — Convergence of sequences.</h1>
+<a id="lab103"></a><h1 class="section">RUG.Analysis.Sequences — Convergence of sequences.</h1>
 
 
 <div class="paragraph"> </div>
@@ -174,7 +174,7 @@ This computes the maximum of the absolute values
 </div>
 
 <div class="doc">
-<a id="lab78"></a><h2 class="section">Convergence of a sequence</h2>
+<a id="lab104"></a><h2 class="section">Convergence of a sequence</h2>
 
 
 <div class="paragraph"> </div>
@@ -188,7 +188,7 @@ This computes the maximum of the absolute values
     In Waterproof, <span class="inlinecode"><span class="id" title="var">a_n</span></span> <span class="inlinecode">⟶</span> <span class="inlinecode"><span class="id" title="var">a</span></span> is equivalent to <span class="inlinecode"><span class="id" title="var">Un_cv</span></span> <span class="inlinecode"><span class="id" title="var">a_n</span></span> <span class="inlinecode"><span class="id" title="var">a</span></span>. 
 <div class="paragraph"> </div>
 
-<a id="lab79"></a><h2 class="section">Constant and harmonic sequences</h2>
+<a id="lab105"></a><h2 class="section">Constant and harmonic sequences</h2>
 
 <div class="paragraph"> </div>
 
@@ -281,7 +281,7 @@ This is in Waterproof already, we could prove it with
 </div>
 
 <div class="doc">
-<a id="lab80"></a><h2 class="section">Bounded sequences</h2>
+<a id="lab106"></a><h2 class="section">Bounded sequences</h2>
 
 <div class="paragraph"> </div>
 
@@ -340,7 +340,7 @@ Theorem: Every convergent sequence is bounded.
 </div>
 
 <div class="doc">
-<a id="lab81"></a><h2 class="section">Algebraic limit theorem</h2>
+<a id="lab107"></a><h2 class="section">Algebraic limit theorem</h2>
 
 <div class="paragraph"> </div>
 
@@ -593,7 +593,7 @@ Some algebraic operation need to be aided a bit,
 </div>
 
 <div class="doc">
-<a id="lab82"></a><h2 class="section">Order limit theorem</h2>
+<a id="lab108"></a><h2 class="section">Order limit theorem</h2>
 
 <div class="paragraph"> </div>
 
@@ -696,7 +696,7 @@ Some algebraic operation need to be aided a bit,
 </div>
 
 <div class="doc">
-<a id="lab83"></a><h2 class="section">Squeeze theorem</h2>
+<a id="lab109"></a><h2 class="section">Squeeze theorem</h2>
 
 <div class="paragraph"> </div>
 
@@ -737,7 +737,51 @@ This is in Waterproof already, we could prove it with
 </div>
 
 <div class="doc">
-<a id="lab84"></a><h2 class="section">A divergent sequence</h2>
+<i>Algebraic limit theorem</i> (quotient):
+    If <span class="inlinecode"><span class="id" title="var">a</span></span> <span class="inlinecode">⟶</span> <span class="inlinecode"><span class="id" title="var">m</span></span>, <span class="inlinecode"><span class="id" title="var">b</span></span> <span class="inlinecode">⟶</span> <span class="inlinecode"><span class="id" title="var">l</span></span> and <span class="inlinecode"><span class="id" title="var">l</span></span> <span class="inlinecode">≠</span> <span class="inlinecode">0</span>, then <span class="inlinecode">(<span class="id" title="var">a</span>ₙ</span> <span class="inlinecode">/</span> <span class="inlinecode"><span class="id" title="var">b</span>ₙ)</span> <span class="inlinecode">⟶</span> <span class="inlinecode"><span class="id" title="var">m</span></span> <span class="inlinecode">/</span> <span class="inlinecode"><span class="id" title="var">l</span></span>.
+
+<div class="paragraph"> </div>
+
+    Proof idea: since <span class="inlinecode"><span class="id" title="var">l</span></span> <span class="inlinecode">≠</span> <span class="inlinecode">0</span>, eventually <span class="inlinecode">|<span class="id" title="var">b</span>ₙ|</span> <span class="inlinecode">&gt;</span> <span class="inlinecode">|<span class="id" title="var">l</span>|/2</span> <span class="inlinecode">&gt;</span> <span class="inlinecode">0</span>, so the quotient is
+    well-defined for large <span class="inlinecode"><span class="id" title="var">n</span></span>. Writing
+    <span class="inlinecode"><span class="id" title="var">a</span>ₙ/<span class="id" title="var">b</span>ₙ</span> <span class="inlinecode">-</span> <span class="inlinecode"><span class="id" title="var">m</span>/<span class="id" title="var">l</span></span> <span class="inlinecode">=</span> <span class="inlinecode">(<span class="id" title="var">a</span>ₙ</span> <span class="inlinecode"><span class="id" title="var">l</span></span> <span class="inlinecode">-</span> <span class="inlinecode"><span class="id" title="var">m</span></span> <span class="inlinecode"><span class="id" title="var">b</span>ₙ)/(<span class="id" title="var">b</span>ₙ</span> <span class="inlinecode"><span class="id" title="var">l</span>)</span> and bounding numerator and denominator
+    reduces the claim to the sum and product theorems together with the
+    convergence of <span class="inlinecode">1/<span class="id" title="var">b</span>ₙ</span> to <span class="inlinecode">1/<span class="id" title="var">l</span></span>. 
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <a id="algebraic_limit_theorem_quotient" class="idref" href="#algebraic_limit_theorem_quotient"><span class="id" title="lemma">algebraic_limit_theorem_quotient</span></a> (<a id="a:314" class="idref" href="#a:314"><span class="id" title="binder">a</span></a> <a id="b:315" class="idref" href="#b:315"><span class="id" title="binder">b</span></a> : <span class="id" title="notation">ℕ</span> <span class="id" title="notation">→</span> <span class="id" title="notation">ℝ</span>) (<a id="m:316" class="idref" href="#m:316"><span class="id" title="binder">m</span></a> <a id="l:317" class="idref" href="#l:317"><span class="id" title="binder">l</span></a> : <span class="id" title="notation">ℝ</span>) :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="RUG.Analysis.Sequences.html#a:314"><span class="id" title="variable">a</span></a> <span class="id" title="notation">⟶</span> <a class="idref" href="RUG.Analysis.Sequences.html#m:316"><span class="id" title="variable">m</span></a> <span class="id" title="notation">→</span> <a class="idref" href="RUG.Analysis.Sequences.html#b:315"><span class="id" title="variable">b</span></a> <span class="id" title="notation">⟶</span> <a class="idref" href="RUG.Analysis.Sequences.html#l:317"><span class="id" title="variable">l</span></a> <span class="id" title="notation">→</span> <a class="idref" href="RUG.Analysis.Sequences.html#l:317"><span class="id" title="variable">l</span></a> <span class="id" title="notation">≠</span> 0 <span class="id" title="notation">→</span> <span class="id" title="notation">(</span><span class="id" title="keyword">fun</span> <a id="n:318" class="idref" href="#n:318"><span class="id" title="binder">n</span></a> ⇒ <a class="idref" href="RUG.Analysis.Sequences.html#a:314"><span class="id" title="variable">a</span></a> <a class="idref" href="RUG.Analysis.Sequences.html#n:318"><span class="id" title="variable">n</span></a> <span class="id" title="notation">/</span> <a class="idref" href="RUG.Analysis.Sequences.html#b:315"><span class="id" title="variable">b</span></a> <a class="idref" href="RUG.Analysis.Sequences.html#n:318"><span class="id" title="variable">n</span></a><span class="id" title="notation">)</span> <span class="id" title="notation">⟶</span> <span class="id" title="notation">(</span><a class="idref" href="RUG.Analysis.Sequences.html#m:316"><span class="id" title="variable">m</span></a> <span class="id" title="notation">/</span> <a class="idref" href="RUG.Analysis.Sequences.html#l:317"><span class="id" title="variable">l</span></a><span class="id" title="notation">)</span>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a id="lab110"></a><h2 class="section">Uniqueness of limits</h2>
+
+<div class="paragraph"> </div>
+
+ <i>Uniqueness of limits</i>: a sequence has at most one limit, i.e. if
+    <span class="inlinecode"><span class="id" title="var">a</span></span> <span class="inlinecode">⟶</span> <span class="inlinecode"><span class="id" title="var">L₁</span></span> and <span class="inlinecode"><span class="id" title="var">a</span></span> <span class="inlinecode">⟶</span> <span class="inlinecode"><span class="id" title="var">L₂</span></span> then <span class="inlinecode"><span class="id" title="var">L₁</span></span> <span class="inlinecode">=</span> <span class="inlinecode"><span class="id" title="var">L₂</span></span>.
+
+<div class="paragraph"> </div>
+
+    Proof idea: suppose <span class="inlinecode"><span class="id" title="var">L₁</span></span> <span class="inlinecode">≠</span> <span class="inlinecode"><span class="id" title="var">L₂</span></span> and set <span class="inlinecode"><span class="id" title="var">ε</span></span> <span class="inlinecode">=</span> <span class="inlinecode">|<span class="id" title="var">L₁</span></span> <span class="inlinecode">-</span> <span class="inlinecode"><span class="id" title="var">L₂</span>|/2</span> <span class="inlinecode">&gt;</span> <span class="inlinecode">0</span>. For large <span class="inlinecode"><span class="id" title="var">n</span></span>
+    both <span class="inlinecode">|<span class="id" title="var">a</span>ₙ</span> <span class="inlinecode">-</span> <span class="inlinecode"><span class="id" title="var">L₁</span>|</span> <span class="inlinecode">&lt;</span> <span class="inlinecode"><span class="id" title="var">ε</span></span> and <span class="inlinecode">|<span class="id" title="var">a</span>ₙ</span> <span class="inlinecode">-</span> <span class="inlinecode"><span class="id" title="var">L₂</span>|</span> <span class="inlinecode">&lt;</span> <span class="inlinecode"><span class="id" title="var">ε</span></span>, so by the triangle inequality
+    <span class="inlinecode">|<span class="id" title="var">L₁</span></span> <span class="inlinecode">-</span> <span class="inlinecode"><span class="id" title="var">L₂</span>|</span> <span class="inlinecode">≤</span> <span class="inlinecode">|<span class="id" title="var">L₁</span></span> <span class="inlinecode">-</span> <span class="inlinecode"><span class="id" title="var">a</span>ₙ|</span> <span class="inlinecode">+</span> <span class="inlinecode">|<span class="id" title="var">a</span>ₙ</span> <span class="inlinecode">-</span> <span class="inlinecode"><span class="id" title="var">L₂</span>|</span> <span class="inlinecode">&lt;</span> <span class="inlinecode">2<span class="id" title="var">ε</span></span> <span class="inlinecode">=</span> <span class="inlinecode">|<span class="id" title="var">L₁</span></span> <span class="inlinecode">-</span> <span class="inlinecode"><span class="id" title="var">L₂</span>|</span>, a contradiction. 
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <a id="limit_unique" class="idref" href="#limit_unique"><span class="id" title="lemma">limit_unique</span></a> (<a id="a:319" class="idref" href="#a:319"><span class="id" title="binder">a</span></a> : <span class="id" title="notation">ℕ</span> <span class="id" title="notation">→</span> <span class="id" title="notation">ℝ</span>) (<a id="L1:320" class="idref" href="#L1:320"><span class="id" title="binder">L1</span></a> <a id="L2:321" class="idref" href="#L2:321"><span class="id" title="binder">L2</span></a> : <span class="id" title="notation">ℝ</span>) :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="RUG.Analysis.Sequences.html#a:319"><span class="id" title="variable">a</span></a> <span class="id" title="notation">⟶</span> <a class="idref" href="RUG.Analysis.Sequences.html#L1:320"><span class="id" title="variable">L1</span></a> <span class="id" title="notation">→</span> <a class="idref" href="RUG.Analysis.Sequences.html#a:319"><span class="id" title="variable">a</span></a> <span class="id" title="notation">⟶</span> <a class="idref" href="RUG.Analysis.Sequences.html#L2:321"><span class="id" title="variable">L2</span></a> <span class="id" title="notation">→</span> <a class="idref" href="RUG.Analysis.Sequences.html#L1:320"><span class="id" title="variable">L1</span></a> <a class="idref" href="http://rocq-prover.org/doc/V9.1.1/stdlib//Corelib.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="RUG.Analysis.Sequences.html#L2:321"><span class="id" title="variable">L2</span></a>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a id="lab111"></a><h2 class="section">A divergent sequence</h2>
 
 <div class="paragraph"> </div>
 
@@ -752,12 +796,12 @@ This is in Waterproof already, we could prove it with
     contradiction. 
 </div>
 <div class="code">
-<span class="id" title="keyword">Lemma</span> <a id="pm_1_diverges" class="idref" href="#pm_1_diverges"><span class="id" title="lemma">pm_1_diverges</span></a> : <span class="id" title="notation">¬</span> <span class="id" title="notation">(</span><span class="id" title="notation">∃</span> <a id="L:314" class="idref" href="#L:314"><span class="id" title="binder"><span id="L:315" class="id"><span id="L:316" class="id"><span id="L:317" class="id">L</span></span></span></span></a> <span class="id" title="notation">∈</span> <span class="id" title="notation">ℝ</span><span class="id" title="notation">,</span> <span class="id" title="notation">(</span><span class="id" title="keyword">fun</span> <a id="n:318" class="idref" href="#n:318"><span class="id" title="binder">n</span></a> ⇒ <span class="id" title="notation">(</span>-1<span class="id" title="notation">)</span> <span class="id" title="notation">^</span> <a class="idref" href="RUG.Analysis.Sequences.html#n:318"><span class="id" title="variable">n</span></a><span class="id" title="notation">)</span> <span class="id" title="notation">⟶</span> <a class="idref" href="RUG.Analysis.Sequences.html#L:314"><span class="id" title="variable">L</span></a><span class="id" title="notation">)</span>.<br/>
+<span class="id" title="keyword">Lemma</span> <a id="pm_1_diverges" class="idref" href="#pm_1_diverges"><span class="id" title="lemma">pm_1_diverges</span></a> : <span class="id" title="notation">¬</span> <span class="id" title="notation">(</span><span class="id" title="notation">∃</span> <a id="L:322" class="idref" href="#L:322"><span class="id" title="binder"><span id="L:323" class="id"><span id="L:324" class="id"><span id="L:325" class="id">L</span></span></span></span></a> <span class="id" title="notation">∈</span> <span class="id" title="notation">ℝ</span><span class="id" title="notation">,</span> <span class="id" title="notation">(</span><span class="id" title="keyword">fun</span> <a id="n:326" class="idref" href="#n:326"><span class="id" title="binder">n</span></a> ⇒ <span class="id" title="notation">(</span>-1<span class="id" title="notation">)</span> <span class="id" title="notation">^</span> <a class="idref" href="RUG.Analysis.Sequences.html#n:326"><span class="id" title="variable">n</span></a><span class="id" title="notation">)</span> <span class="id" title="notation">⟶</span> <a class="idref" href="RUG.Analysis.Sequences.html#L:322"><span class="id" title="variable">L</span></a><span class="id" title="notation">)</span>.<br/>
 <span class="id" title="keyword">Proof</span>.<br/>
-&nbsp;&nbsp;<span class="id" title="var">Assume</span> <span class="id" title="var">that</span> <span class="id" title="notation">∃</span> <a id="L:319" class="idref" href="#L:319"><span class="id" title="binder"><span id="L:320" class="id"><span id="L:321" class="id"><span id="L:322" class="id">L</span></span></span></span></a> <span class="id" title="notation">∈</span> <span class="id" title="notation">ℝ</span><span class="id" title="notation">,</span> <span class="id" title="notation">(</span><span class="id" title="notation">fun</span> <a id="n:323" class="idref" href="#n:323"><span class="id" title="binder">n</span></a> <span class="id" title="notation">↦</span> <span class="id" title="notation">(</span>-1<span class="id" title="notation">)^</span><a class="idref" href="RUG.Analysis.Sequences.html#n:323"><span class="id" title="variable">n</span></a><span class="id" title="notation">)</span> <span class="id" title="notation">⟶</span> <a class="idref" href="RUG.Analysis.Sequences.html#L:319"><span class="id" title="variable">L</span></a> <span class="id" title="keyword">as</span> (<span class="id" title="var">H</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="var">Assume</span> <span class="id" title="var">that</span> <span class="id" title="notation">∃</span> <a id="L:327" class="idref" href="#L:327"><span class="id" title="binder"><span id="L:328" class="id"><span id="L:329" class="id"><span id="L:330" class="id">L</span></span></span></span></a> <span class="id" title="notation">∈</span> <span class="id" title="notation">ℝ</span><span class="id" title="notation">,</span> <span class="id" title="notation">(</span><span class="id" title="notation">fun</span> <a id="n:331" class="idref" href="#n:331"><span class="id" title="binder">n</span></a> <span class="id" title="notation">↦</span> <span class="id" title="notation">(</span>-1<span class="id" title="notation">)^</span><a class="idref" href="RUG.Analysis.Sequences.html#n:331"><span class="id" title="variable">n</span></a><span class="id" title="notation">)</span> <span class="id" title="notation">⟶</span> <a class="idref" href="RUG.Analysis.Sequences.html#L:327"><span class="id" title="variable">L</span></a> <span class="id" title="keyword">as</span> (<span class="id" title="var">H</span>).<br/>
 &nbsp;&nbsp;<span class="id" title="var">Obtain</span> <span class="id" title="var">such</span> <span class="id" title="var">an</span> <span class="id" title="var">L</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="var">It</span> <span class="id" title="var">holds</span> <span class="id" title="var">that</span> (1 <span class="id" title="notation">&gt;</span> 0).<br/>
-&nbsp;&nbsp;<span class="id" title="var">By</span> <span class="id" title="var">H</span> <span class="id" title="var">it</span> <span class="id" title="var">holds</span> <span class="id" title="var">that</span> <span class="id" title="notation">∃</span> <a id="N1:324" class="idref" href="#N1:324"><span class="id" title="binder"><span id="N1:325" class="id"><span id="N1:326" class="id"><span id="N1:327" class="id">N1</span></span></span></span></a> <span class="id" title="notation">∈</span> <span class="id" title="notation">ℕ</span><span class="id" title="notation">,</span> <span class="id" title="notation">∀</span> <a id="n:328" class="idref" href="#n:328"><span class="id" title="binder"><span id="n:329" class="id"><span id="n:330" class="id"><span id="n:331" class="id">n</span></span></span></span></a> <span class="id" title="notation">≥</span> <a class="idref" href="RUG.Analysis.Sequences.html#N1:324"><span class="id" title="variable">N1</span></a><span class="id" title="notation">,</span> <span class="id" title="notation">|</span> <span class="id" title="notation">(</span>-1<span class="id" title="notation">)^</span><a class="idref" href="RUG.Analysis.Sequences.html#n:328"><span class="id" title="variable">n</span></a> <span class="id" title="notation">-</span> <span class="id" title="var">L</span> <span class="id" title="notation">|</span> <span class="id" title="notation">&lt;</span> 1 <span class="id" title="keyword">as</span> (<span class="id" title="var">HN</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="var">By</span> <span class="id" title="var">H</span> <span class="id" title="var">it</span> <span class="id" title="var">holds</span> <span class="id" title="var">that</span> <span class="id" title="notation">∃</span> <a id="N1:332" class="idref" href="#N1:332"><span class="id" title="binder"><span id="N1:333" class="id"><span id="N1:334" class="id"><span id="N1:335" class="id">N1</span></span></span></span></a> <span class="id" title="notation">∈</span> <span class="id" title="notation">ℕ</span><span class="id" title="notation">,</span> <span class="id" title="notation">∀</span> <a id="n:336" class="idref" href="#n:336"><span class="id" title="binder"><span id="n:337" class="id"><span id="n:338" class="id"><span id="n:339" class="id">n</span></span></span></span></a> <span class="id" title="notation">≥</span> <a class="idref" href="RUG.Analysis.Sequences.html#N1:332"><span class="id" title="variable">N1</span></a><span class="id" title="notation">,</span> <span class="id" title="notation">|</span> <span class="id" title="notation">(</span>-1<span class="id" title="notation">)^</span><a class="idref" href="RUG.Analysis.Sequences.html#n:336"><span class="id" title="variable">n</span></a> <span class="id" title="notation">-</span> <span class="id" title="var">L</span> <span class="id" title="notation">|</span> <span class="id" title="notation">&lt;</span> 1 <span class="id" title="keyword">as</span> (<span class="id" title="var">HN</span>).<br/>
 &nbsp;&nbsp;<span class="id" title="var">Obtain</span> <span class="id" title="var">such</span> <span class="id" title="var">an</span> <span class="id" title="var">N1</span>.<br/>
 
 <br/>

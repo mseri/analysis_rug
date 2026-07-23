@@ -9,6 +9,7 @@ From Stdlib Require Import Reals.Reals.
 From Stdlib Require Import Reals.Ranalysis1.
 From Stdlib Require Import Reals.Rtrigo_def.
 From Stdlib Require Import Reals.Exp_prop.
+From Stdlib Require Import Arith.Factorial.
 From Stdlib Require Import micromega.Lra.
 Require Export RUG.Analysis.Derivatives.
 Require Export RUG.Analysis.PowerSeries.
@@ -29,46 +30,78 @@ Set Bullet Behavior "Waterproof Relaxed Subproofs".
     [Eₙ(x) = f(x) - sₙ(x)]. For [f(x) = eˣ] all derivatives at [0] equal [1],
     so [sₙ(x) = ∑_{k=0}^n xᵏ/k!]. *)
 
-(** The [n]-th Taylor polynomial of exp at 0. *)
-(* TODO: introduce fact before uncommenting 
+(** The [n]-th Taylor polynomial of exp at [0], [Tₙ(x) = ∑_{k=0}^n xᵏ/k!]. *)
+Fixpoint T_exp (n : nat) (x : R) : R :=
+    match n with
+    | O    => 1
+    | S n' => T_exp n' x + x ^ n / INR (fact n)
+    end.
 
-  Fixpoint T_exp (n : nat) (x : R) : R :=
-  match n with
-  | O    => 1
-  | S n' => T_exp n' x + x ^ n / INR (fact n)
-  end.
-
+(** [T₀(x) = 1]. *)
 Lemma T_exp_0 (x : R) : T_exp 0%nat x = 1.
-Proof. reflexivity. Qed.
-
-Lemma T_exp_1 (x : R) : T_exp 1%nat x = 1 + x.
-Proof. simpl. lra. Qed.
-
-Lemma T_exp_2 (x : R) : T_exp 2%nat x = 1 + x + x ^ 2 / 2.
-Proof. simpl. lra. Qed.
-
-
-(** ** Taylor's theorem with Lagrange remainder *)
-
-(** Theorem 14.2 (Lagrange remainder): if [f] is [(n+1)] times differentiable on
-    [[a,b]], then for all [x ∈ [a,b]] there exists [c] between [a] and [x] such
-    that [f(x) = Tₙ(x) + f^{(n+1)}(c) / (n+1)! · (x-a)^{n+1}].
-
-    Proof idea: apply Rolle's theorem [n+1] times to an auxiliary function that
-    interpolates [f] and its Taylor polynomial. For [eˣ] this yields
-    [eˣ = ∑_{k=0}^n xᵏ/k! + e^c/(n+1)! · x^{n+1}] with [c ∈ (0,x)]; since
-    [e^c ≤ eˣ], the remainder [≤ eˣ · x^{n+1}/(n+1)! → 0]. *)
-Theorem lagrange_remainder_bound (f : R → R) (a x : R) (n : nat)
-    (Hn : ∀ k, (k ≤ n)%nat → derivable f) :
-    ∃ c : R, (Rmin a x < c < Rmax a x) ∧
-    f x = sum_f_R0 (fun k =>
-        derive_pt f^{(k)} a (Hn k (Nat.le_refl k)) / INR (fact k) * (x - a) ^ k
-      ) n +
-    derive_pt f^{(S n)} c (Hn (S n) (Nat.le_refl (S n))) /
-      INR (fact (S n)) * (x - a) ^ (S n).
 Proof.
   Admitted.
-*)
+
+(** [T₁(x) = 1 + x]. *)
+Lemma T_exp_1 (x : R) : T_exp 1%nat x = 1 + x.
+Proof.
+  Admitted.
+
+(** [T₂(x) = 1 + x + x²/2]. *)
+Lemma T_exp_2 (x : R) : T_exp 2%nat x = 1 + x + x ^ 2 / 2.
+Proof.
+  Admitted.
+
+(** ** Taylor series and Lagrange remainder *)
+
+(** Given the derivative values [d k = f^{(k)}(a)], the [n]-th Taylor polynomial
+    of [f] about [a] is [∑_{k=0}^n d(k)/k! · (x - a)ᵏ]. The Taylor series about
+    [0] is the special case [a = 0]. *)
+Definition taylor_poly (d : ℕ → ℝ) (a : ℝ) (n : ℕ) (x : ℝ) : ℝ :=
+    sum_f_R0 (fun k => d k / INR (fact k) * (x - a) ^ k) n.
+
+(** The *Lagrange remainder* [Eₙ(x) = f(x) - Tₙ(x)] is the error of the [n]-th
+    Taylor polynomial. *)
+Definition lagrange_remainder (f : ℝ → ℝ) (d : ℕ → ℝ) (a : ℝ) (n : ℕ) (x : ℝ)
+    : ℝ :=
+    f x - taylor_poly d a n x.
+
+(** _Generalized (repeated) Rolle_: if [g] has [n + 1] distinct zeros and its
+    successive derivatives [g, g', …, g⁽ⁿ⁾] exist, then [g⁽ⁿ⁾] has a zero in the
+    spanning interval.
+
+    Here [df k] denotes [g⁽ᵏ⁾], with [df (S k)] the derivative of [df k].
+
+    Proof idea: between consecutive zeros of [df k], Rolle's theorem produces a
+    zero of [df (S k)]; iterating [n] times leaves a single zero of [df n]. *)
+Lemma generalized_rolle (df : ℕ → ℝ → ℝ) (n : ℕ) (pts : ℕ → ℝ)
+    (Hstep : ∀ k : ℕ, ∀ y : ℝ,
+        ∃ Hd : derivable_pt (df k) y, derive_pt (df k) y Hd = df (S k) y)
+    (Hincr : ∀ k : ℕ, (k < n)%nat → pts k < pts (S k))
+    (Hzero : ∀ k : ℕ, (k ≤ n)%nat → df 0%nat (pts k) = 0) :
+    ∃ c : ℝ, pts 0%nat < c ∧ c < pts n ∧ df n c = 0.
+Proof.
+  Admitted.
+
+(** _Taylor's theorem with Lagrange remainder_ (Theorem 14.2): if [f] is
+    [(n+1)]-times differentiable, with [df k = f⁽ᵏ⁾] and [df (S k)] the
+    derivative of [df k] (and [df 0 = f]), then for every [x] there is a [c]
+    strictly between [a] and [x] with
+    [f(x) = ∑_{k=0}^n f⁽ᵏ⁾(a)/k!·(x - a)ᵏ + f⁽ⁿ⁺¹⁾(c)/(n+1)!·(x - a)ⁿ⁺¹].
+
+    Proof idea: apply generalized Rolle to an auxiliary function that agrees with
+    [f] and its Taylor polynomial to order [n] and is adjusted by a multiple of
+    [(t - a)ⁿ⁺¹] to also vanish at [x]. *)
+Theorem taylor_theorem_lagrange
+    (f : ℝ → ℝ) (df : ℕ → ℝ → ℝ) (a x : ℝ) (n : ℕ)
+    (H0 : df 0%nat = f)
+    (Hstep : ∀ k : ℕ, ∀ y : ℝ,
+        ∃ Hd : derivable_pt (df k) y, derive_pt (df k) y Hd = df (S k) y) :
+    ∃ c : ℝ, Rmin a x < c ∧ c < Rmax a x ∧
+      f x = sum_f_R0 (fun k => df k a / INR (fact k) * (x - a) ^ k) n
+            + df (S n) c / INR (fact (S n)) * (x - a) ^ (S n).
+Proof.
+  Admitted.
 
 (** ** Sinusoidal bounds *)
 

@@ -527,6 +527,32 @@ Proof.
   By squeeze_theorem we conclude that b ⟶ L.
 Qed.
 
+(** _Algebraic limit theorem_ (quotient):
+    If [a ⟶ m], [b ⟶ l] and [l ≠ 0], then [(aₙ / bₙ) ⟶ m / l].
+
+    Proof idea: since [l ≠ 0], eventually [|bₙ| > |l|/2 > 0], so the quotient is
+    well-defined for large [n]. Writing
+    [aₙ/bₙ - m/l = (aₙ l - m bₙ)/(bₙ l)] and bounding numerator and denominator
+    reduces the claim to the sum and product theorems together with the
+    convergence of [1/bₙ] to [1/l]. *)
+Lemma algebraic_limit_theorem_quotient (a b : ℕ → ℝ) (m l : ℝ) :
+    a ⟶ m → b ⟶ l → l ≠ 0 → (fun n => a n / b n) ⟶ (m / l).
+Proof.
+  Admitted.
+
+(** ** Uniqueness of limits *)
+
+(** _Uniqueness of limits_: a sequence has at most one limit, i.e. if
+    [a ⟶ L₁] and [a ⟶ L₂] then [L₁ = L₂].
+
+    Proof idea: suppose [L₁ ≠ L₂] and set [ε = |L₁ - L₂|/2 > 0]. For large [n]
+    both [|aₙ - L₁| < ε] and [|aₙ - L₂| < ε], so by the triangle inequality
+    [|L₁ - L₂| ≤ |L₁ - aₙ| + |aₙ - L₂| < 2ε = |L₁ - L₂|], a contradiction. *)
+Lemma limit_unique (a : ℕ → ℝ) (L1 L2 : ℝ) :
+    a ⟶ L1 → a ⟶ L2 → L1 = L2.
+Proof.
+  Admitted.
+
 (** ** A divergent sequence *)
 
 (** Theorem 3.6: the alternating sequence [(-1)ⁿ] does not converge.

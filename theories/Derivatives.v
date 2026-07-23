@@ -111,6 +111,57 @@ Lemma rolle_theorem (h : ℝ → ℝ) (a b : ℝ) (Hab : a < b)
 Proof.
   Admitted.
 
+(** ** Darboux's theorem *)
+
+(** Theorem 10.6 (Darboux): derivatives have the intermediate value property.
+    If [h] is differentiable on [[a,b]] and [v] lies strictly between [h'(a)]
+    and [h'(b)], then [h'(c) = v] for some [c ∈ (a,b)] — even though [h'] need
+    not be continuous.
+
+    Proof idea: consider [g(x) = h(x) - v·x], which is differentiable with
+    [g'(a)] and [g'(b)] of opposite sign. By the extreme value theorem [g]
+    attains an interior extremum at some [c ∈ (a,b)], and Fermat's theorem gives
+    [g'(c) = 0], i.e. [h'(c) = v]. *)
+Theorem darboux_theorem (h : ℝ → ℝ) (a b v : ℝ) (Hab : a < b)
+    (Hd : derivable h)
+    (Hva : derive_pt h a (Hd a) < v)
+    (Hvb : v < derive_pt h b (Hd b)) :
+    ∃ c, a < c ∧ c < b ∧ derive_pt h c (Hd c) = v.
+Proof.
+  Admitted.
+
+(** ** A differentiability example *)
+
+(** Exercise: the function [g(x) = x²·sin(1/x)] for [x ≠ 0] and [g(0) = 0] is
+    differentiable at [0] with [g'(0) = 0], yet [g'] is not continuous at [0].
+
+    Proof idea: the difference quotient [g(x)/x = x·sin(1/x) → 0] as [x → 0] by
+    the squeeze theorem, so [g'(0) = 0]. For [x ≠ 0],
+    [g'(x) = 2x·sin(1/x) - cos(1/x)] has no limit as [x → 0]. *)
+Lemma differentiable_example
+    (g : ℝ → ℝ)
+    (Hg : ∀ x : ℝ, x ≠ 0 → g x = x ^ 2 * sin (1 / x)) (Hg0 : g 0 = 0) :
+    ∃ Hd : derivable_pt g 0, derive_pt g 0 Hd = 0.
+Proof.
+  Admitted.
+
+(** ** A continuous nowhere-differentiable function *)
+
+(** Pathology: there exists a function [f : ℝ → ℝ] that is continuous at every
+    point yet differentiable at no point.
+
+    Proof idea (Weierstrass / Abbott's construction): let [w(x)] be the
+    distance from [x] to the nearest integer, and set
+    [f(x) = ∑ (1/2)ⁿ · w(2ⁿ x)]. The series converges uniformly (Weierstrass
+    M-test) so [f] is continuous; a careful estimate of difference quotients
+    along dyadic points shows [f] is differentiable nowhere. *)
+Theorem nowhere_differentiable_function :
+    ∃ f : ℝ → ℝ,
+      (∀ x : ℝ, continuity_pt f x) ∧
+      (∀ x : ℝ, ¬ (∃ l : ℝ, derivable_pt_lim f x l)).
+Proof.
+  Admitted.
+
 (** ** Positive derivative implies strictly increasing *)
 
 (** Theorem 10.5: if [ψ' > 0] on [(a,v)] then [ψ] is strictly increasing on

@@ -22,7 +22,7 @@
 </div>
 
 <div class="doc">
-<a id="lab59"></a><h1 class="section">RUG.Analysis.Reals — The real number system.</h1>
+<a id="lab85"></a><h1 class="section">RUG.Analysis.Reals — The real number system.</h1>
 
 
 <div class="paragraph"> </div>
@@ -77,7 +77,7 @@
 </div>
 
 <div class="doc">
-<a id="lab60"></a><h2 class="section">Supremum</h2>
+<a id="lab86"></a><h2 class="section">Supremum</h2>
 
 <div class="paragraph"> </div>
 
@@ -154,7 +154,7 @@
 </div>
 
 <div class="doc">
-<a id="lab61"></a><h2 class="section">Infimum</h2>
+<a id="lab87"></a><h2 class="section">Infimum</h2>
 
 <div class="paragraph"> </div>
 
@@ -229,7 +229,7 @@
 </div>
 
 <div class="doc">
-<a id="lab62"></a><h2 class="section">Monotonicity helpers</h2>
+<a id="lab88"></a><h2 class="section">Monotonicity helpers</h2>
 
 <div class="paragraph"> </div>
 
@@ -317,7 +317,7 @@ A nonincreasing sequence satisfies <span class="inlinecode"><span class="id" tit
 </div>
 
 <div class="doc">
-<a id="lab63"></a><h2 class="section">Nested interval property</h2>
+<a id="lab89"></a><h2 class="section">Nested interval property</h2>
 
 <div class="paragraph"> </div>
 
@@ -419,7 +419,7 @@ A nonincreasing sequence satisfies <span class="inlinecode"><span class="id" tit
 </div>
 
 <div class="doc">
-<a id="lab64"></a><h2 class="section">Archimedean property</h2>
+<a id="lab90"></a><h2 class="section">Archimedean property</h2>
 
 <div class="paragraph"> </div>
 
@@ -460,7 +460,7 @@ For any <span class="inlinecode"><span class="id" title="var">y</span></span> <s
 </div>
 
 <div class="doc">
-<a id="lab65"></a><h2 class="section">Absolute value</h2>
+<a id="lab91"></a><h2 class="section">Absolute value</h2>
 
 <div class="paragraph"> </div>
 
@@ -536,7 +536,26 @@ Reverse triangle inequality: <span class="inlinecode">||<span class="id" title="
 </div>
 
 <div class="doc">
-<a id="lab66"></a><h2 class="section">Density of the rationals</h2>
+Absolute-value bound: <span class="inlinecode">|<span class="id" title="var">x</span>|</span> <span class="inlinecode">≤</span> <span class="inlinecode"><span class="id" title="var">a</span></span> iff <span class="inlinecode">-<span class="id" title="var">a</span></span> <span class="inlinecode">≤</span> <span class="inlinecode"><span class="id" title="var">x</span></span> <span class="inlinecode">≤</span> <span class="inlinecode"><span class="id" title="var">a</span></span>.
+
+<div class="paragraph"> </div>
+
+    Proof idea: if <span class="inlinecode">|<span class="id" title="var">x</span>|</span> <span class="inlinecode">≤</span> <span class="inlinecode"><span class="id" title="var">a</span></span> then both <span class="inlinecode"><span class="id" title="var">x</span></span> <span class="inlinecode">≤</span> <span class="inlinecode">|<span class="id" title="var">x</span>|</span> <span class="inlinecode">≤</span> <span class="inlinecode"><span class="id" title="var">a</span></span> and <span class="inlinecode">-<span class="id" title="var">x</span></span> <span class="inlinecode">≤</span> <span class="inlinecode">|<span class="id" title="var">x</span>|</span> <span class="inlinecode">≤</span> <span class="inlinecode"><span class="id" title="var">a</span></span>, the
+    latter giving <span class="inlinecode">-<span class="id" title="var">a</span></span> <span class="inlinecode">≤</span> <span class="inlinecode"><span class="id" title="var">x</span></span>. Conversely, <span class="inlinecode">|<span class="id" title="var">x</span>|</span> <span class="inlinecode">=</span> <span class="inlinecode"><span class="id" title="var">max</span>{<span class="id" title="var">x</span>,</span> <span class="inlinecode">-<span class="id" title="var">x</span>}</span> <span class="inlinecode">≤</span> <span class="inlinecode"><span class="id" title="var">a</span></span> whenever both
+    <span class="inlinecode"><span class="id" title="var">x</span></span> <span class="inlinecode">≤</span> <span class="inlinecode"><span class="id" title="var">a</span></span> and <span class="inlinecode">-<span class="id" title="var">x</span></span> <span class="inlinecode">≤</span> <span class="inlinecode"><span class="id" title="var">a</span></span>. This is the standard "unfolding" of an absolute-value
+    inequality used throughout the ε-arguments. 
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <a id="abs_le_iff" class="idref" href="#abs_le_iff"><span class="id" title="lemma">abs_le_iff</span></a> (<a id="x:244" class="idref" href="#x:244"><span class="id" title="binder">x</span></a> <a id="a:245" class="idref" href="#a:245"><span class="id" title="binder">a</span></a> : <span class="id" title="notation">ℝ</span>) :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="notation">|</span><a class="idref" href="RUG.Analysis.Reals.html#x:244"><span class="id" title="variable">x</span></a><span class="id" title="notation">|</span> <span class="id" title="notation">≤</span> <a class="idref" href="RUG.Analysis.Reals.html#a:245"><span class="id" title="variable">a</span></a> <span class="id" title="notation">⇔</span> <span class="id" title="notation">(</span><span class="id" title="notation">-</span> <a class="idref" href="RUG.Analysis.Reals.html#a:245"><span class="id" title="variable">a</span></a> <span class="id" title="notation">≤</span> <a class="idref" href="RUG.Analysis.Reals.html#x:244"><span class="id" title="variable">x</span></a> <span class="id" title="notation">∧</span> <a class="idref" href="RUG.Analysis.Reals.html#x:244"><span class="id" title="variable">x</span></a> <span class="id" title="notation">≤</span> <a class="idref" href="RUG.Analysis.Reals.html#a:245"><span class="id" title="variable">a</span></a><span class="id" title="notation">)</span>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a id="lab92"></a><h2 class="section">Density of the rationals</h2>
 
 <div class="paragraph"> </div>
 
@@ -550,13 +569,13 @@ Reverse triangle inequality: <span class="inlinecode">||<span class="id" title="
     <span class="inlinecode"><span class="id" title="var">n</span>·<span class="id" title="var">hi</span></span>, and <span class="inlinecode"><span class="id" title="var">r</span></span> <span class="inlinecode">=</span> <span class="inlinecode"><span class="id" title="var">m</span>/<span class="id" title="var">n</span></span> satisfies <span class="inlinecode"><span class="id" title="var">lo</span></span> <span class="inlinecode">&lt;</span> <span class="inlinecode"><span class="id" title="var">r</span></span> <span class="inlinecode">&lt;</span> <span class="inlinecode"><span class="id" title="var">hi</span></span>. 
 </div>
 <div class="code">
-<span class="id" title="keyword">Lemma</span> <a id="density_of_rationals" class="idref" href="#density_of_rationals"><span class="id" title="lemma">density_of_rationals</span></a> (<a id="lo:244" class="idref" href="#lo:244"><span class="id" title="binder">lo</span></a> <a id="hi:245" class="idref" href="#hi:245"><span class="id" title="binder">hi</span></a> : <span class="id" title="notation">ℝ</span>) (<a id="H:246" class="idref" href="#H:246"><span class="id" title="binder">H</span></a> : <a class="idref" href="RUG.Analysis.Reals.html#lo:244"><span class="id" title="variable">lo</span></a> <span class="id" title="notation">&lt;</span> <a class="idref" href="RUG.Analysis.Reals.html#hi:245"><span class="id" title="variable">hi</span></a>) :<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="notation">∃</span> <a id="p:247" class="idref" href="#p:247"><span class="id" title="binder"><span id="p:248" class="id">p</span></span></a> <a id="p:248" class="idref" href="#p:248"><span class="id" title="binder">:</span></a> <a id="p:248" class="idref" href="#p:248"><span class="id" title="binder">ℤ</span></a><span class="id" title="notation">,</span> <span class="id" title="notation">∃</span> <a id="q:249" class="idref" href="#q:249"><span class="id" title="binder"><span id="q:250" class="id">q</span></span></a> <a id="q:250" class="idref" href="#q:250"><span class="id" title="binder">:</span></a> <a id="q:250" class="idref" href="#q:250"><span class="id" title="binder">ℤ</span></a><span class="id" title="notation">,</span><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<a class="idref" href="RUG.Analysis.Reals.html#q:249"><span class="id" title="variable">q</span></a> <span class="id" title="notation">&gt;</span> 0)%<span class="id" title="var">Z</span> <span class="id" title="notation">∧</span><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="RUG.Analysis.Reals.html#lo:244"><span class="id" title="variable">lo</span></a> <span class="id" title="notation">&lt;</span> <span class="id" title="definition">IZR</span> <a class="idref" href="RUG.Analysis.Reals.html#p:247"><span class="id" title="variable">p</span></a> <span class="id" title="notation">/</span> <span class="id" title="definition">IZR</span> <a class="idref" href="RUG.Analysis.Reals.html#q:249"><span class="id" title="variable">q</span></a> <span class="id" title="notation">&lt;</span> <a class="idref" href="RUG.Analysis.Reals.html#hi:245"><span class="id" title="variable">hi</span></a>.<br/>
+<span class="id" title="keyword">Lemma</span> <a id="density_of_rationals" class="idref" href="#density_of_rationals"><span class="id" title="lemma">density_of_rationals</span></a> (<a id="lo:246" class="idref" href="#lo:246"><span class="id" title="binder">lo</span></a> <a id="hi:247" class="idref" href="#hi:247"><span class="id" title="binder">hi</span></a> : <span class="id" title="notation">ℝ</span>) (<a id="H:248" class="idref" href="#H:248"><span class="id" title="binder">H</span></a> : <a class="idref" href="RUG.Analysis.Reals.html#lo:246"><span class="id" title="variable">lo</span></a> <span class="id" title="notation">&lt;</span> <a class="idref" href="RUG.Analysis.Reals.html#hi:247"><span class="id" title="variable">hi</span></a>) :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="notation">∃</span> <a id="p:249" class="idref" href="#p:249"><span class="id" title="binder"><span id="p:250" class="id">p</span></span></a> <a id="p:250" class="idref" href="#p:250"><span class="id" title="binder">:</span></a> <a id="p:250" class="idref" href="#p:250"><span class="id" title="binder">ℤ</span></a><span class="id" title="notation">,</span> <span class="id" title="notation">∃</span> <a id="q:251" class="idref" href="#q:251"><span class="id" title="binder"><span id="q:252" class="id">q</span></span></a> <a id="q:252" class="idref" href="#q:252"><span class="id" title="binder">:</span></a> <a id="q:252" class="idref" href="#q:252"><span class="id" title="binder">ℤ</span></a><span class="id" title="notation">,</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<a class="idref" href="RUG.Analysis.Reals.html#q:251"><span class="id" title="variable">q</span></a> <span class="id" title="notation">&gt;</span> 0)%<span class="id" title="var">Z</span> <span class="id" title="notation">∧</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="RUG.Analysis.Reals.html#lo:246"><span class="id" title="variable">lo</span></a> <span class="id" title="notation">&lt;</span> <span class="id" title="definition">IZR</span> <a class="idref" href="RUG.Analysis.Reals.html#p:249"><span class="id" title="variable">p</span></a> <span class="id" title="notation">/</span> <span class="id" title="definition">IZR</span> <a class="idref" href="RUG.Analysis.Reals.html#q:251"><span class="id" title="variable">q</span></a> <span class="id" title="notation">&lt;</span> <a class="idref" href="RUG.Analysis.Reals.html#hi:247"><span class="id" title="variable">hi</span></a>.<br/>
 <span class="id" title="keyword">Proof</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="var">It</span> <span class="id" title="var">holds</span> <span class="id" title="var">that</span> <span class="id" title="var">hi</span> <span class="id" title="notation">-</span> <span class="id" title="var">lo</span> <span class="id" title="notation">&gt;</span> 0 <span class="id" title="keyword">as</span> (<span class="id" title="var">Hpos</span>).<br/>
-&nbsp;&nbsp;<span class="id" title="var">By</span> <a class="idref" href="RUG.Analysis.Reals.html#archimedean_2"><span class="id" title="lemma">archimedean_2</span></a> <span class="id" title="var">it</span> <span class="id" title="var">holds</span> <span class="id" title="var">that</span> <span class="id" title="notation">∃</span> <a id="n:251" class="idref" href="#n:251"><span class="id" title="binder"><span id="n:252" class="id">n</span></span></a> <a id="n:252" class="idref" href="#n:252"><span class="id" title="binder">:</span></a> <a id="n:252" class="idref" href="#n:252"><span class="id" title="binder">ℕ</span></a><span class="id" title="notation">,</span> 1 <span class="id" title="notation">/</span> <span class="id" title="notation">(</span><a class="idref" href="RUG.Analysis.Reals.html#n:251"><span class="id" title="variable">n</span></a> <span class="id" title="notation">+</span> 1<span class="id" title="notation">)</span> <span class="id" title="notation">&lt;</span> <span class="id" title="var">hi</span> <span class="id" title="notation">-</span> <span class="id" title="var">lo</span> <span class="id" title="keyword">as</span> (<span class="id" title="var">Hn</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="var">By</span> <a class="idref" href="RUG.Analysis.Reals.html#archimedean_2"><span class="id" title="lemma">archimedean_2</span></a> <span class="id" title="var">it</span> <span class="id" title="var">holds</span> <span class="id" title="var">that</span> <span class="id" title="notation">∃</span> <a id="n:253" class="idref" href="#n:253"><span class="id" title="binder"><span id="n:254" class="id">n</span></span></a> <a id="n:254" class="idref" href="#n:254"><span class="id" title="binder">:</span></a> <a id="n:254" class="idref" href="#n:254"><span class="id" title="binder">ℕ</span></a><span class="id" title="notation">,</span> 1 <span class="id" title="notation">/</span> <span class="id" title="notation">(</span><a class="idref" href="RUG.Analysis.Reals.html#n:253"><span class="id" title="variable">n</span></a> <span class="id" title="notation">+</span> 1<span class="id" title="notation">)</span> <span class="id" title="notation">&lt;</span> <span class="id" title="var">hi</span> <span class="id" title="notation">-</span> <span class="id" title="var">lo</span> <span class="id" title="keyword">as</span> (<span class="id" title="var">Hn</span>).<br/>
 &nbsp;&nbsp;<span class="id" title="var">Obtain</span> <span class="id" title="var">such</span> <span class="id" title="var">an</span> <span class="id" title="var">n</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="var">It</span> <span class="id" title="var">holds</span> <span class="id" title="var">that</span> (<span class="id" title="notation">&amp;</span> 0 <span class="id" title="notation">&lt;</span> <span class="id" title="notation">/</span> <span class="id" title="notation">(</span><span class="id" title="var">n</span> <span class="id" title="notation">+</span> 1<span class="id" title="notation">)</span> <span class="id" title="notation">&lt;</span> <span class="id" title="var">hi</span> <span class="id" title="notation">-</span> <span class="id" title="var">lo</span>).<br/>
 

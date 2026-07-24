@@ -43,6 +43,7 @@ Proof.
   - We need to show that ∀ x ∈ (open_ball y r), x ∈ (fun x => a < x < b).
     Take x ∈ (open_ball y r).
     It holds that | x - y | < r as (Hxy).
+    By Rabs_def2 it holds that x - y < r ∧ - r < x - y as (Hbd).
     By Rmin_l it holds that Rmin (y - a) (b - y) ≤ y - a.
     By Rmin_r it holds that Rmin (y - a) (b - y) ≤ b - y.
     We conclude that a < x < b.
@@ -60,7 +61,33 @@ Lemma open_inter (A B : ℝ → Prop)
     (HA : A is _open_) (HB : B is _open_) :
     (fun x => A x ∧ B x) is _open_.
 Proof.
-  Admitted.
+  We need to show that
+    ∀ y ∈ (fun x => A x ∧ B x),
+      ∃ r > 0, ∀ x ∈ (open_ball y r), x ∈ (fun x => A x ∧ B x).
+  Take y ∈ (fun x => A x ∧ B x).
+  It holds that A y ∧ B y as (Hy).
+  It holds that A y as (HAy). It holds that B y as (HBy).
+  By HA it holds that is_interior_point y A as (HiA).
+  It holds that (∃ r1 > 0, ∀ x ∈ (open_ball y r1), x ∈ A) as (HiA').
+  Obtain such a r1.
+  By HB it holds that is_interior_point y B as (HiB).
+  It holds that (∃ r2 > 0, ∀ x ∈ (open_ball y r2), x ∈ B) as (HiB').
+  Obtain such a r2.
+  Choose r := Rmin r1 r2.
+  - Indeed, Rmin r1 r2 > 0.
+  - We need to show that
+      ∀ x ∈ (open_ball y r), x ∈ (fun x => A x ∧ B x).
+    Take x ∈ (open_ball y r).
+    It holds that | x - y | < r as (Hxy).
+    By Rmin_l it holds that Rmin r1 r2 ≤ r1.
+    By Rmin_r it holds that Rmin r1 r2 ≤ r2.
+    It holds that | x - y | < r1. It holds that | x - y | < r2.
+    It holds that x ∈ (open_ball y r1) as (HxA).
+    It holds that x ∈ (open_ball y r2) as (HxB).
+    By HiA' it holds that x ∈ A.
+    By HiB' it holds that x ∈ B.
+    We conclude that x ∈ (fun x => A x ∧ B x).
+Qed.
 
 (** ** Open sets are closed under arbitrary union *)
 
@@ -72,7 +99,35 @@ Lemma open_union (A B : ℝ → Prop)
     (HA : A is _open_) (HB : B is _open_) :
     (fun x => A x ∨ B x) is _open_.
 Proof.
-  Admitted.
+  We need to show that
+    ∀ y ∈ (fun x => A x ∨ B x),
+      ∃ r > 0, ∀ x ∈ (open_ball y r), x ∈ (fun x => A x ∨ B x).
+  Take y ∈ (fun x => A x ∨ B x).
+  It holds that A y ∨ B y as (Hy).
+  Either (A y) or (B y).
+  - Case (A y).
+    By HA it holds that is_interior_point y A as (HiA).
+    It holds that (∃ r > 0, ∀ x ∈ (open_ball y r), x ∈ A) as (HiA').
+    Obtain such a r.
+    Choose (r).
+    + Indeed, r > 0.
+    + We need to show that
+        ∀ x ∈ (open_ball y r), x ∈ (fun x => A x ∨ B x).
+      Take x ∈ (open_ball y r).
+      By HiA' it holds that x ∈ A.
+      We conclude that x ∈ (fun x => A x ∨ B x).
+  - Case (B y).
+    By HB it holds that is_interior_point y B as (HiB).
+    It holds that (∃ r > 0, ∀ x ∈ (open_ball y r), x ∈ B) as (HiB').
+    Obtain such a r.
+    Choose (r).
+    + Indeed, r > 0.
+    + We need to show that
+        ∀ x ∈ (open_ball y r), x ∈ (fun x => A x ∨ B x).
+      Take x ∈ (open_ball y r).
+      By HiB' it holds that x ∈ B.
+      We conclude that x ∈ (fun x => A x ∨ B x).
+Qed.
 
 (** ** Open sets under arbitrary union *)
 
@@ -80,11 +135,29 @@ Proof.
 
     Proof idea: for [x] in the union, [x ∈ U i] for some index [i]; openness of
     [U i] gives a ball [V_ε(x) ⊆ U i], which is contained in the union. *)
-Lemma open_union_arbitrary (I : Type) (U : I → (ℝ → Prop))
-    (HU : ∀ i : I, (U i) is _open_) :
-    (fun x => ∃ i : I, U i x) is _open_.
+Lemma open_union_arbitrary (Idx : Type) (U : Idx → (ℝ → Prop))
+    (HU : ∀ i : Idx, (U i) is _open_) :
+    (fun x => ∃ i : Idx, U i x) is _open_.
 Proof.
-  Admitted.
+  We need to show that
+    ∀ y ∈ (fun x => ∃ i : Idx, U i x),
+      ∃ r > 0, ∀ x ∈ (open_ball y r), x ∈ (fun x => ∃ i : Idx, U i x).
+  Take y ∈ (fun x => ∃ i : Idx, U i x).
+  It holds that (∃ i : Idx, U i y) as (Hy).
+  Obtain such an i.
+  It holds that U i y as (Hiy).
+  By (HU i) it holds that is_interior_point y (U i) as (Hint).
+  It holds that (∃ r > 0, ∀ x ∈ (open_ball y r), x ∈ (U i)) as (Hint').
+  Obtain such a r.
+  Choose (r).
+  - Indeed, r > 0.
+  - We need to show that
+      ∀ x ∈ (open_ball y r), x ∈ (fun x => ∃ i : Idx, U i x).
+    Take x ∈ (open_ball y r).
+    By Hint' it holds that x ∈ (U i).
+    It holds that U i x as (HUix).
+    We conclude that x ∈ (fun x => ∃ i : Idx, U i x).
+Qed.
 
 (** ** Closed intervals are closed *)
 

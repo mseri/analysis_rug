@@ -37,17 +37,35 @@ Set Bullet Behavior "Waterproof Relaxed Subproofs".
     [|x² - c²| = |x - c| · |x + c|] is key. If [|x - c| < 1] then
     [|x + c| = |(x - c) + 2c| ≤ |x - c| + 2|c| < 1 + 2|c|]. Taking
     [δ = min(1, ε / (2|c| + 1))] ensures [|x² - c²| < ε]. *)
+(** The identity function has limit [c] at every point [c]. *)
+Lemma id_limit (c : ℝ) :
+    _limit_ of (fun x => x) in c is c.
+Proof.
+  We need to show that
+    ∀ ε > 0, ∃ δ > 0, ∀ x ∈ ℝ, 0 < |x - c| < δ ⇒ |x - c| < ε.
+  Take ε > 0.
+  Choose δ := ε. { Indeed, ε > 0. }
+  We need to show that ∀ x ∈ ℝ, 0 < |x - c| < δ ⇒ |x - c| < ε.
+  Take x ∈ ℝ. Assume that 0 < |x - c| < δ as (Hx).
+  We conclude that |x - c| < ε.
+Qed.
+
 Lemma sq_continuous (c : ℝ) :
     _limit_ of (fun x => x * x) in c is (c * c).
 Proof.
-  Admitted.
+  By id_limit it holds that _limit_ of (fun x => x) in c is c as (Hid).
+  By lim_product it holds that
+    _limit_ of (fun x => x * x) in c is (c * c) as (Hsq).
+  We conclude that _limit_ of (fun x => x * x) in c is (c * c).
+Qed.
 
 (** Composition of continuous functions is continuous. *)
 Lemma continuous_composition (g : ℝ → ℝ) (a b : ℝ) (Hab : a < b)
     (Hg : ∀ x ∈ (fun x => a < x < b), continuity_pt g x) :
     ∀ x ∈ (fun x => a < x < b), continuity_pt g x.
 Proof.
-  Admitted.
+  exact Hg.
+Qed.
 
 (** A Lipschitz function is continuous. *)
 Lemma lipschitz_is_continuous (h : ℝ → ℝ) (x y : ℝ) (M : ℝ)
@@ -90,13 +108,27 @@ Proof.
     Proof idea: immediate from the algebraic limit theorem for functional
     limits, or from the sequential criterion together with the algebraic limit
     theorem for sequences. *)
-Lemma algebraic_continuity_theorem (f g : ℝ → ℝ) (c k : ℝ)
-    (Hf : continuity_pt f c) (Hg : continuity_pt g c) :
-    continuity_pt (fun x => f x + g x) c ∧
-    continuity_pt (fun x => f x * g x) c ∧
-    continuity_pt (fun x => k * f x) c.
+(** [f] is renamed [f1]: a bare [f] in Waterproof/tactic scope resolves to the
+    global [Stdlib.Reals.Rtopology.f] (a [family]) rather than the local binder. *)
+Lemma algebraic_continuity_theorem (f1 g : ℝ → ℝ) (c k : ℝ)
+    (Hf : continuity_pt f1 c) (Hg : continuity_pt g c) :
+    continuity_pt (fun x => f1 x + g x) c ∧
+    continuity_pt (fun x => f1 x * g x) c ∧
+    continuity_pt (fun x => k * f1 x) c.
 Proof.
-  Admitted.
+  (* Stdlib algebraic continuity lemmas; [plus_fct]/[mult_fct]/[mult_real_fct]
+     are definitionally the pointwise functions used in the goal. *)
+  By (continuity_pt_plus f1 g c Hf Hg) it holds that
+    continuity_pt (fun x => f1 x + g x) c as (H1).
+  By (continuity_pt_mult f1 g c Hf Hg) it holds that
+    continuity_pt (fun x => f1 x * g x) c as (H2).
+  By (continuity_pt_scal f1 k c Hf) it holds that
+    continuity_pt (fun x => k * f1 x) c as (H3).
+  We conclude that
+    (continuity_pt (fun x => f1 x + g x) c ∧
+     continuity_pt (fun x => f1 x * g x) c ∧
+     continuity_pt (fun x => k * f1 x) c).
+Qed.
 
 (** ** Pathologies: the Dirichlet and Thomae functions *)
 

@@ -7,6 +7,8 @@
 
 From Stdlib Require Import Reals.Reals.
 From Stdlib Require Import micromega.Lra.
+From Stdlib Require Import Logic.Classical_Pred_Type.
+From Stdlib Require Import Logic.Classical_Prop.
 From Waterproof Require Import Libs.Analysis.OpenAndClosed.
 Require Export RUG.Analysis.Sequences.
 
@@ -169,6 +171,10 @@ Qed.
 Lemma closed_interval_is_closed (a b : ℝ) (Hab : a ≤ b) :
     closed_set (fun x => a ≤ x ∧ x ≤ b).
 Proof.
+  (* Admitted: [closed_set] is Stdlib's [Rtopology] notion (defined via
+     [neighbourhood]/[disc]), a different framework from Waterproof's
+     [is_closed]/[open_ball]. Proving this requires a bridge between the two
+     definitions of "open"; left for a dedicated framework-compatibility layer. *)
   Admitted.
 
 (** ** Closed sets under finite union *)
@@ -181,7 +187,39 @@ Lemma closed_union (F G : ℝ → Prop)
     (HF : F is _closed_) (HG : G is _closed_) :
     (fun x => F x ∨ G x) is _closed_.
 Proof.
-  Admitted.
+  We need to show that
+    ∀ a ∈ (ℝ\(fun x => F x ∨ G x)),
+      is_interior_point a (ℝ\(fun x => F x ∨ G x)).
+  Take a ∈ (ℝ\(fun x => F x ∨ G x)).
+  It holds that ¬ (F a ∨ G a) as (Ha).
+  It holds that ¬ F a as (HFa). It holds that ¬ G a as (HGa).
+  It holds that a ∈ (ℝ\F) as (HaF).
+  It holds that a ∈ (ℝ\G) as (HaG).
+  By HF it holds that is_interior_point a (ℝ\F) as (HiF).
+  It holds that (∃ r1 > 0, ∀ x ∈ (open_ball a r1), x ∈ (ℝ\F)) as (HiF').
+  Obtain such a r1.
+  By HG it holds that is_interior_point a (ℝ\G) as (HiG).
+  It holds that (∃ r2 > 0, ∀ x ∈ (open_ball a r2), x ∈ (ℝ\G)) as (HiG').
+  Obtain such a r2.
+  We need to show that
+    (∃ r > 0, ∀ x ∈ (open_ball a r), x ∈ (ℝ\(fun x => F x ∨ G x))).
+  Choose r := Rmin r1 r2.
+  - Indeed, Rmin r1 r2 > 0.
+  - We need to show that
+      ∀ x ∈ (open_ball a r), x ∈ (ℝ\(fun x => F x ∨ G x)).
+    Take x ∈ (open_ball a r).
+    It holds that | x - a | < r as (Hxa).
+    By Rmin_l it holds that Rmin r1 r2 ≤ r1.
+    By Rmin_r it holds that Rmin r1 r2 ≤ r2.
+    It holds that | x - a | < r1. It holds that | x - a | < r2.
+    It holds that x ∈ (open_ball a r1) as (HxF).
+    It holds that x ∈ (open_ball a r2) as (HxG).
+    By HiF' it holds that x ∈ (ℝ\F) as (Hx1).
+    By HiG' it holds that x ∈ (ℝ\G) as (Hx2).
+    It holds that ¬ F x as (HnFx). It holds that ¬ G x as (HnGx).
+    It holds that ¬ (F x ∨ G x) as (Hnor).
+    We conclude that x ∈ (ℝ\(fun x => F x ∨ G x)).
+Qed.
 
 (** ** Closed sets under arbitrary intersection *)
 
@@ -189,11 +227,34 @@ Proof.
 
     Proof idea: by de Morgan the complement is [⋃ᵢ Fᵢᶜ], an arbitrary union of
     open sets, hence open (Theorem 6.2). *)
-Lemma closed_inter_arbitrary (I : Type) (F : I → (ℝ → Prop))
-    (HF : ∀ i : I, F i is _closed_) :
-    (fun x => ∀ i : I, F i x) is _closed_.
+Lemma closed_inter_arbitrary (Idx : Type) (F : Idx → (ℝ → Prop))
+    (HF : ∀ i : Idx, F i is _closed_) :
+    (fun x => ∀ i : Idx, F i x) is _closed_.
 Proof.
-  Admitted.
+  We need to show that
+    ∀ a ∈ (ℝ\(fun x => ∀ i : Idx, F i x)),
+      is_interior_point a (ℝ\(fun x => ∀ i : Idx, F i x)).
+  Take a ∈ (ℝ\(fun x => ∀ i : Idx, F i x)).
+  It holds that ¬ (∀ i : Idx, F i a) as (Ha).
+  By not_all_ex_not it holds that (∃ i : Idx, ¬ F i a) as (Hex).
+  Obtain such an i.
+  It holds that ¬ F i a as (Hi).
+  It holds that a ∈ (ℝ\(F i)) as (HaFi).
+  By (HF i) it holds that is_interior_point a (ℝ\(F i)) as (Hint).
+  It holds that (∃ r > 0, ∀ x ∈ (open_ball a r), x ∈ (ℝ\(F i))) as (Hint').
+  Obtain such a r.
+  We need to show that
+    (∃ r > 0, ∀ x ∈ (open_ball a r), x ∈ (ℝ\(fun x => ∀ i : Idx, F i x))).
+  Choose (r).
+  - Indeed, r > 0.
+  - We need to show that
+      ∀ x ∈ (open_ball a r), x ∈ (ℝ\(fun x => ∀ i : Idx, F i x)).
+    Take x ∈ (open_ball a r).
+    By Hint' it holds that x ∈ (ℝ\(F i)) as (Hx).
+    It holds that ¬ F i x as (HnFix).
+    It holds that ¬ (∀ j : Idx, F j x) as (Hnall).
+    We conclude that x ∈ (ℝ\(fun x => ∀ i : Idx, F i x)).
+Qed.
 
 (** ** Limit points *)
 
@@ -208,6 +269,11 @@ Lemma limit_point_characterization (A : ℝ → Prop) (x : ℝ) :
     (∀ ε > 0, ∃ y ∈ A, 0 < Rabs (y - x) < ε) ⇔
     (∃ a : ℕ → ℝ, (∀ n ∈ ℕ, a n ∈ A) ∧ (∀ n ∈ ℕ, a n ≠ x) ∧ a ⟶ x).
 Proof.
+  (* Admitted: the (⇒) direction picks, for each n, a point aₙ ∈ A with
+     0 < |aₙ - x| < 1/n. Assembling these choices into a single sequence
+     a : ℕ → ℝ requires a form of the axiom of choice (dependent/countable
+     choice), consistent with how [sequential_limit_characterization] in
+     Limits.v is left. *)
   Admitted.
 
 (** ** Open/closed duality *)
@@ -217,6 +283,10 @@ Proof.
 Lemma open_iff_complement_closed (A : ℝ → Prop) :
     A is _open_ ⇔ closed_set (fun x => ¬ A x).
 Proof.
+  (* Admitted: mixes Waterproof's [is_open] with Stdlib's [closed_set]
+     (Rtopology). Bridging the two "open" definitions
+     ([open_ball]/[is_interior_point] vs. [neighbourhood]/[disc]) is the same
+     framework-compatibility gap as in [closed_interval_is_closed]. *)
   Admitted.
 
 (** ** Closure characterization *)
@@ -230,7 +300,69 @@ Lemma closed_iff_contains_limit_points (A : ℝ → Prop) :
     A is _closed_ ⇔
     (∀ x : ℝ, (∀ ε > 0, ∃ y ∈ A, 0 < Rabs (y - x) < ε) → A x).
 Proof.
-  Admitted.
+  We show both directions.
+  - We need to show that
+      (A is _closed_) ⇨
+      (∀ x : ℝ, (∀ ε > 0, ∃ y ∈ A, 0 < Rabs (y - x) < ε) → A x).
+    Assume that (A is _closed_) as (Hcl).
+    Take x : ℝ.
+    Assume that (∀ ε > 0, ∃ y ∈ A, 0 < Rabs (y - x) < ε) as (Hlp).
+    We argue by contradiction.
+    Assume that ¬ A x as (Hnx).
+    It holds that x ∈ (ℝ\A) as (HxC).
+    By Hcl it holds that is_interior_point x (ℝ\A) as (Hint).
+    It holds that (∃ ε > 0, ∀ z ∈ (open_ball x ε), z ∈ (ℝ\A)) as (Hint').
+    Obtain such a ε.
+    By Hlp it holds that (∃ y ∈ A, 0 < Rabs (y - x) < ε) as (Hy).
+    Obtain such a y. It holds that y ∈ A ∧ 0 < Rabs (y - x) < ε as (Hy').
+    It holds that y ∈ A as (HyA). It holds that 0 < Rabs (y - x) < ε as (Hyb).
+    It holds that Rabs (y - x) < ε as (Hylt).
+    It holds that y ∈ (open_ball x ε) as (Hyball).
+    By Hint' it holds that y ∈ (ℝ\A) as (HyC).
+    It holds that ¬ A y as (HnyA).
+    Contradiction.
+  - We need to show that
+      (∀ x : ℝ, (∀ ε > 0, ∃ y ∈ A, 0 < Rabs (y - x) < ε) → A x) ⇨
+      (A is _closed_).
+    Assume that
+      (∀ x : ℝ, (∀ ε > 0, ∃ y ∈ A, 0 < Rabs (y - x) < ε) → A x) as (Hlp).
+    We need to show that ∀ a ∈ (ℝ\A), is_interior_point a (ℝ\A).
+    Take a ∈ (ℝ\A).
+    It holds that ¬ A a as (Hna).
+    We claim that ¬ (∀ ε > 0, ∃ y ∈ A, 0 < Rabs (y - a) < ε) as (Hnlp).
+    { We argue by contradiction.
+      Assume that ¬ ¬ (∀ ε > 0, ∃ y ∈ A, 0 < Rabs (y - a) < ε) as (Hnn).
+      It holds that (∀ ε > 0, ∃ y ∈ A, 0 < Rabs (y - a) < ε) as (Hlpa).
+      By Hlp it holds that A a as (HAa).
+      Contradiction. }
+    By not_all_ex_not it holds that
+      (∃ ε, ¬ (ε > 0 → (∃ y ∈ A, 0 < Rabs (y - a) < ε))) as (Hex).
+    Obtain such a ε.
+    By imply_to_and it holds that
+      (ε > 0 ∧ ¬ (∃ y ∈ A, 0 < Rabs (y - a) < ε)) as (Hand).
+    It holds that ε > 0 as (Heps).
+    It holds that ¬ (∃ y ∈ A, 0 < Rabs (y - a) < ε) as (Hno).
+    We need to show that (∃ r > 0, ∀ x ∈ (open_ball a r), x ∈ (ℝ\A)).
+    Choose r := ε.
+    + Indeed, ε > 0.
+    + We need to show that ∀ x ∈ (open_ball a r), x ∈ (ℝ\A).
+      Take x ∈ (open_ball a r).
+      It holds that Rabs (x - a) < r as (Hxa).
+      We argue by contradiction.
+      Assume that ¬ (x ∈ (ℝ\A)) as (HxnC).
+      It holds that ¬ ¬ A x as (Hnn).
+      By NNPP it holds that A x as (HAx).
+      It holds that x ∈ A as (HxA).
+      It holds that x ≠ a as (Hxne).
+      It holds that x - a ≠ 0 as (Hsub).
+      By Rabs_no_R0 it holds that Rabs (x - a) ≠ 0 as (Hnz).
+      It holds that 0 < Rabs (x - a) as (Hpos).
+      We claim that (∃ y ∈ A, 0 < Rabs (y - a) < ε) as (Hyes).
+      { Choose y := x.
+        - Indeed, x ∈ A.
+        - We conclude that 0 < Rabs (x - a) < ε. }
+      Contradiction.
+Qed.
 
 (** ** Isolated points *)
 
@@ -250,18 +382,6 @@ Definition is_isolated_point (A : ℝ → Prop) (x : ℝ) : Prop :=
 Definition closure (A : ℝ → Prop) : ℝ → Prop :=
     fun x => A x ∨ is_limit_point A x.
 
-(** The closure [Ā] is a closed set.
-
-    Proof idea: one shows [Ā] contains all of its own limit points. A limit
-    point of [Ā] is approximated arbitrarily well by points of [Ā], each of
-    which is either in [A] or approximated by points of [A]; a diagonal argument
-    then produces points of [A] arbitrarily close, so the point is already in
-    [Ā]. *)
-Lemma closure_is_closed (A : ℝ → Prop) :
-    (closure A) is _closed_.
-Proof.
-  Admitted.
-
 (** Characterization of the closure: [x ∈ Ā] iff every neighbourhood of [x]
     contains a point of [A]. Equivalently, iff there is a sequence in [A]
     converging to [x].
@@ -273,4 +393,78 @@ Proof.
 Lemma closure_characterization (A : ℝ → Prop) (x : ℝ) :
     closure A x ⇔ (∀ ε > 0, ∃ y ∈ A, Rabs (y - x) < ε).
 Proof.
-  Admitted.
+  We show both directions.
+  - We need to show that
+      (A x ∨ is_limit_point A x) ⇨ (∀ ε > 0, ∃ y ∈ A, Rabs (y - x) < ε).
+    Assume that (A x ∨ is_limit_point A x) as (Hcl').
+    Take ε > 0.
+    Either (A x) or (is_limit_point A x).
+    + Case (A x).
+      Choose y := x.
+      * Indeed, x ∈ A.
+      * We conclude that Rabs (x - x) < ε.
+    + Case (is_limit_point A x).
+      By H it holds that (∃ y ∈ A, 0 < Rabs (y - x) < ε) as (Hy).
+      Obtain such a y. It holds that y ∈ A ∧ 0 < Rabs (y - x) < ε as (Hy').
+      It holds that y ∈ A as (HyA). It holds that 0 < Rabs (y - x) < ε as (Hyb).
+      Choose y0 := y.
+      * Indeed, y ∈ A.
+      * We conclude that Rabs (y - x) < ε.
+  - We need to show that
+      (∀ ε > 0, ∃ y ∈ A, Rabs (y - x) < ε) ⇨ (A x ∨ is_limit_point A x).
+    Assume that (∀ ε > 0, ∃ y ∈ A, Rabs (y - x) < ε) as (Hnb).
+    Either (A x) or (¬ A x).
+    + Case (A x). It holds that A x ∨ is_limit_point A x. We conclude that closure A x.
+    + Case (¬ A x).
+      It suffices to show that is_limit_point A x.
+      We need to show that ∀ ε > 0, ∃ y ∈ A, 0 < Rabs (y - x) < ε.
+      Take ε > 0.
+      By Hnb it holds that (∃ y ∈ A, Rabs (y - x) < ε) as (Hy).
+      Obtain such a y. It holds that y ∈ A ∧ Rabs (y - x) < ε as (Hy').
+      It holds that y ∈ A as (HyA). It holds that Rabs (y - x) < ε as (Hyd).
+      It holds that y ≠ x as (Hne).
+      It holds that y - x ≠ 0 as (Hsub).
+      By Rabs_no_R0 it holds that Rabs (y - x) ≠ 0 as (Hnz).
+      It holds that 0 < Rabs (y - x) as (Hpos).
+      Choose y0 := y.
+      * Indeed, y ∈ A.
+      * We conclude that 0 < Rabs (y - x) < ε.
+Qed.
+
+(** The closure [Ā] is a closed set.
+
+    Proof idea: one shows [Ā] contains all of its own limit points. A limit
+    point of [Ā] is approximated arbitrarily well by points of [Ā], each of
+    which is either in [A] or approximated by points of [A]; a diagonal argument
+    then produces points of [A] arbitrarily close, so the point is already in
+    [Ā]. *)
+Lemma closure_is_closed (A : ℝ → Prop) :
+    (closure A) is _closed_.
+Proof.
+  apply (closed_iff_contains_limit_points (closure A)).
+  Take x : ℝ.
+  Assume that (∀ ε > 0, ∃ y ∈ (closure A), 0 < Rabs (y - x) < ε) as (Hlp).
+  apply (closure_characterization A x).
+  Take ε > 0.
+  By Hlp it holds that (∃ y ∈ (closure A), 0 < Rabs (y - x) < ε) as (Hy).
+  Obtain such a y.
+  It holds that y ∈ (closure A) ∧ 0 < Rabs (y - x) < ε as (Hy').
+  It holds that closure A y as (HclY).
+  It holds that 0 < Rabs (y - x) < ε as (Hyb).
+  It holds that Rabs (y - x) < ε as (Hylt).
+  Define δ := ε - Rabs (y - x).
+  It holds that δ > 0 as (Hd).
+  By (closure_characterization A y) it holds that
+    (∀ ε' > 0, ∃ z ∈ A, Rabs (z - y) < ε') as (Hcy).
+  By Hcy it holds that (∃ z ∈ A, Rabs (z - y) < δ) as (Hz).
+  Obtain such a z.
+  It holds that z ∈ A ∧ Rabs (z - y) < δ as (Hz').
+  It holds that z ∈ A as (HzA). It holds that Rabs (z - y) < δ as (Hzlt).
+  By Rabs_triang it holds that
+    Rabs ((z - y) + (y - x)) ≤ Rabs (z - y) + Rabs (y - x) as (Htri).
+  It holds that Rabs (z - x) ≤ Rabs (z - y) + Rabs (y - x) as (Htri2).
+  It holds that Rabs (z - x) < ε as (Hfin).
+  Choose z0 := z.
+  - Indeed, z ∈ A.
+  - We conclude that Rabs (z0 - x) < ε.
+Qed.

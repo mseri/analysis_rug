@@ -535,10 +535,69 @@ Qed.
     [aₙ/bₙ - m/l = (aₙ l - m bₙ)/(bₙ l)] and bounding numerator and denominator
     reduces the claim to the sum and product theorems together with the
     convergence of [1/bₙ] to [1/l]. *)
+(** _Convergence of the inverse_:
+    if [b ⟶ l] with [l ≠ 0], then [1/bₙ ⟶ 1/l].
+
+    Proof idea: since [bₙ → l ≠ 0], eventually [|bₙ| > |l|/2 > 0], so the
+    inverse is well-defined. Then
+    [|1/bₙ - 1/l| = |bₙ - l| / (|bₙ|·|l|) < |bₙ - l| · 2/|l|²],
+    which is made smaller than [ε] by taking [|bₙ - l| < ε·|l|²/2]. *)
+Lemma inv_limit (b : ℕ → ℝ) (l : ℝ) :
+    b ⟶ l → l ≠ 0 → (fun n => / b n) ⟶ / l.
+Proof.
+  Assume that b ⟶ l as (Hb).
+  Assume that l ≠ 0 as (Hl).
+  It holds that | l | > 0 as (Hlpos).
+  We need to show that ∀ ε > 0, ∃ N1 ∈ ℕ, ∀ n ≥ N1, | / b n - / l | < ε.
+  Take ε > 0.
+  It holds that | l | / 2 > 0 as (Hpos1).
+  Since (| l | / 2 > 0) it holds that
+    (∃ N1 ∈ ℕ, ∀ n ≥ N1, | b n - l | < | l | / 2) as (H1).
+  Obtain such a N1.
+  It holds that ε * (| l | * | l | / 2) > 0 as (Hpos2).
+  Since (ε * (| l | * | l | / 2) > 0) it holds that
+    (∃ N2 ∈ ℕ, ∀ n ≥ N2, | b n - l | < ε * (| l | * | l | / 2)) as (H2).
+  Obtain such a N2.
+  Choose N3 := max N1 N2. { Indeed, N3 ∈ ℕ. }
+  We need to show that ∀ n ≥ N3, | / b n - / l | < ε.
+  Take n ≥ N3.
+  It holds that n ≥ N1. It holds that n ≥ N2.
+  By H1 it holds that | b n - l | < | l | / 2 as (Hb1).
+  By H2 it holds that | b n - l | < ε * (| l | * | l | / 2) as (Hb2).
+  By Rabs_triang_inv it holds that | l | - | b n | ≤ | l - b n |.
+  It holds that | l - b n | = | b n - l | as (Hsym).
+  It holds that | b n | > | l | / 2 as (Hbn).
+  It holds that | b n | > 0 as (Hbnpos).
+  It holds that b n ≠ 0 as (Hbne).
+  It holds that | b n | * | l | > 0 as (Hden).
+  (** We eliminate the inverses by cross-multiplication: after multiplying by
+      the positive quantity [|bₙ|·|l|], the goal becomes inverse-free. The two
+      applications of [Rinv_l] provide the only facts about the inverses that
+      the arithmetic automation needs. *)
+  By Rinv_l it holds that / b n * b n = 1 as (Ei1).
+  By Rinv_l it holds that / l * l = 1 as (Ei2).
+  It holds that (/ b n - / l) * (b n * l) = l - b n as (Hfield).
+  assert (Hmul : | / b n - / l | * (| b n | * | l |) = | b n - l |).
+  { rewrite <- Rabs_mult. rewrite <- Rabs_mult. rewrite Hfield.
+    By Rabs_minus_sym we conclude that | l - b n | = | b n - l |. }
+  It holds that ε * (| b n | * | l |) > ε * ((| l | / 2) * | l |) as (Hstep).
+  It holds that | b n - l | < ε * (| b n | * | l |) as (Hprod).
+  rewrite <- Hmul in Hprod.
+  By Rmult_lt_reg_r we conclude that | / b n - / l | < ε.
+Qed.
+
 Lemma algebraic_limit_theorem_quotient (a b : ℕ → ℝ) (m l : ℝ) :
     a ⟶ m → b ⟶ l → l ≠ 0 → (fun n => a n / b n) ⟶ (m / l).
 Proof.
-  Admitted.
+  Assume that a ⟶ m as (Ha).
+  Assume that b ⟶ l as (Hb).
+  Assume that l ≠ 0 as (Hl).
+  By inv_limit it holds that (fun n => / b n) ⟶ / l as (Hinv).
+  By algebraic_limit_theorem_product it holds that
+    (fun n => a n * / b n) ⟶ (m * / l) as (Hprod).
+  We need to show that (fun n => a n / b n) ⟶ (m / l).
+  We conclude that (fun n => a n / b n) ⟶ (m / l).
+Qed.
 
 (** ** Uniqueness of limits *)
 
@@ -551,7 +610,28 @@ Proof.
 Lemma limit_unique (a : ℕ → ℝ) (L1 L2 : ℝ) :
     a ⟶ L1 → a ⟶ L2 → L1 = L2.
 Proof.
-  Admitted.
+  Assume that a ⟶ L1 as (H1).
+  Assume that a ⟶ L2 as (H2).
+  We argue by contradiction.
+  Assume that L1 ≠ L2 as (Hne).
+  It holds that | L1 - L2 | > 0.
+  It holds that | L1 - L2 | / 2 > 0 as (Heps).
+  Since (| L1 - L2 | / 2 > 0) it holds that
+    (∃ N1 ∈ ℕ, ∀ n ≥ N1, | a n - L1 | < | L1 - L2 | / 2) as (HA).
+  Obtain such a N1.
+  Since (| L1 - L2 | / 2 > 0) it holds that
+    (∃ N2 ∈ ℕ, ∀ n ≥ N2, | a n - L2 | < | L1 - L2 | / 2) as (HB).
+  Obtain such a N2.
+  Define n := max N1 N2.
+  It holds that n ≥ N1. It holds that n ≥ N2.
+  By HA it holds that | a n - L1 | < | L1 - L2 | / 2 as (HA').
+  By HB it holds that | a n - L2 | < | L1 - L2 | / 2 as (HB').
+  By Rabs_triang it holds that
+    | L1 - L2 | ≤ | L1 - a n | + | a n - L2 | as (Htri).
+  It holds that | L1 - a n | = | a n - L1 | as (Hsym).
+  It holds that | L1 - L2 | < | L1 - L2 |.
+  Contradiction.
+Qed.
 
 (** ** A divergent sequence *)
 

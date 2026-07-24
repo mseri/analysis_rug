@@ -34,7 +34,19 @@ Set Bullet Behavior "Waterproof Relaxed Subproofs".
 Lemma open_interval_is_open (a b : ℝ) (Hab : a < b) :
     (fun x => a < x < b) is _open_.
 Proof.
-  Admitted.
+  We need to show that
+    ∀ y ∈ (fun x => a < x < b), ∃ r > 0, ∀ x ∈ (open_ball y r), x ∈ (fun x => a < x < b).
+  Take y ∈ (fun x => a < x < b).
+  It holds that a < y < b as (Hy).
+  Choose r := Rmin (y - a) (b - y).
+  - Indeed, Rmin (y - a) (b - y) > 0.
+  - We need to show that ∀ x ∈ (open_ball y r), x ∈ (fun x => a < x < b).
+    Take x ∈ (open_ball y r).
+    It holds that | x - y | < r as (Hxy).
+    By Rmin_l it holds that Rmin (y - a) (b - y) ≤ y - a.
+    By Rmin_r it holds that Rmin (y - a) (b - y) ≤ b - y.
+    We conclude that a < x < b.
+Qed.
 
 (** ** Open sets are closed under finite intersection *)
 

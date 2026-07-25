@@ -1,0 +1,291 @@
+# Homework 2 -- Comparison of series by a limit of ratios
+
+Let $(a_n)$ and $(b_n)$ be two sequences of non-negative real numbers. Prove
+that if
+$$
+\lim_{n\to\infty} \frac{a_n}{b_n} = c \in (0,\infty),
+$$
+then $\sum_n a_n$ and $\sum_n b_n$ are either both convergent or both divergent.
+
+Use this result to show that, given any sequence $(a_n)$ of non-negative real
+numbers, $\sum a_n$ converges if and only if $\sum \frac{a_n}{1+a_n}$ converges.
+
+**Course material.**
+
+- Lecture 5: [Cauchy sequences and series](../index.html#lecture05)
+  (Abbott §2.6–2.7).
+- Formalisation: [`theories/Series.v`](../theories/Series.v). The results used
+  below are `series_comparison_test`, `series_convergent_terms_zero` and
+  `series_algebraic_limit`; `partial_sums a n` is $\sum_{k=0}^{n} a_k$, and
+  "$\sum a_n$ converges" is written `∃ l1 ∈ ℝ, partial_sums a ⟶ l1`.
+
+Notes:
+
+- The ratio $a_n / b_n$ only makes sense when $b_n \neq 0$, so we assume
+  $b_n > 0$ throughout. (In Rocq `x / 0` is `0`, which would make the statement
+  false as written.)
+- Convergence of a series only depends on its tail, but the comparison test of
+  Lecture 5 asks for the inequality $a_n \leq b_n$ for *all* $n$. Part 1 below
+  removes that restriction once and for all; Parts 3 and 4 then use it.
+- In the second half of the assignment you do not need the ratio test: one
+  direction is a plain comparison ($\frac{a_n}{1+a_n} \le a_n$), the other one
+  uses that the terms of a convergent series tend to $0$.
+
+<hint title="Import libraries (click to open/close)">
+
+Run `dune build` once before opening this file, so that the `RUG.Analysis.*`
+modules of the course library are available.
+
+```coq
+Require Import Stdlib.Reals.Reals.
+Require Import Stdlib.Reals.PartSum.
+Require Import Waterproof.Tactics.
+Require Import Waterproof.Notations.Common.
+Require Import Waterproof.Notations.Reals.
+Require Import Waterproof.Notations.Sets.
+Require Import Waterproof.Chains.
+Require Import Waterproof.Automation.
+Require Import Waterproof.Libs.Analysis.Series.
+Require Import Waterproof.Libs.Analysis.Sequences.
+Require Import RUG.Analysis.Series.
+
+Waterproof Enable Automation RealsAndIntegers.
+Waterproof Enable Automation Intuition.
+
+Open Scope R_scope.
+Open Scope subset_scope.
+
+Set Default Goal Selector "!".
+Set Bullet Behavior "Waterproof Relaxed Subproofs".
+```
+</hint>
+
+## Part 1: comparison from a certain index onwards
+
+Show that if $0 \le a_n$, $0 \le b_n$, and $a_n \le b_n$ for all $n > N$, then
+convergence of $\sum b_n$ implies convergence of $\sum a_n$.
+
+<hint title="💡 Hint (click to open/close)">
+The partial sums of $\sum a_n$ are non-decreasing (`partial_sums_pos_incr`), so
+by the monotone convergence theorem (`Un_cv_crit`) it is enough to bound them.
+For $n > N$ split the sum with `tech2`:
+```
+sum_f_R0 An n = sum_f_R0 An m + sum_f_R0 (fun i => An (S m + i)) (n - S m)
+```
+(use `Nat.add (S Nn) i` and `Nat.sub n (S Nn)` rather than `%nat` annotations,
+which confuse the elaborator inside a lambda). Compare the two tails with
+`sum_Rle`, and bound the partial sums of $\sum b_n$ by their limit with
+`growing_ineq`. `cond_pos_sum` gives that a sum of non-negative terms is
+non-negative, and `growing_prop` gives monotonicity of a growing sequence.
+Move between `⟶` and `Un_cv` with `convergence_equivalence` (state the
+equivalence first, then use it: the automation shield does not split an `⇔` on
+its own).
+</hint>
+
+```coq
+Lemma tail_comparison (a b : ℕ → ℝ) (Nn : ℕ) (L : ℝ)
+    (Ha : ∀ n : ℕ, 0 ≤ a n)
+    (Hb0 : ∀ n : ℕ, 0 ≤ b n)
+    (Hab : ∀ n : ℕ, (n > Nn)%nat → a n ≤ b n)
+    (HL : partial_sums b ⟶ L) :
+    ∃ l1 ∈ ℝ, partial_sums a ⟶ l1.
+Proof.
+```
+<input-area>
+```coq
+
+```
+</input-area>
+```coq
+Qed.
+```
+
+## Part 2: the bounds coming from the limit of the ratios
+
+From $\lim a_n / b_n = c > 0$, applied with $\varepsilon = c/2$, deduce that from
+some index onwards
+$$
+\frac c2 < \frac{a_n}{b_n} < \frac{3c}{2},
+\qquad\text{hence}\qquad
+a_n \le \frac{3c}{2} b_n \quad\text{and}\quad b_n \le \frac2c a_n .
+$$
+
+<hint title="💡 Hint (click to open/close)">
+Split the absolute value with `Rabs_def2`. To turn a statement about the
+quotient into one about the product, give the automation `b n * / b n = 1`
+(from `Rinv_r`) and the resulting identity `(a n / b n) * b n = a n`; then
+multiply the inequalities by `b n > 0`. For the second bound you also need
+`c * / c = 1`.
+</hint>
+
+```coq
+Lemma ratio_bounds (a b : ℕ → ℝ) (c : ℝ) (Hc : c > 0)
+    (Hbpos : ∀ n : ℕ, b n > 0)
+    (Hlim : (fun n : ℕ => a n / b n) ⟶ c) :
+    ∃ Nn ∈ ℕ, ∀ n : ℕ, (n ≥ Nn)%nat →
+      a n ≤ (3*c/2) * b n ∧ b n ≤ (2/c) * a n.
+Proof.
+```
+<input-area>
+```coq
+
+```
+</input-area>
+```coq
+Qed.
+```
+
+Since the bounds of Part 2 involve a constant factor, we also need that
+rescaling a series does not affect convergence. Here `sprod b K` is the sequence
+$n \mapsto K \cdot b_n$ (see `theories/Series.v`).
+
+<hint title="💡 Hint (click to open/close)">
+This is the first half of `series_algebraic_limit`; instantiate that lemma with
+both sequences equal to `b` and use `Because ... both ... and ...` to keep the
+half you need.
+</hint>
+
+```coq
+Lemma scaled_series_converges (b : ℕ → ℝ) (K L : ℝ) (HL : partial_sums b ⟶ L) :
+    partial_sums (sprod b K) ⟶ (K * L).
+Proof.
+```
+<input-area>
+```coq
+
+```
+</input-area>
+```coq
+Qed.
+```
+
+## Part 3: the main theorem
+
+Both series converge, or neither does.
+
+<hint title="💡 Hint (click to open/close)">
+Prove the two implications with `We show both directions.` They are symmetric:
+in one direction compare `b` with `sprod a (2/c)`, in the other compare `a` with
+`sprod b (3*c/2)`, in both cases using Part 1 with the index `Nn` from Part 2.
+Supply the arguments of `tail_comparison` explicitly — leaving them to the
+automation makes the search very slow.
+</hint>
+
+```coq
+Theorem series_ratio_comparison (a b : ℕ → ℝ) (c : ℝ) (Hc : c > 0)
+    (Ha0 : ∀ n : ℕ, 0 ≤ a n) (Hbpos : ∀ n : ℕ, b n > 0)
+    (Hlim : (fun n : ℕ => a n / b n) ⟶ c) :
+    (∃ l1 ∈ ℝ, partial_sums a ⟶ l1) ⇔ (∃ l1 ∈ ℝ, partial_sums b ⟶ l1).
+Proof.
+```
+<input-area>
+```coq
+
+```
+</input-area>
+```coq
+Qed.
+```
+
+## Part 4: the application
+
+For the second half of the assignment we need three elementary facts about the
+map $x \mapsto \frac{x}{1+x}$ on $[0,\infty)$:
+$$
+0 \le \frac{x}{1+x}, \qquad
+\frac{x}{1+x} \le x, \qquad
+\frac{x}{1+x} \le \frac12 \;\Rightarrow\; x \le 2\cdot\frac{x}{1+x}.
+$$
+
+<hint title="💡 Hint (click to open/close)">
+In each case: state `1 + x > 0`, get `(1 + x) * / (1 + x) = 1` from `Rinv_r`,
+and then clear the denominator by multiplying with `1 + x` and cancelling with
+`Rmult_le_reg_r` (`0 < r → r1 * r ≤ r2 * r → r1 ≤ r2`).
+For the third fact, first derive `x ≤ 1` from the hypothesis.
+</hint>
+
+```coq
+Lemma frac_nonneg (x : ℝ) (Hx : 0 ≤ x) : 0 ≤ x / (1 + x).
+Proof.
+```
+<input-area>
+```coq
+
+```
+</input-area>
+```coq
+Qed.
+```
+
+```coq
+Lemma frac_le (x : ℝ) (Hx : 0 ≤ x) : x / (1 + x) ≤ x.
+Proof.
+```
+<input-area>
+```coq
+
+```
+</input-area>
+```coq
+Qed.
+```
+
+```coq
+Lemma frac_ge (x : ℝ) (Hx : 0 ≤ x) (Hhalf : x / (1 + x) ≤ 1/2) :
+    x ≤ 2 * (x / (1 + x)).
+Proof.
+```
+<input-area>
+```coq
+
+```
+</input-area>
+```coq
+Qed.
+```
+
+Now prove the equivalence.
+
+<hint title="💡 Hint (click to open/close)">
+(⇒) is `series_comparison_test` applied to $\frac{a_n}{1+a_n} \le a_n$; mind
+that its hypotheses are stated with `∀ n ∈ ℕ`.
+
+(⇐) if $\sum \frac{a_n}{1+a_n}$ converges then its terms tend to $0$
+(`series_convergent_terms_zero`), so from some index on
+$\frac{a_n}{1+a_n} < \frac12$, and then $a_n \le 2 \cdot \frac{a_n}{1+a_n}$ by
+`frac_ge`. Conclude with Part 1 and `scaled_series_converges`.
+</hint>
+
+```coq
+Theorem series_a_over_one_plus_a (a : ℕ → ℝ) (Ha : ∀ n : ℕ, 0 ≤ a n) :
+    (∃ l1 ∈ ℝ, partial_sums a ⟶ l1) ⇔
+    (∃ l1 ∈ ℝ, partial_sums (fun n : ℕ => a n / (1 + a n)) ⟶ l1).
+Proof.
+```
+<input-area>
+```coq
+
+```
+</input-area>
+```coq
+Qed.
+```
+
+## Declaration of own work
+
+Please declare that the work above is your own work by writing `Yes.` below.
+In particular, this means the proofs are typed by yourself and you could
+explain them when asked.
+```coq
+Inductive answer : Type := Yes : answer.
+
+Definition own_work : answer. exact
+```
+<input-area>
+```coq
+
+```
+</input-area>
+```coq
+Qed.
+```

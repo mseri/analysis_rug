@@ -5,6 +5,14 @@ $$
 A = \bigg\lbrace \frac{2x+1}{3y-x} : x, y \in \mathbb{R} \text{ and } 1 \leq 2x < y \bigg\rbrace.
 $$
 
+**Course material.**
+
+- Lecture 1: [the real numbers, suprema and infima](../index.html#lecture01)
+  (Abbott §1.2–1.4).
+- Formalisation: [`theories/Reals.v`](../theories/Reals.v) and the Waterproof
+  library `Waterproof.Libs.Analysis.SupAndInf` (`is_lower_bound`, `is_inf`,
+  `alt_char_inf`).
+
 <hint title="Import libraries (click to open/close)">
 ```coq
 Require Import Stdlib.Reals.Reals.

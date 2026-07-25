@@ -1,0 +1,245 @@
+# Homework 4 -- Uniform convergence
+
+Consider the sequence of functions $f_n : (0,\infty) \to \mathbb{R}$ given by
+$$
+f_n(x) = \frac{n}{nx + 1}.
+$$
+Prove that the sequence $(f_n)$ converges uniformly on every set of the form
+$[a,\infty)$ with $a > 0$, but that the convergence is *not* uniform on
+$(0,\infty)$.
+
+**Course material.**
+
+- Lectures 11 and 12: [uniform convergence](../index.html#lecture11),
+  [interchanging limits](../index.html#lecture12) (Abbott §6.2–6.4).
+- Formalisation: [`theories/FunctionSequences.v`](../theories/FunctionSequences.v),
+  in particular the definitions `converges_pointwise` / `converges_uniformly` and
+  the examples `x_over_n_uniform`, `x_pow_n_not_uniform`.
+
+Notes:
+
+- The exercise below is cut into four steps. Steps 1, 2 and 4 are pure
+  computations with real numbers; only step 3 is about uniform convergence.
+- Recall that `a / b` is `a * / b` for Waterproof, and that the automation needs
+  help with inverses: the fact `b * / b = 1` (from `Rinv_r`, valid when
+  `b ≠ 0`) is usually all it is missing.
+
+<hint title="Import libraries (click to open/close)">
+
+Run `dune build` once before opening this file, so that the `RUG.Analysis.*`
+modules of the course library are available.
+
+```coq
+Require Import Stdlib.Reals.Reals.
+Require Import Waterproof.Tactics.
+Require Import Waterproof.Notations.Common.
+Require Import Waterproof.Notations.Reals.
+Require Import Waterproof.Notations.Sets.
+Require Import Waterproof.Chains.
+Require Import Waterproof.Automation.
+Require Import Waterproof.Libs.Reals.ArchimedN.
+Require Import RUG.Analysis.FunctionSequences.
+
+Waterproof Enable Automation RealsAndIntegers.
+Waterproof Enable Automation Intuition.
+
+Open Scope R_scope.
+Open Scope subset_scope.
+
+Set Default Goal Selector "!".
+Set Bullet Behavior "Waterproof Relaxed Subproofs".
+```
+</hint>
+
+We define the sequence $(f_n)$ and the candidate limit function $g(x) = 1/x$.
+```coq
+Definition fn_seq : ℕ → ℝ → ℝ := fun n x => INR n / (INR n * x + 1).
+Definition f_lim : ℝ → ℝ := fun x => 1 / x.
+```
+
+## Part 1: the exact value of the error
+
+Show that for $x > 0$ and $n \geq 1$,
+$$
+\frac{n}{nx+1} - \frac{1}{x} = -\frac{1}{(nx+1)x}.
+$$
+The statement is about a *real* number `nR` instead of `INR n`: this keeps the
+algebra readable, and we will apply it with `nR := INR n`.
+
+<hint title="💡 Hint (click to open/close)">
+State the two facts `(nR*x + 1) * / (nR*x + 1) = 1` and `x * / x = 1` with
+`By Rinv_r it holds that ...`; afterwards the identity is a polynomial one and
+`We conclude that ...` closes it.
+</hint>
+
+```coq
+Lemma diff_value (nR x : ℝ) (Hx : 0 < x) (Hn : 1 ≤ nR) :
+  nR / (nR*x + 1) - 1/x = - (/ (nR*x + 1) * / x).
+Proof.
+```
+<input-area>
+```coq
+
+```
+</input-area>
+```coq
+Qed.
+```
+
+## Part 2: a bound that does not depend on the point
+
+Show that on $[a, \infty)$ the error is at most $\frac{1}{na^2}$:
+$$
+\bigg| \frac{n}{nx+1} - \frac1x \bigg| = \frac{1}{(nx+1)x} \leq \frac{1}{na^2},
+$$
+where the inequality holds because $(nx+1)x = nx^2 + x \geq na^2$ for $x \geq a$.
+
+<hint title="💡 Hint (click to open/close)">
+Use `diff_value`, then remove the absolute value (the quantity inside is
+negative). To compare the two inverses use `Rinv_mult`
+(`/ (u * v) = / u * / v`) and `Rinv_le_contravar`
+(`0 < r1 → r1 ≤ r2 → / r2 ≤ / r1`).
+The automation does not find `a*a ≤ x*x` inside a bigger goal: state it
+separately first.
+</hint>
+
+```coq
+Lemma diff_bound (nR x a : ℝ) (Ha : 0 < a) (Hx : a ≤ x) (Hn : 1 ≤ nR) :
+  | nR / (nR*x + 1) - 1/x | ≤ 1 / (nR * (a*a)).
+Proof.
+```
+<input-area>
+```coq
+
+```
+</input-area>
+```coq
+Qed.
+```
+
+Also prove the following auxiliary fact, which turns "$m$ is large" into
+"$1/m$ is small".
+
+<hint title="💡 Hint (click to open/close)">
+A chain does it: `We conclude that (& 1 / m = / m < / / ε = ε).`
+(you first need `/ ε > 0` and `m > 0` in the context).
+</hint>
+
+```coq
+Lemma small_inv (m ε : ℝ) (Hε : ε > 0) (Hm : m > / ε) : 1 / m < ε.
+Proof.
+```
+<input-area>
+```coq
+
+```
+</input-area>
+```coq
+Qed.
+```
+
+## Part 3: uniform convergence on $[a,\infty)$
+
+Now prove uniform convergence on $[a,\infty)$ for every $a > 0$. Note how the
+threshold $N$ below depends on $\varepsilon$ and $a$, but *not* on $x$: that is
+exactly what uniform convergence means.
+
+<hint title="💡 Hint (click to open/close)">
+Start with
+```
+We need to show that ∀ ε > 0, ∃ N1 ∈ ℕ, ∀ n : ℕ, (n ≥ N1)%nat →
+  ∀ x ∈ [a, ∞), | fn_seq n x - f_lim x | < ε.
+```
+Then `Take ε > 0.` and use
+`By the Archimedean property it holds that ∃ n1 ∈ ℕ, n1 > / (ε * (a*a)).`
+Choose `N1 := S n1` (this also guarantees `1 ≤ INR n` for `n ≥ N1`, which
+`diff_bound` needs). After `Choose`, restate the goal with
+`We need to show that ∀ n : ℕ, ...` before using `Take`.
+
+`INR (S n1) = INR n1 + 1` comes from `S_INR`, and
+`/ (ε * (a*a)) = / ε * / (a*a)` from `Rinv_mult`.
+</hint>
+
+```coq
+Lemma fn_uniform_on_ray (a : ℝ) (Ha : a > 0) :
+  fn_seq _converges uniformly on_ [a, ∞) to f_lim.
+Proof.
+```
+<input-area>
+```coq
+
+```
+</input-area>
+```coq
+Qed.
+```
+
+## Part 4: the convergence is not uniform on $(0,\infty)$
+
+The point $x = 1/n$ shows that no single threshold works for all of
+$(0,\infty)$: there
+$$
+f_n(1/n) - g(1/n) = \frac{n}{2} - n = -\frac{n}{2},
+\qquad\text{so}\qquad \bigg|f_n(1/n) - g(1/n)\bigg| = \frac n2 \geq \frac12 .
+$$
+
+First the computation at that point.
+
+```coq
+Lemma gap_at_inv (m : ℝ) (Hm : 1 ≤ m) :
+  | m / (m * / m + 1) - 1 / / m | ≥ 1/2.
+Proof.
+```
+<input-area>
+```coq
+
+```
+</input-area>
+```coq
+Qed.
+```
+
+And then the negative result. Take $\varepsilon = 1/2$ and evaluate the uniform
+estimate at the point $x = 1/N$, where $N$ is the threshold that uniform
+convergence would provide.
+
+<hint title="💡 Hint (click to open/close)">
+Begin with `Assume that (fn_seq _converges uniformly on_ (0, ∞) to f_lim) as (Hunif).`
+(the goal is a negation, so this leaves you with `Derive a contradiction`).
+Instantiate `Hunif` at `ε := 1/2`, obtain the threshold `N1`, and specialise the
+resulting statement at `n := S N1` and `x := / INR (S N1)`. Specialising a
+hypothesis is easiest with `By ... it holds that ... as (...)`, restating the
+instance you want. Conclude with `Contradiction.`
+</hint>
+
+```coq
+Lemma fn_not_uniform : ¬ (fn_seq _converges uniformly on_ (0, ∞) to f_lim).
+Proof.
+```
+<input-area>
+```coq
+
+```
+</input-area>
+```coq
+Qed.
+```
+
+## Declaration of own work
+
+Please declare that the work above is your own work by writing `Yes.` below.
+In particular, this means the proofs are typed by yourself and you could
+explain them when asked.
+```coq
+Inductive answer : Type := Yes : answer.
+
+Definition own_work : answer. exact
+```
+<input-area>
+```coq
+
+```
+</input-area>
+```coq
+Qed.
+```

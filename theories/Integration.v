@@ -200,14 +200,16 @@ Proof.
 Lemma constant_integrable (a b c : ℝ) :
     Riemann_integrable (fct_cte c) a b.
 Proof.
-  Admitted.
+  exact (RiemannInt_P14 a b c).
+Qed.
 
 (** The integral of a constant is [∫_a^b c = c · (b - a)]. *)
 Lemma integral_constant (a b c : ℝ)
     (pr : Riemann_integrable (fct_cte c) a b) :
     RiemannInt pr = c * (b - a).
 Proof.
-  Admitted.
+  exact (RiemannInt_P15 pr).
+Qed.
 
 (** ** Continuous functions are integrable *)
 
@@ -218,11 +220,16 @@ Proof.
     continuous (Heine), so for [ε > 0] a fine enough uniform partition makes each
     oscillation small, giving [U(f, P) - L(f, P) < ε]; apply the Darboux
     criterion. *)
-Theorem continuous_integrable (f : ℝ → ℝ) (a b : ℝ)
-    (Hf : ∀ x, a ≤ x ∧ x ≤ b → continuity_pt f x) :
-    Riemann_integrable f a b.
+(* [f] renamed to [f1] (a bare [f] resolves to [Stdlib.Reals.Rtopology.f]), and
+   [a ≤ b] added: without it the hypothesis is vacuous for [b < a] while the
+   conclusion still asks for integrability on [[b, a]], so the original
+   statement was not provable. *)
+Theorem continuous_integrable (f1 : ℝ → ℝ) (a b : ℝ) (Hab : a ≤ b)
+    (Hf : ∀ x, a ≤ x ∧ x ≤ b → continuity_pt f1 x) :
+    Riemann_integrable f1 a b.
 Proof.
-  Admitted.
+  exact (continuity_implies_RiemannInt Hab Hf).
+Qed.
 
 (** ** Monotone functions are integrable *)
 
@@ -261,12 +268,24 @@ Proof.
 (** ** Linearity of the integral *)
 
 (** The sum of two integrable functions is integrable. *)
-Lemma sum_integrable (f g : ℝ → ℝ) (a b : ℝ)
-    (pr1 : Riemann_integrable f a b)
+Lemma sum_integrable (f1 g : ℝ → ℝ) (a b : ℝ)
+    (pr1 : Riemann_integrable f1 a b)
     (pr2 : Riemann_integrable g a b) :
-    Riemann_integrable (fun x => f x + g x) a b.
+    Riemann_integrable (fun x => f1 x + g x) a b.
 Proof.
-  Admitted.
+  (* [RiemannInt_P10] gives [f + l·g]; take [l = 1] and transport along the
+     pointwise equality with [Riemann_integrable_ext]. *)
+  We claim that ∀ x : ℝ,
+    Rmin a b ≤ x ∧ x ≤ Rmax a b → f1 x + 1 * g x = f1 x + g x as (Hext).
+  {
+    Take x : ℝ.
+    Assume that Rmin a b ≤ x ∧ x ≤ Rmax a b as (Hx).
+    We conclude that f1 x + 1 * g x = f1 x + g x.
+  }
+  exact (Riemann_integrable_ext
+           (fun x => f1 x + 1 * g x) (fun x => f1 x + g x) Hext
+           (RiemannInt_P10 1 pr1 pr2)).
+Qed.
 
 (** [∫(f + g) = ∫f + ∫g]. *)
 Lemma integral_sum (f g : ℝ → ℝ) (a b : ℝ)
@@ -288,22 +307,38 @@ Proof.
 (** ** Monotonicity *)
 
 (** _Monotonicity_ (order property): if [f ≤ g] on [(a, b)] then [∫f ≤ ∫g]. *)
-Lemma integral_monotone (f g : ℝ → ℝ) (a b : ℝ)
-    (prf : Riemann_integrable f a b)
+(* [a ≤ b] added for the same reason as in [continuous_integrable]: for [b < a]
+   the integrals swap sign, so the inequality does not hold as stated. *)
+Lemma integral_monotone (f1 g : ℝ → ℝ) (a b : ℝ) (Hab : a ≤ b)
+    (prf : Riemann_integrable f1 a b)
     (prg : Riemann_integrable g a b)
-    (Hle : ∀ x, a ≤ x ∧ x ≤ b → f x ≤ g x) :
+    (Hle : ∀ x, a ≤ x ∧ x ≤ b → f1 x ≤ g x) :
     RiemannInt prf ≤ RiemannInt prg.
 Proof.
-  Admitted.
+  We claim that ∀ x : ℝ, a < x ∧ x < b → f1 x ≤ g x as (Hlt).
+  {
+    Take x : ℝ.
+    Assume that a < x ∧ x < b as (Hx).
+    By Hle we conclude that f1 x ≤ g x.
+  }
+  exact (RiemannInt_P19 prf prg Hab Hlt).
+Qed.
 
 (** ** Additivity over sub-intervals *)
 
 (** [∫_a^b f = ∫_a^c f + ∫_c^b f] for [a ≤ c ≤ b]. *)
-Lemma integral_split (f : ℝ → ℝ) (a b c : ℝ)
+Lemma integral_split (f1 : ℝ → ℝ) (a b c : ℝ)
     (Hac : a ≤ c) (Hcb : c ≤ b)
-    (prf : Riemann_integrable f a b) :
-    ∃ (pr1 : Riemann_integrable f a c),
-    ∃ (pr2 : Riemann_integrable f c b),
+    (prf : Riemann_integrable f1 a b) :
+    ∃ (pr1 : Riemann_integrable f1 a c),
+    ∃ (pr2 : Riemann_integrable f1 c b),
       RiemannInt prf = RiemannInt pr1 + RiemannInt pr2.
 Proof.
-  Admitted.
+  (* [RiemannInt_P22]/[RiemannInt_P23] restrict the integrability, and
+     [RiemannInt_P26] (Chasles) splits the value. *)
+  It holds that a ≤ c ∧ c ≤ b as (Hacb).
+  Choose pr1 := (RiemannInt_P22 prf Hacb).
+  Choose pr2 := (RiemannInt_P23 prf Hacb).
+  symmetry.
+  exact (RiemannInt_P26 pr1 pr2 prf).
+Qed.

@@ -62,7 +62,49 @@ Theorem mean_value_theorem (h : ℝ → ℝ) (a b : ℝ) (Hab : a < b)
       ∃ Hc : derivable_pt h c,
         derive_pt h c Hc = (h b - h a) / (b - a).
 Proof.
-  Admitted.
+  (* Stdlib's [MVT] is the Cauchy form; take the second function to be the
+     identity, whose derivative is [1]. *)
+  We claim that
+    ∀ x : ℝ, a < x ∧ x < b → derivable_pt (fun y => y) x as (Hid).
+  {
+    Take x : ℝ. Assume that a < x ∧ x < b as (Hx).
+    exact (derivable_pt_id x).
+  }
+  We claim that
+    ∀ x : ℝ, a ≤ x ∧ x ≤ b → continuity_pt (fun y => y) x as (Hcid).
+  {
+    Take x : ℝ. Assume that a ≤ x ∧ x ≤ b as (Hx).
+    exact (derivable_continuous_pt (fun y => y) x (derivable_pt_id x)).
+  }
+  destruct (MVT h (fun y => y) a b Hdiff Hid Hab Hcont Hcid) as [c Hc].
+  destruct Hc as [P Heq].
+  (* The derivative of the identity is 1, independently of the proof term. *)
+  By (pr_nu (fun y => y) c (Hid c P) (derivable_pt_id c)) it holds that
+    derive_pt (fun y => y) c (Hid c P)
+      = derive_pt (fun y => y) c (derivable_pt_id c) as (Hpr).
+  By derive_pt_id it holds that
+    derive_pt (fun y => y) c (derivable_pt_id c) = 1 as (Hd1).
+  It holds that
+    (b - a) * derive_pt h c (Hdiff c P) = h b - h a as (Heq2).
+  (* Divide by [b - a]. *)
+  It holds that b - a ≠ 0 as (Hne).
+  By Rinv_r it holds that (b - a) * / (b - a) = 1 as (Ei).
+  It holds that (b - a) * ((h b - h a) / (b - a)) = h b - h a as (Hr).
+  It holds that (b - a) * derive_pt h c (Hdiff c P)
+    = (b - a) * ((h b - h a) / (b - a)) as (Hmul).
+  By Rmult_eq_reg_l it holds that
+    derive_pt h c (Hdiff c P) = (h b - h a) / (b - a) as (Hfin).
+  Choose c1 := c.
+  We claim that
+    ∃ Hc : derivable_pt h c,
+      derive_pt h c Hc = (h b - h a) / (b - a) as (Hex).
+  { Choose Hc := (Hdiff c P). exact Hfin. }
+  It holds that a < c as (H1).
+  It holds that c < b as (H2).
+  We conclude that
+    (a < c ∧ c < b ∧
+     ∃ Hc : derivable_pt h c, derive_pt h c Hc = (h b - h a) / (b - a)).
+Qed.
 
 (** ** Consequence: zero derivative implies constant *)
 
@@ -71,7 +113,16 @@ Lemma zero_derivative_constant (phi : ℝ → ℝ) (Hd : derivable phi)
     (Hz : ∀ x ∈ ℝ, derive_pt phi x (Hd x) = 0) :
     ∀ x ∈ ℝ, ∀ y ∈ ℝ, phi x = phi y.
 Proof.
-  Admitted.
+  (* Stdlib's [null_derivative_1] gives [constant phi]. *)
+  We claim that ∀ x : ℝ, derive_pt phi x (Hd x) = 0 as (Hz').
+  {
+    Take x : ℝ.
+    By Hz we conclude that derive_pt phi x (Hd x) = 0.
+  }
+  By (null_derivative_1 phi Hd Hz') it holds that constant phi as (Hconst).
+  Take x ∈ ℝ. Take y ∈ ℝ.
+  By Hconst we conclude that phi x = phi y.
+Qed.
 
 (** ** MVT consequence: bound on function growth *)
 
@@ -80,7 +131,48 @@ Lemma mvt_bound (psi : ℝ → ℝ) (Hd : derivable psi) (a v : ℝ)
     (M : ℝ) (HM : ∀ x : ℝ, Rabs (derive_pt psi x (Hd x)) ≤ M) :
     Rabs (psi v - psi a) ≤ M * Rabs (v - a).
 Proof.
-  Admitted.
+  (* [MVT_cor1] on the relevant orientation of [[a, v]]. *)
+  By HM it holds that Rabs (derive_pt psi a (Hd a)) ≤ M as (Hma).
+  By Rabs_pos it holds that 0 ≤ Rabs (derive_pt psi a (Hd a)) as (Hpa).
+  It holds that 0 ≤ M as (HM0).
+  Either (a < v) or (¬ (a < v)).
+  - Case (a < v).
+    It holds that a < v as (Hav).
+    destruct (MVT_cor1 psi a v Hd Hav) as [c Hc].
+    destruct Hc as [Heq Hcin].
+    By HM it holds that Rabs (derive_pt psi c (Hd c)) ≤ M as (Hb).
+    By Rabs_pos it holds that 0 ≤ Rabs (v - a) as (Hp).
+    rewrite Heq.
+    By Rabs_mult it holds that
+      Rabs (derive_pt psi c (Hd c) * (v - a))
+        = Rabs (derive_pt psi c (Hd c)) * Rabs (v - a) as (Hm).
+    rewrite Hm.
+    We conclude that
+      Rabs (derive_pt psi c (Hd c)) * Rabs (v - a) ≤ M * Rabs (v - a).
+  - Case (¬ (a < v)).
+    Either (v < a) or (¬ (v < a)).
+    + Case (v < a).
+      It holds that v < a as (Hva).
+      destruct (MVT_cor1 psi v a Hd Hva) as [c Hc].
+      destruct Hc as [Heq Hcin].
+      By HM it holds that Rabs (derive_pt psi c (Hd c)) ≤ M as (Hb).
+      By Rabs_minus_sym it holds that
+        Rabs (psi v - psi a) = Rabs (psi a - psi v) as (Hsym).
+      By Rabs_minus_sym it holds that
+        Rabs (a - v) = Rabs (v - a) as (Hsym2).
+      By Rabs_pos it holds that 0 ≤ Rabs (v - a) as (Hp).
+      rewrite Hsym. rewrite Heq.
+      By Rabs_mult it holds that
+        Rabs (derive_pt psi c (Hd c) * (a - v))
+          = Rabs (derive_pt psi c (Hd c)) * Rabs (a - v) as (Hm).
+      rewrite Hm. rewrite Hsym2.
+      We conclude that
+        Rabs (derive_pt psi c (Hd c)) * Rabs (v - a) ≤ M * Rabs (v - a).
+    + Case (¬ (v < a)).
+      It holds that a = v as (Heqav).
+      rewrite Heqav.
+      We conclude that Rabs (psi v - psi v) ≤ M * Rabs (v - v).
+Qed.
 
 (** ** Derivative of the squaring function *)
 
@@ -111,7 +203,18 @@ Lemma rolle_theorem (h : ℝ → ℝ) (a b : ℝ) (Hab : a < b)
     (Heq : h a = h b) :
     ∃ c : ℝ, a < c ∧ c < b ∧ ∃ Hc : a < c ∧ c < b, derive_pt h c (Hd c Hc) = 0.
 Proof.
-  Admitted.
+  (* This is Stdlib's [Rolle], repackaged. *)
+  destruct (Rolle h a b Hd Hcont Hab Heq) as [c Hc].
+  destruct Hc as [P Hderiv].
+  Choose c1 := c.
+  We claim that
+    ∃ Hc : a < c ∧ c < b, derive_pt h c (Hd c Hc) = 0 as (Hex).
+  { Choose Hc := P. exact Hderiv. }
+  It holds that a < c as (H1).
+  It holds that c < b as (H2).
+  We conclude that
+    (a < c ∧ c < b ∧ ∃ Hc : a < c ∧ c < b, derive_pt h c (Hd c Hc) = 0).
+Qed.
 
 (** ** Darboux's theorem *)
 
@@ -177,4 +280,13 @@ Lemma positive_derivative_strictly_increasing (psi : ℝ → ℝ) (Hd : derivabl
     (Hderiv_pos : ∀ x : ℝ, a < x ∧ x < v → 0 < derive_pt psi x (Hd x)) :
     ∀ x ∈ ℝ, ∀ y ∈ ℝ, a ≤ x → x < y → y ≤ v → psi x < psi y.
 Proof.
-  Admitted.
+  (* Exactly Stdlib's [derive_increasing_interv]. *)
+  Take x ∈ ℝ. Take y ∈ ℝ.
+  Assume that a ≤ x as (H1).
+  Assume that x < y as (H2).
+  Assume that y ≤ v as (H3).
+  It holds that a < v as (Hav).
+  It holds that a ≤ x ∧ x ≤ v as (Hx).
+  It holds that a ≤ y ∧ y ≤ v as (Hy).
+  exact (derive_increasing_interv a v psi Hd Hav Hderiv_pos x y Hx Hy H2).
+Qed.

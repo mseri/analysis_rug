@@ -30,12 +30,19 @@ Set Bullet Behavior "Waterproof Relaxed Subproofs".
     Proof idea: on every partition each cell's supremum is at most [M], so every
     upper sum is at most [(b - a)·M]; the integral is the infimum of the upper
     sums. *)
-Lemma integral_bound_sup (f : ℝ → ℝ) (a b M : ℝ) (Hab : a ≤ b)
-    (prf : Riemann_integrable f a b)
-    (HM : ∀ x : ℝ, a ≤ x ∧ x ≤ b → f x ≤ M) :
+(* [f] renamed to [f1]: a bare [f] resolves to [Stdlib.Reals.Rtopology.f]. *)
+Lemma integral_bound_sup (f1 : ℝ → ℝ) (a b M : ℝ) (Hab : a ≤ b)
+    (prf : Riemann_integrable f1 a b)
+    (HM : ∀ x : ℝ, a ≤ x ∧ x ≤ b → f1 x ≤ M) :
     RiemannInt prf ≤ (b - a) * M.
 Proof.
-  Admitted.
+  (* Compare with the constant function [M] and evaluate its integral. *)
+  pose (prc := RiemannInt_P14 a b M).
+  apply (Rle_trans (RiemannInt prf) (RiemannInt prc) ((b - a) * M)).
+  - exact (integral_monotone f1 (fct_cte M) a b Hab prf prc HM).
+  - rewrite (RiemannInt_P15 prc).
+    We conclude that M * (b - a) ≤ (b - a) * M.
+Qed.
 
 (** ** Order property and absolute value *)
 
@@ -49,7 +56,7 @@ Lemma integral_order (f1 g : ℝ → ℝ) (a b : ℝ) (Hab : a ≤ b)
     (Hle : ∀ x : ℝ, a ≤ x ∧ x ≤ b → f1 x ≤ g x) :
     RiemannInt prf ≤ RiemannInt prg.
 Proof.
-  exact (integral_monotone f1 g a b prf prg Hle).
+  exact (integral_monotone f1 g a b Hab prf prg Hle).
 Qed.
 
 (** _Triangle inequality for integrals_: [|f|] is integrable and
@@ -57,12 +64,15 @@ Qed.
 
     Proof idea: [-|f| ≤ f ≤ |f|]; integrating and using the order property gives
     [-∫|f| ≤ ∫f ≤ ∫|f|], i.e. [|∫f| ≤ ∫|f|]. *)
-Lemma integral_abs_le (f : ℝ → ℝ) (a b : ℝ) (Hab : a ≤ b)
-    (prf : Riemann_integrable f a b) :
-    ∃ prabs : Riemann_integrable (fun x => Rabs (f x)) a b,
+Lemma integral_abs_le (f1 : ℝ → ℝ) (a b : ℝ) (Hab : a ≤ b)
+    (prf : Riemann_integrable f1 a b) :
+    ∃ prabs : Riemann_integrable (fun x => Rabs (f1 x)) a b,
       Rabs (RiemannInt prf) ≤ RiemannInt prabs.
 Proof.
-  Admitted.
+  (* [RiemannInt_P16] gives integrability of [|f|], [RiemannInt_P17] the bound. *)
+  Choose prabs := (RiemannInt_P16 prf).
+  exact (RiemannInt_P17 prf (RiemannInt_P16 prf) Hab).
+Qed.
 
 (** ** The oriented integral *)
 
@@ -78,13 +88,16 @@ Definition RiemannInt_oriented (f : ℝ → ℝ) (a b : ℝ)
 (** _Chasles / additivity_: if [f] is integrable on [[a,b]], [[b,c]] and
     [[a,c]], then [∫_a^b f + ∫_b^c f = ∫_a^c f], regardless of the ordering of
     [a], [b], [c]. *)
-Lemma integral_additive (f : ℝ → ℝ) (a b c : ℝ)
-    (pr1 : Riemann_integrable f a b)
-    (pr2 : Riemann_integrable f b c)
-    (pr3 : Riemann_integrable f a c) :
+Lemma integral_additive (f1 : ℝ → ℝ) (a b c : ℝ)
+    (pr1 : Riemann_integrable f1 a b)
+    (pr2 : Riemann_integrable f1 b c)
+    (pr3 : Riemann_integrable f1 a c) :
     RiemannInt pr3 = RiemannInt pr1 + RiemannInt pr2.
 Proof.
-  Admitted.
+  (* Stdlib's Chasles relation. *)
+  symmetry.
+  exact (RiemannInt_P26 pr1 pr2 pr3).
+Qed.
 
 (** _Additivity for the oriented integral_: with the sign convention above,
     [∫_a^b f + ∫_b^c f = ∫_a^c f] holds for *every* arrangement of [a], [b],

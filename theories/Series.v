@@ -592,10 +592,88 @@ Qed.
     since [1/k² ≤ 1/(k(k-1)) = 1/(k-1) - 1/k] for [k ≥ 2], a telescoping bound
     giving [Sₙ ≤ 2]. Monotone convergence then yields a limit. (Here the terms
     are indexed as [1/(k+1)²] to match Rocq's [k : ℕ] starting at [0].) *)
+(** Auxiliary telescoping bound: [1/(x+1)² ≤ 1/x - 1/(x+1)] for [x ≥ 1].
+    (Raw Rocq: [field] plus [Rinv_le_contravar] is much shorter here than
+    eliminating the inverses by hand in natural language.) *)
+Lemma inv_sq_telescope (x : ℝ) (Hx : 1 ≤ x) :
+    1 / (x + 1) ^ 2 ≤ 1 / x - 1 / (x + 1).
+Proof.
+  ltac1:(assert (Hx0 : 0 < x) by lra;
+         assert (Hx1 : 0 < x + 1) by lra;
+         replace (1 / x - 1 / (x + 1)) with (1 / (x * (x + 1))) by (field; lra);
+         unfold Rdiv; rewrite !Rmult_1_l;
+         apply Rinv_le_contravar; nra).
+Qed.
+
 Lemma sum_one_over_k_sq_converges :
     ∃ L : ℝ, partial_sums (fun k => 1 / (INR k + 1) ^ 2) ⟶ L.
 Proof.
-  Admitted.
+  (* The telescoping bound [Sₙ ≤ 2 - 1/(n+1)], by induction on [n]. *)
+  We claim that ∀ n ∈ ℕ,
+    partial_sums (fun k => 1 / (INR k + 1) ^ 2) n ≤ 2 - 1 / (INR n + 1) as (Hbnd).
+  {
+    We use induction on n.
+    + We first show the base case
+        partial_sums (fun k => 1 / (INR k + 1) ^ 2) 0 ≤ 2 - 1 / (INR 0 + 1).
+      It holds that INR 0%nat = 0 as (H0).
+      We conclude that
+        partial_sums (fun k => 1 / (INR k + 1) ^ 2) 0 ≤ 2 - 1 / (INR 0 + 1).
+    + We now show the induction step.
+      Take n ∈ ℕ.
+      Assume that
+        partial_sums (fun k => 1 / (INR k + 1) ^ 2) n ≤ 2 - 1 / (INR n + 1) as (IH).
+      It holds that partial_sums (fun k => 1 / (INR k + 1) ^ 2) (S n)
+        = partial_sums (fun k => 1 / (INR k + 1) ^ 2) n
+          + 1 / (INR (S n) + 1) ^ 2 as (Hstep).
+      By S_INR it holds that INR (S n) = INR n + 1 as (HI).
+      rewrite HI in Hstep.
+      By Nat.add_1_r it holds that (n + 1)%nat = S n as (Hsn).
+      rewrite Hsn. rewrite HI.
+      By pos_INR it holds that 0 ≤ INR n as (Hpos).
+      It holds that 1 ≤ INR n + 1 as (Hge).
+      By inv_sq_telescope it holds that
+        1 / (INR n + 1 + 1) ^ 2 ≤ 1 / (INR n + 1) - 1 / (INR n + 1 + 1) as (Htel).
+      We conclude that
+        partial_sums (fun k => 1 / (INR k + 1) ^ 2) (S n) ≤ 2 - 1 / (INR n + 1 + 1).
+  }
+  (* Nonnegative terms, so the partial sums are nondecreasing. *)
+  We claim that ∀ n ∈ ℕ, 0 ≤ 1 / (INR n + 1) ^ 2 as (Hnn).
+  {
+    Take n ∈ ℕ.
+    By pos_INR it holds that 0 ≤ INR n as (Hn).
+    It holds that 0 < (INR n + 1) ^ 2 as (Hsq).
+    We conclude that 0 ≤ 1 / (INR n + 1) ^ 2.
+  }
+  By partial_sums_pos_incr it holds that
+    Un_growing (partial_sums (fun k => 1 / (INR k + 1) ^ 2)) as (Hgrow).
+  (* [2] is an upper bound for the range of the partial sums. *)
+  We claim that bound (EUn (partial_sums (fun k => 1 / (INR k + 1) ^ 2))) as (Hbound).
+  {
+    We need to show that ∃ m : ℝ,
+      ∀ x : ℝ, EUn (partial_sums (fun k => 1 / (INR k + 1) ^ 2)) x ⇒ x ≤ m.
+    Choose m := 2.
+    Take x : ℝ.
+    Assume that EUn (partial_sums (fun k => 1 / (INR k + 1) ^ 2)) x as (Hx).
+    It holds that ∃ i : ℕ, x = partial_sums (fun k => 1 / (INR k + 1) ^ 2) i.
+    Obtain such an i.
+    It holds that x = partial_sums (fun k => 1 / (INR k + 1) ^ 2) i.
+    By Hbnd it holds that
+      partial_sums (fun k => 1 / (INR k + 1) ^ 2) i ≤ 2 - 1 / (INR i + 1) as (Hi).
+    It holds that 0 < INR i + 1 as (Hip).
+    It holds that 0 < 1 / (INR i + 1) as (Hinv).
+    We conclude that x ≤ m.
+  }
+  By Un_cv_crit it holds that
+    ∃ L : ℝ, Un_cv (partial_sums (fun k => 1 / (INR k + 1) ^ 2)) L as (Hex).
+  Obtain such a L.
+  It holds that Un_cv (partial_sums (fun k => 1 / (INR k + 1) ^ 2)) L as (HL).
+  By convergence_equivalence it holds that
+    (partial_sums (fun k => 1 / (INR k + 1) ^ 2) ⟶ L
+      ⇔ Un_cv (partial_sums (fun k => 1 / (INR k + 1) ^ 2)) L) as (Hiff).
+  By Hiff it holds that partial_sums (fun k => 1 / (INR k + 1) ^ 2) ⟶ L as (Hcv).
+  Choose L1 := L.
+  We conclude that partial_sums (fun k => 1 / (INR k + 1) ^ 2) ⟶ L1.
+Qed.
 
 (** _The harmonic series [∑ 1/k] diverges_.
 
@@ -603,10 +681,105 @@ Proof.
     [1/3 + 1/4 > 1/2], [1/5 + ⋯ + 1/8 > 1/2], and in general each dyadic block
     contributes more than [1/2], so the partial sums are unbounded and cannot
     converge. (Terms indexed as [1/(k+1)] to match Rocq indexing.) *)
+(** The harmonic terms are nonincreasing. (Raw Rocq for the same reason as
+    [inv_sq_telescope]: [nra] cannot relate inverses.) *)
+Lemma inv_succ_decr (x : ℝ) (Hx : 0 ≤ x) : 1 / (x + 1 + 1) ≤ 1 / (x + 1).
+Proof.
+  ltac1:(unfold Rdiv; rewrite !Rmult_1_l; apply Rinv_le_contravar; lra).
+Qed.
+
+(** Each dyadic block contributes exactly [1/2] in the lower bound. *)
+Lemma harmonic_block_value (x : ℝ) (Hx : 0 ≤ x) :
+    (x + 1) * (1 / (2 * x + 1 + 1)) = 1 / 2.
+Proof.
+  ltac1:(field; lra).
+Qed.
+
 Lemma harmonic_series_diverges :
     ¬ (∃ L : ℝ, partial_sums (fun k => 1 / (INR k + 1)) ⟶ L).
 Proof.
-  Admitted.
+  (* A block of [p] consecutive terms is at least [p] times its smallest term. *)
+  We claim that ∀ n : ℕ, ∀ p : ℕ,
+    partial_sums (fun k : ℕ => 1 / (INR k + 1)) (Nat.add n p)
+      - partial_sums (fun k => 1 / (INR k + 1)) n
+    ≥ INR p * (1 / (INR (n + p)%nat + 1)) as (Hblock).
+  {
+    Take n : ℕ.
+    We use induction on p.
+    + We first show the base case
+        partial_sums (fun k : ℕ => 1 / (INR k + 1)) (Nat.add n 0)
+          - partial_sums (fun k => 1 / (INR k + 1)) n
+        ≥ INR 0 * (1 / (INR (n + 0)%nat + 1)).
+      It holds that (n + 0)%nat = n as (Hn0).
+      rewrite Hn0.
+      It holds that INR 0%nat = 0 as (Hi0).
+      We conclude that
+        partial_sums (fun k => 1 / (INR k + 1)) n
+          - partial_sums (fun k => 1 / (INR k + 1)) n
+        ≥ INR 0 * (1 / (INR n + 1)).
+    + We now show the induction step.
+      Take p : ℕ.
+      Assume that
+        partial_sums (fun k : ℕ => 1 / (INR k + 1)) (Nat.add n p)
+          - partial_sums (fun k => 1 / (INR k + 1)) n
+        ≥ INR p * (1 / (INR (n + p)%nat + 1)) as (IH).
+      It holds that (n + (p + 1))%nat = S (n + p)%nat as (Hidx).
+      rewrite Hidx.
+      It holds that partial_sums (fun k : ℕ => 1 / (INR k + 1)) (S (Nat.add n p))
+        = partial_sums (fun k : ℕ => 1 / (INR k + 1)) (Nat.add n p)
+          + 1 / (INR (S (n + p)%nat) + 1) as (Hrec).
+      By S_INR it holds that INR (S (n + p)%nat) = INR (n + p)%nat + 1 as (HS).
+      rewrite HS in Hrec. rewrite HS.
+      By plus_INR it holds that INR (p + 1)%nat = INR p + INR 1%nat as (Hp1).
+      It holds that INR 1%nat = 1 as (H1).
+      It holds that INR (p + 1)%nat = INR p + 1 as (Hp1').
+      rewrite Hp1'.
+      By pos_INR it holds that 0 ≤ INR p as (Hpp).
+      By pos_INR it holds that 0 ≤ INR (n + p)%nat as (Hnp).
+      By inv_succ_decr it holds that
+        1 / (INR (n + p)%nat + 1 + 1) ≤ 1 / (INR (n + p)%nat + 1) as (Hdec).
+      We conclude that
+        partial_sums (fun k : ℕ => 1 / (INR k + 1)) (S (Nat.add n p))
+          - partial_sums (fun k => 1 / (INR k + 1)) n
+        ≥ (INR p + 1) * (1 / (INR (n + p)%nat + 1 + 1)).
+  }
+  (* If the series converged its partial sums would be Cauchy, contradicting
+     the fact that the block from [N] to [2N+1] has length ≥ 1/2. *)
+  Assume that ∃ L : ℝ, partial_sums (fun k => 1 / (INR k + 1)) ⟶ L as (Hcv).
+  Obtain such an L.
+  By convergent_is_cauchy it holds that
+    partial_sums (fun k => 1 / (INR k + 1)) is _Cauchy_ as (HC).
+  It holds that 1 / 2 > 0 as (Hhalf).
+  By HC it holds that ∃ N1 ∈ ℕ, ∀ n ≥ N1, ∀ m ≥ N1,
+    | partial_sums (fun k => 1 / (INR k + 1)) n
+      - partial_sums (fun k => 1 / (INR k + 1)) m | < 1 / 2 as (HCa).
+  Obtain such a N1.
+  By Hblock it holds that
+    partial_sums (fun k : ℕ => 1 / (INR k + 1)) (Nat.add N1 (Nat.add N1 1))
+      - partial_sums (fun k => 1 / (INR k + 1)) N1
+    ≥ INR (N1 + 1)%nat * (1 / (INR (N1 + (N1 + 1))%nat + 1)) as (Hb).
+  By pos_INR it holds that 0 ≤ INR N1 as (HN0).
+  By plus_INR it holds that INR (N1 + 1)%nat = INR N1 + INR 1%nat as (E1).
+  It holds that INR 1%nat = 1 as (E2).
+  By plus_INR it holds that
+    INR (N1 + (N1 + 1))%nat = INR N1 + INR (N1 + 1)%nat as (E3).
+  It holds that INR (N1 + 1)%nat = INR N1 + 1 as (E1').
+  It holds that INR (N1 + (N1 + 1))%nat = 2 * INR N1 + 1 as (E5).
+  rewrite E5 in Hb. rewrite E1' in Hb.
+  By harmonic_block_value it holds that
+    (INR N1 + 1) * (1 / (2 * INR N1 + 1 + 1)) = 1 / 2 as (E4).
+  rewrite E4 in Hb.
+  It holds that (N1 + (N1 + 1))%nat ≥ N1 as (Hge1).
+  By HCa it holds that
+    | partial_sums (fun k : ℕ => 1 / (INR k + 1)) (Nat.add N1 (Nat.add N1 1))
+      - partial_sums (fun k => 1 / (INR k + 1)) N1 | < 1 / 2 as (Hlt).
+  By Rle_abs it holds that
+    partial_sums (fun k : ℕ => 1 / (INR k + 1)) (Nat.add N1 (Nat.add N1 1))
+      - partial_sums (fun k => 1 / (INR k + 1)) N1
+    ≤ | partial_sums (fun k : ℕ => 1 / (INR k + 1)) (Nat.add N1 (Nat.add N1 1))
+      - partial_sums (fun k => 1 / (INR k + 1)) N1 | as (Habs).
+  Contradiction.
+Qed.
 
 (** _The p-series_: the series [∑ 1/kᵖ] converges iff [p > 1].
 
@@ -616,4 +789,6 @@ Proof.
 Lemma p_series (p : ℝ) :
     (∃ L : ℝ, partial_sums (fun k => 1 / Rpower (INR k + 1) p) ⟶ L) ⇔ p > 1.
 Proof.
+  (* Depends on the integral test ([integral_test] in [Analysis.Integration]),
+     which is itself still open. *)
   Admitted.

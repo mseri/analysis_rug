@@ -593,16 +593,31 @@ Qed.
     giving [Sₙ ≤ 2]. Monotone convergence then yields a limit. (Here the terms
     are indexed as [1/(k+1)²] to match Rocq's [k : ℕ] starting at [0].) *)
 (** Auxiliary telescoping bound: [1/(x+1)² ≤ 1/x - 1/(x+1)] for [x ≥ 1].
-    (Raw Rocq: [field] plus [Rinv_le_contravar] is much shorter here than
-    eliminating the inverses by hand in natural language.) *)
+
+    In Rocq/Waterproof [/x] is somewhat special, and we need to help the system
+    with the fact [x · /x = 1] ([Rinv_r]); once that is available, the
+    partial-fraction identity [/x - /(x+1) = /x · /(x+1)] follows. *)
 Lemma inv_sq_telescope (x : ℝ) (Hx : 1 ≤ x) :
     1 / (x + 1) ^ 2 ≤ 1 / x - 1 / (x + 1).
 Proof.
-  ltac1:(assert (Hx0 : 0 < x) by lra;
-         assert (Hx1 : 0 < x + 1) by lra;
-         replace (1 / x - 1 / (x + 1)) with (1 / (x * (x + 1))) by (field; lra);
-         unfold Rdiv; rewrite !Rmult_1_l;
-         apply Rinv_le_contravar; nra).
+  It holds that 0 < x as (Hx0).
+  It holds that 0 < x + 1 as (Hx1).
+  By Rinv_r it holds that x * / x = 1 as (Ex).
+  By Rinv_r it holds that (x + 1) * / (x + 1) = 1 as (Ex1).
+  We claim that / x - / (x + 1) = / x * / (x + 1) as (Hfield).
+  {
+    We claim that / x * ((x + 1) * / (x + 1)) = / x as (A).
+    { rewrite Ex1. We conclude that / x * 1 = / x. }
+    We claim that / (x + 1) * (x * / x) = / (x + 1) as (B).
+    { rewrite Ex. We conclude that / (x + 1) * 1 = / (x + 1). }
+    We conclude that / x - / (x + 1) = / x * / (x + 1).
+  }
+  By Rinv_mult it holds that / (x * (x + 1)) = / x * / (x + 1) as (Hmul).
+  It holds that 0 < x * (x + 1) as (Hpos).
+  It holds that x * (x + 1) ≤ (x + 1) ^ 2 as (Hle).
+  By Rinv_le_contravar it holds that
+    / ((x + 1) ^ 2) ≤ / (x * (x + 1)) as (Hinv).
+  We conclude that 1 / (x + 1) ^ 2 ≤ 1 / x - 1 / (x + 1).
 Qed.
 
 Lemma sum_one_over_k_sq_converges :
@@ -681,18 +696,23 @@ Qed.
     [1/3 + 1/4 > 1/2], [1/5 + ⋯ + 1/8 > 1/2], and in general each dyadic block
     contributes more than [1/2], so the partial sums are unbounded and cannot
     converge. (Terms indexed as [1/(k+1)] to match Rocq indexing.) *)
-(** The harmonic terms are nonincreasing. (Raw Rocq for the same reason as
-    [inv_sq_telescope]: [nra] cannot relate inverses.) *)
+(** The harmonic terms are nonincreasing. *)
 Lemma inv_succ_decr (x : ℝ) (Hx : 0 ≤ x) : 1 / (x + 1 + 1) ≤ 1 / (x + 1).
 Proof.
-  ltac1:(unfold Rdiv; rewrite !Rmult_1_l; apply Rinv_le_contravar; lra).
+  It holds that 0 < x + 1 as (H1).
+  It holds that x + 1 ≤ x + 1 + 1 as (H2).
+  By Rinv_le_contravar it holds that / (x + 1 + 1) ≤ / (x + 1) as (H3).
+  We conclude that 1 / (x + 1 + 1) ≤ 1 / (x + 1).
 Qed.
 
 (** Each dyadic block contributes exactly [1/2] in the lower bound. *)
 Lemma harmonic_block_value (x : ℝ) (Hx : 0 ≤ x) :
     (x + 1) * (1 / (2 * x + 1 + 1)) = 1 / 2.
 Proof.
-  ltac1:(field; lra).
+  It holds that 0 < 2 * x + 1 + 1 as (H1).
+  By Rinv_r it holds that
+    (2 * x + 1 + 1) * / (2 * x + 1 + 1) = 1 as (E).
+  We conclude that (x + 1) * (1 / (2 * x + 1 + 1)) = 1 / 2.
 Qed.
 
 Lemma harmonic_series_diverges :

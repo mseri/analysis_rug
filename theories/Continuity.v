@@ -10,7 +10,6 @@ From Stdlib Require Import Reals.Reals.
 From Stdlib Require Import Reals.Ranalysis5.
 From Stdlib Require Import Reals.Rtopology.
 From Stdlib Require Import Logic.ClassicalDescription.
-From Stdlib Require Import micromega.Lra.
 
 From Waterproof Require Export Notations.Common.
 From Waterproof Require Export Notations.Reals.
@@ -79,26 +78,37 @@ Proof.
     Take s : ℝ. Take t : ℝ.
     By HM we conclude that Rabs (h s - h t) ≤ M * Rabs (s - t).
   }
-  (* Raw Rocq: [continuity_pt] is Stdlib's metric-space [limit1_in], which the
-     natural-language layer cannot state directly. [Rmax M 1] guards against a
-     nonpositive Lipschitz constant. *)
-  ltac1:(assert (HMpos : 0 < Rmax M 1) by
-           (apply Rlt_le_trans with 1; [lra | apply Rmax_r]);
-         intros x0;
-         unfold continuity_pt, continue_in, limit1_in, limit_in; simpl;
-         intros eps Heps;
-         exists (eps / Rmax M 1);
-         split;
-         [ apply Rdiv_lt_0_compat; assumption
-         | intros y0 [_ Hy];
-           unfold R_dist in *;
-           assert (Hle : Rabs (h y0 - h x0) <= Rmax M 1 * Rabs (y0 - x0)) by
-             (eapply Rle_trans; [apply HM' | ];
-              apply Rmult_le_compat_r; [apply Rabs_pos | apply Rmax_l]);
-           assert (Hlt2 : Rmax M 1 * Rabs (y0 - x0) < Rmax M 1 * (eps / Rmax M 1)) by
-             (apply Rmult_lt_compat_l; assumption);
-           replace (Rmax M 1 * (eps / Rmax M 1)) with eps in Hlt2 by (field; lra);
-           lra ]).
+  (* [Rmax M 1] guards against a nonpositive Lipschitz constant, and δ = ε/max(M,1). *)
+  By Rmax_r it holds that 1 ≤ Rmax M 1 as (Hr).
+  It holds that 0 < Rmax M 1 as (HMpos).
+  By Rinv_0_lt_compat it holds that 0 < / Rmax M 1 as (Hinv).
+  By Rinv_r it holds that Rmax M 1 * / Rmax M 1 = 1 as (Hri).
+  (* [continuity_pt] is Stdlib's metric-space [limit1_in]; spelled out, the
+     condition on the point is [D_x no_cond z w]. *)
+  We need to show that ∀ z : ℝ, continuity_pt h z.
+  Take z : ℝ.
+  We need to show that ∀ ε : ℝ, ε > 0 → ∃ alp : ℝ, alp > 0 ∧ (∀ w : ℝ,
+    (no_cond w ∧ z ≠ w) ∧ Rabs (w - z) < alp → Rabs (h w - h z) < ε).
+  Take ε : ℝ.
+  Assume that ε > 0 as (Heps).
+  It holds that ε / Rmax M 1 > 0 as (Hdpos).
+  Choose alp := (ε / Rmax M 1).
+  We show both statements.
+  - We conclude that ε / Rmax M 1 > 0.
+  - We need to show that ∀ w : ℝ,
+      (no_cond w ∧ z ≠ w) ∧ Rabs (w - z) < ε / Rmax M 1 → Rabs (h w - h z) < ε.
+    Take w : ℝ.
+    Assume that
+      (no_cond w ∧ z ≠ w) ∧ Rabs (w - z) < ε / Rmax M 1 as (Hw).
+    It holds that Rabs (w - z) < ε / Rmax M 1 as (Hd).
+    By HM' it holds that Rabs (h w - h z) ≤ M * Rabs (w - z) as (H1).
+    By Rabs_pos it holds that 0 ≤ Rabs (w - z) as (H2).
+    By Rmax_l it holds that M ≤ Rmax M 1 as (H3).
+    It holds that Rabs (h w - h z) ≤ Rmax M 1 * Rabs (w - z) as (H4).
+    It holds that Rmax M 1 * (ε / Rmax M 1) = ε as (H6).
+    It holds that
+      Rmax M 1 * Rabs (w - z) < Rmax M 1 * (ε / Rmax M 1) as (H7).
+    We conclude that Rabs (h w - h z) < ε.
 Qed.
 
 (** Continuous image of a compact set is compact. *)
@@ -302,24 +312,43 @@ Proof.
     Take x : ℝ. Assume that a ≤ x ∧ x ≤ b as (Hx).
     By Hf it holds that continuity_pt f1 x as (Hc).
     We claim that constant (fct_cte v) as (Hcst).
-    { ltac1:(intros u w; reflexivity). }
+    {
+      We need to show that ∀ u : ℝ, ∀ w : ℝ, fct_cte v u = fct_cte v w.
+      Take u : ℝ. Take w : ℝ.
+      We conclude that fct_cte v u = fct_cte v w.
+    }
     By continuity_pt_const it holds that continuity_pt (fct_cte v) x as (Hk).
     apply (continuity_pt_minus f1 (fct_cte v) x Hc Hk).
   }
   It holds that f1 a - v < 0 as (Hga).
   It holds that 0 < f1 b - v as (Hgb).
-  (* Raw Rocq: [IVT_interv] lands in a [sig], and the strictness of [a < c < b]
-     needs a small case split on the endpoints. *)
-  ltac1:(destruct (IVT_interv (fun y => f1 y - v) a b Hg Hab Hga Hgb)
-           as [z [[Hz1 Hz2] Hz3]];
-         cbv beta in Hz3;
-         assert (Hlo : a < z) by
-           (destruct (Rle_lt_or_eq_dec a z Hz1) as [Hl|He];
-            [exact Hl | exfalso; subst; lra]);
-         assert (Hhi : z < b) by
-           (destruct (Rle_lt_or_eq_dec z b Hz2) as [Hl|He];
-            [exact Hl | exfalso; subst; lra]);
-         exists z; repeat split; lra).
+  (* [IVT_interv] lands in a [sig], which is unpacked with [destruct]. *)
+  destruct (IVT_interv (fun y => f1 y - v) a b Hg Hab Hga Hgb) as [z Hz].
+  It holds that a ≤ z ∧ z ≤ b as (Hz1).
+  It holds that f1 z - v = 0 as (Hz2).
+  (* The endpoints are excluded because [f1 a < v < f1 b]. *)
+  We claim that a < z as (Hlo).
+  {
+    Either a = z or a ≠ z.
+    - Case (a = z).
+      It holds that a = z as (Heq).
+      rewrite <- Heq in Hz2.
+      Contradiction.
+    - Case (a ≠ z).
+      We conclude that a < z.
+  }
+  We claim that z < b as (Hhi).
+  {
+    Either z = b or z ≠ b.
+    - Case (z = b).
+      It holds that z = b as (Heq).
+      rewrite Heq in Hz2.
+      Contradiction.
+    - Case (z ≠ b).
+      We conclude that z < b.
+  }
+  Choose c := z.
+  We conclude that (a < z ∧ z < b ∧ f1 z = v).
 Qed.
 
 (** ** Uniform continuity *)
@@ -348,12 +377,22 @@ Proof.
   }
   By (Heine f1 (fun c : ℝ => a ≤ c ∧ c ≤ b) Hcomp Hcont) it holds that
     uniform_continuity f1 (fun c : ℝ => a ≤ c ∧ c ≤ b) as (Hu).
-  (* Raw Rocq: [uniform_continuity] quantifies over [posreal]s, so the ε and δ
-     have to be packed/unpacked with [mkposreal]/[cond_pos]. *)
-  ltac1:(intros eps Heps;
-         destruct (Hu (mkposreal eps Heps)) as [delta Hdelta];
-         exists (pos delta); split; [apply (cond_pos delta) | ];
-         intros x y Hx Hy Hxy; apply Hdelta; assumption).
+  (* [uniform_continuity] quantifies over [posreal]s, so ε and δ have to be
+     packed/unpacked with [mkposreal]/[cond_pos]. *)
+  Take ε > 0.
+  It holds that 0 < ε as (Hpos).
+  destruct (Hu (mkposreal ε Hpos)) as [dlt Hd].
+  By cond_pos it holds that 0 < pos dlt as (Hdpos).
+  Choose δ := (pos dlt).
+  - Indeed, pos dlt > 0.
+  - We need to show that ∀ x ∈ ℝ, ∀ y ∈ ℝ,
+      a ≤ x ∧ x ≤ b → a ≤ y ∧ y ≤ b →
+      Rabs (x - y) < δ → Rabs (f1 x - f1 y) < ε.
+    Take x ∈ ℝ. Take y ∈ ℝ.
+    Assume that a ≤ x ∧ x ≤ b as (Hx).
+    Assume that a ≤ y ∧ y ≤ b as (Hy).
+    Assume that Rabs (x - y) < pos dlt as (Hxy).
+    By Hd we conclude that Rabs (f1 x - f1 y) < ε.
 Qed.
 
 (** [f] is *uniformly continuous* on a set [A] if a single [δ] works for all
@@ -386,40 +425,45 @@ Proof.
     Proof idea: use the inequality [|√x - √y| ≤ √|x - y|] (which follows from
     [(√x - √y)² ≤ |x - y|] for [x, y ≥ 0]). Given [ε > 0], choosing [δ = ε²]
     makes [|x - y| < δ ⇒ |√x - √y| < ε], with the same [δ] everywhere. *)
-(** [√u - √v ≤ √(u - v)] for [0 ≤ v ≤ u]: square both (nonnegative) sides and
-    use [v = √v·√v ≤ √u·√v]. (Raw Rocq: pure [sqrt] algebra.) *)
+(** [√u - √v ≤ √(u - v)] for [0 ≤ v ≤ u]: both sides are nonnegative, and
+    squaring reduces the claim to [v = √v·√v ≤ √u·√v]. *)
 Lemma sqrt_diff_le (u v : ℝ) (Hv : 0 ≤ v) (Huv : v ≤ u) :
     sqrt u - sqrt v ≤ sqrt (u - v).
 Proof.
-  ltac1:(assert (Hsu : 0 <= sqrt u) by apply sqrt_pos;
-         assert (Hsv : 0 <= sqrt v) by apply sqrt_pos;
-         assert (Hd : 0 <= sqrt (u - v)) by apply sqrt_pos;
-         assert (Hmono : sqrt v <= sqrt u) by (apply sqrt_le_1; lra);
-         assert (Eu : sqrt u * sqrt u = u) by (apply sqrt_sqrt; lra);
-         assert (Ev : sqrt v * sqrt v = v) by (apply sqrt_sqrt; lra);
-         assert (Ed : sqrt (u - v) * sqrt (u - v) = u - v) by (apply sqrt_sqrt; lra);
-         assert (Hkey : v <= sqrt u * sqrt v) by nra;
-         nra).
+  It holds that 0 ≤ u as (Hu).
+  It holds that 0 ≤ u - v as (Huv0).
+  By sqrt_pos it holds that 0 ≤ sqrt u as (Hsu).
+  By sqrt_pos it holds that 0 ≤ sqrt v as (Hsv).
+  By sqrt_pos it holds that 0 ≤ sqrt (u - v) as (Hsd).
+  By sqrt_le_1 it holds that sqrt v ≤ sqrt u as (Hmono).
+  By sqrt_sqrt it holds that sqrt u * sqrt u = u as (Eu).
+  By sqrt_sqrt it holds that sqrt v * sqrt v = v as (Ev).
+  By sqrt_sqrt it holds that sqrt (u - v) * sqrt (u - v) = u - v as (Ed).
+  It holds that v ≤ sqrt u * sqrt v as (Hkey).
+  We conclude that sqrt u - sqrt v ≤ sqrt (u - v).
 Qed.
 
 (** The symmetric form: [|√u - √v| ≤ √|u - v|]. *)
 Lemma sqrt_abs_diff (u v : ℝ) (Hu : 0 ≤ u) (Hv : 0 ≤ v) :
     Rabs (sqrt u - sqrt v) ≤ sqrt (Rabs (u - v)).
 Proof.
-  ltac1:(destruct (Rle_dec v u) as [Hle|Hnl];
-    [ assert (K := sqrt_diff_le u v Hv Hle);
-      assert (Hm : sqrt v <= sqrt u) by (apply sqrt_le_1; lra);
-      assert (E1 : Rabs (sqrt u - sqrt v) = sqrt u - sqrt v) by (apply Rabs_right; lra);
-      assert (E2 : Rabs (u - v) = u - v) by (apply Rabs_right; lra);
-      rewrite E1, E2; exact K
-    | assert (Hle : u <= v) by lra;
-      assert (K := sqrt_diff_le v u Hu Hle);
-      assert (Hm : sqrt u <= sqrt v) by (apply sqrt_le_1; lra);
-      assert (E1 : Rabs (sqrt u - sqrt v) = sqrt v - sqrt u) by
-        (rewrite Rabs_left1; [ring | lra]);
-      assert (E2 : Rabs (u - v) = v - u) by
-        (rewrite Rabs_left1; [ring | lra]);
-      rewrite E1, E2; exact K ]).
+  Either (v ≤ u) or (¬ (v ≤ u)).
+  - Case (v ≤ u).
+    It holds that v ≤ u as (Hle).
+    By sqrt_diff_le it holds that sqrt u - sqrt v ≤ sqrt (u - v) as (K).
+    By sqrt_le_1 it holds that sqrt v ≤ sqrt u as (Hm).
+    It holds that Rabs (sqrt u - sqrt v) = sqrt u - sqrt v as (Ea1).
+    It holds that Rabs (u - v) = u - v as (Ea2).
+    rewrite Ea1. rewrite Ea2.
+    We conclude that sqrt u - sqrt v ≤ sqrt (u - v).
+  - Case (¬ (v ≤ u)).
+    It holds that u ≤ v as (Hle).
+    By sqrt_diff_le it holds that sqrt v - sqrt u ≤ sqrt (v - u) as (K).
+    By sqrt_le_1 it holds that sqrt u ≤ sqrt v as (Hm).
+    It holds that Rabs (sqrt u - sqrt v) = sqrt v - sqrt u as (Ea1).
+    It holds that Rabs (u - v) = v - u as (Ea2).
+    rewrite Ea1. rewrite Ea2.
+    We conclude that sqrt v - sqrt u ≤ sqrt (v - u).
 Qed.
 
 (** The ε–δ estimate itself, stated over plain reals: [δ = ε²]. *)
@@ -427,13 +471,18 @@ Lemma sqrt_unif_aux (eps : ℝ) (Heps : eps > 0) :
     ∀ x : ℝ, ∀ y : ℝ, 0 ≤ x → 0 ≤ y →
       Rabs (x - y) < eps * eps → Rabs (sqrt x - sqrt y) < eps.
 Proof.
-  ltac1:(intros x y Hx Hy Hxy;
-         assert (K := sqrt_abs_diff x y Hx Hy);
-         assert (Hnn : 0 <= Rabs (x - y)) by apply Rabs_pos;
-         assert (Heq : sqrt (eps * eps) = eps) by (apply sqrt_square; lra);
-         assert (Hs : sqrt (Rabs (x - y)) < sqrt (eps * eps)) by
-           (apply sqrt_lt_1; [assumption | nra | assumption]);
-         rewrite Heq in Hs; lra).
+  Take x : ℝ. Take y : ℝ.
+  Assume that 0 ≤ x as (Hx).
+  Assume that 0 ≤ y as (Hy).
+  Assume that Rabs (x - y) < eps * eps as (Hxy).
+  By sqrt_abs_diff it holds that
+    Rabs (sqrt x - sqrt y) ≤ sqrt (Rabs (x - y)) as (K).
+  By Rabs_pos it holds that 0 ≤ Rabs (x - y) as (Hnn).
+  It holds that 0 ≤ eps * eps as (Hee).
+  By sqrt_lt_1 it holds that
+    sqrt (Rabs (x - y)) < sqrt (eps * eps) as (Hs).
+  By sqrt_square it holds that sqrt (eps * eps) = eps as (Heq).
+  We conclude that Rabs (sqrt x - sqrt y) < eps.
 Qed.
 
 Lemma sqrt_uniformly_continuous :

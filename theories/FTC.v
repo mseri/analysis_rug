@@ -42,13 +42,14 @@ Proof.
 (** _Order property_: if [f ≤ g] on [[a, b]] then [∫_a^b f ≤ ∫_a^b g]. (This is
     [integral_monotone] from [Analysis.Integration], restated as the order form
     of Lecture 16.) *)
-Lemma integral_order (f g : ℝ → ℝ) (a b : ℝ) (Hab : a ≤ b)
-    (prf : Riemann_integrable f a b)
+(* [f] renamed to [f1]: a bare [f] resolves to [Stdlib.Reals.Rtopology.f]. *)
+Lemma integral_order (f1 g : ℝ → ℝ) (a b : ℝ) (Hab : a ≤ b)
+    (prf : Riemann_integrable f1 a b)
     (prg : Riemann_integrable g a b)
-    (Hle : ∀ x : ℝ, a ≤ x ∧ x ≤ b → f x ≤ g x) :
+    (Hle : ∀ x : ℝ, a ≤ x ∧ x ≤ b → f1 x ≤ g x) :
     RiemannInt prf ≤ RiemannInt prg.
 Proof.
-  ltac1:(apply integral_monotone; exact Hle).
+  exact (integral_monotone f1 g a b prf prg Hle).
 Qed.
 
 (** _Triangle inequality for integrals_: [|f|] is integrable and

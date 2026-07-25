@@ -90,7 +90,9 @@ Proof.
 Lemma sq_derivative (x0 : ℝ) :
     derive_pt (fun y => y ^ 2) x0 (derivable_pt_pow 2 x0) = 2 * x0.
 Proof.
-  ltac1:(rewrite derive_pt_pow; simpl; ring).
+  (* Power rule with [n = 2]. *)
+  rewrite derive_pt_pow.
+  We conclude that INR 2 * x0 ^ (2 - 1) = 2 * x0.
 Qed.
 
 (** ** Rolle's theorem *)

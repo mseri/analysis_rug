@@ -46,13 +46,23 @@ Qed.
 (** [T₁(x) = 1 + x]. *)
 Lemma T_exp_1 (x : R) : T_exp 1%nat x = 1 + x.
 Proof.
-  ltac1:(simpl; lra).
+  It holds that
+    T_exp 1%nat x = T_exp 0%nat x + x ^ 1 / INR (fact 1) as (Hrec).
+  By T_exp_0 it holds that T_exp 0%nat x = 1 as (H0).
+  It holds that INR (fact 1) = 1 as (Hf1).
+  rewrite Hrec. rewrite H0. rewrite Hf1.
+  We conclude that 1 + x ^ 1 / 1 = 1 + x.
 Qed.
 
 (** [T₂(x) = 1 + x + x²/2]. *)
 Lemma T_exp_2 (x : R) : T_exp 2%nat x = 1 + x + x ^ 2 / 2.
 Proof.
-  ltac1:(simpl; lra).
+  It holds that
+    T_exp 2%nat x = T_exp 1%nat x + x ^ 2 / INR (fact 2) as (Hrec).
+  By T_exp_1 it holds that T_exp 1%nat x = 1 + x as (H1).
+  It holds that INR (fact 2) = 2 as (Hf2).
+  rewrite Hrec. rewrite H1. rewrite Hf2.
+  We conclude that 1 + x + x ^ 2 / 2 = 1 + x + x ^ 2 / 2.
 Qed.
 
 (** ** Taylor series and Lagrange remainder *)

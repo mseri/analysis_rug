@@ -1,8 +1,8 @@
-# Waterproof User Manual
+# Waterproof Reference Sheet
 
-*A guide to writing proofs with the `coq-waterproof` plugin (v3.x, Coq/Rocq ≥ 8.17), based on the source at [impermeable/coq-waterproof](https://github.com/impermeable/coq-waterproof) and the official tutorial notebook.*
+A practical guide to `coq-waterproof` (v3.x on Coq/Rocq ≥ 8.17), based on the source at [impermeable/coq-waterproof](https://github.com/impermeable/coq-waterproof) and its tutorial notebooks.
 
-Waterproof is a Coq plugin (OCaml + Ltac2) that provides a controlled natural language for proof scripts, mathematical notation (ℝ, ∈, ∀, chains of inequalities), enforced signposting, and configurable automation that discharges the routine steps a written proof would omit. It is aimed at teaching analysis-style proof writing, but is a genuine Coq plugin: everything below is ordinary Coq underneath, and you can drop to raw tactics at any point.
+Waterproof is an Ltac2/OCaml plugin that makes Coq read like an analysis textbook. You get standard math notation (`ℝ`, `∈`, `∀`, inequality chains), mandatory goal signposts, and automation that swallows routine arithmetic. Underneath, it remains standard Coq. Raw tactics like `apply`, `destruct`, `symmetry`, and `rewrite` work whenever you want them.
 
 ---
 
@@ -10,10 +10,13 @@ Waterproof is a Coq plugin (OCaml + Ltac2) that provides a controlled natural la
 
 ### 1.1 Installation
 
-- **VS Code extension** (recommended for students): install "Waterproof" from the marketplace; it bundles the plugin and provides the notebook (`.mv`) interface with checkboxes, hints, and input areas.
-- **Plain Coq**: `opam install coq-waterproof`, then use `.v` files with any Coq IDE.
+Students typically use the VS Code extension ("Waterproof" on the marketplace). It bundles the plugin and renders `.mv` notebook files with collapsible hints and student input boxes.
 
-### 1.2 Standard preamble
+For plain `.v` files, run `opam install coq-waterproof`.
+
+### 1.2 Preamble
+
+Drop this at the top of every file:
 
 ```coq
 From Stdlib Require Import Rbase Rfunctions.
@@ -23,7 +26,7 @@ Require Import Waterproof.Notations.Common.  (* ∀, ∃, ⇒, ∧, ∨, ¬, f(x
 Require Import Waterproof.Notations.Reals.   (* ℝ, ℕ, ℤ, |x|, intervals *)
 Require Import Waterproof.Notations.Sets.    (* ∈, ⊂, ∩, ∪, bounded quantifiers *)
 Require Import Waterproof.Chains.            (* & 0 < x ≤ 1 chains *)
-Require Import Waterproof.Tactics.           (* the natural-language tactics *)
+Require Import Waterproof.Tactics.           (* natural-language tactics *)
 Require Import Waterproof.Automation.        (* hint databases *)
 
 Waterproof Enable Automation RealsAndIntegers.
@@ -34,13 +37,13 @@ Set Default Goal Selector "!".
 Set Bullet Behavior "Waterproof Relaxed Subproofs".
 ```
 
-Optional domain libraries under `Waterproof.Libs.*`: `Analysis` (sequences, series, sup/inf, continuity, metric spaces), `Reals`, `Integers`, `Sets`, `Logic`, `Negation`, `Functions`.
+Domain libraries live under `Waterproof.Libs.*` (`Analysis`, `Reals`, `Integers`, `Sets`, `Logic`, `Negation`, `Functions`).
 
 ### 1.3 Automation datasets
 
-`Waterproof Enable Automation <Dataset>` loads a preset of hint databases used by the closing tactics (`We conclude that`, `It holds that`, …). Built-in datasets (see `src/hint_dataset_declarations.ml`):
+`Waterproof Enable Automation <Dataset>` loads a bundle of hint databases for `We conclude that` and `It holds that`:
 
-| Dataset | Main databases |
+| Dataset | Databases loaded |
 |---|---|
 | `Core` | `core` |
 | `Algebra` | `wp_core, arith, zarith, wp_algebra, wp_integers, wp_negation_int` |
@@ -48,15 +51,18 @@ Optional domain libraries under `Waterproof.Libs.*`: `Analysis` (sequences, seri
 | `RealsAndIntegers` | `arith, zarith, real, wp_core, wp_definitions, wp_alt_chars, wp_integers, wp_reals, wp_negation_reals` |
 | `Sets` | `arith, zarith, wp_core, wp_integers, wp_negation_int, wp_sets` |
 | `Intuition` | `wp_intuition` |
-| `Empty`, `ClassicalEpsilon` | special-purpose |
+| `Empty`, `ClassicalEpsilon` | Special-purpose |
 
-Related commands: `Waterproof Disable Automation X`, `Waterproof Clear Automation`, `Waterproof List Automation Databases`, and (for instructors) `Waterproof Declare Automation MySet` + `Waterproof Set Main Databases MySet db1, db2` (also `Decidability`/`Shorten` in place of `Main`). Other toggles: `Waterproof Enable/Disable Automation Shield`, `Filter Errors`, `Debug Automation`, `Hypothesis Help`, `Redirect Feedback/Errors`, `Waterproof Print Version`.
+Related controls:
+- `Waterproof Disable Automation X`, `Waterproof Clear Automation`, `Waterproof List Automation Databases`
+- Instructors can create datasets: `Waterproof Declare Automation MySet` followed by `Waterproof Set Main Databases MySet db1, db2` (or `Decidability` / `Shorten` in place of `Main`)
+- Toggles: `Waterproof Enable/Disable Automation Shield`, `Filter Errors`, `Debug Automation`, `Hypothesis Help`, `Redirect Feedback/Errors`
 
-The **shield** (on by default) prevents automation from silently performing "large" logical steps such as instantiating quantifiers or splitting an iff — the point being that students must write those steps explicitly.
+The automation shield is active by default. It stops automation from silently instantiating quantifiers or splitting equivalences behind your back. Students have to write those steps themselves.
 
 ---
 
-## 2. Notation primer
+## 2. Notation
 
 ### 2.1 Logic
 
@@ -64,86 +70,88 @@ The **shield** (on by default) prevents automation from silently performing "lar
 |---|---|---|
 | `∀ x ..., P` / `for all x, P` | `forall` | |
 | `∃ x ..., P` / `there exists x, P` | `exists` | |
-| `P ⇒ Q` (also `→`, `⇨`) | `P -> Q` | `⇨` is the printing form |
+| `P ⇒ Q` (also `→`, `⇨`) | `P -> Q` | `⇨` is the output form |
 | `P ⇔ Q`, `↔` | `<->` | |
 | `P ∧ Q`, `P ∨ Q`, `¬ P`, `x ≠ y` | `/\ , \/ , ~ , <>` | |
 | `fun x ↦ t` | `fun x => t` | |
-| `f(x)`, `f(x, y)` | `f x`, `f x y` | function application with parentheses |
+| `f(x)`, `f(x, y)` | `f x`, `f x y` | Parenthesized application |
 
 ### 2.2 Sets and bounded quantifiers (`subset_scope`)
 
-Sets are `Ensemble`-based: `subset X` ≔ `Ensemble X`. Notation: `x ∈ A`, `x ∉ A`, `A ⊂ B`, `A ∩ B`, `A ∪ B`, `A \ B`, `∅`, `Ω`, `𝒫(X)`, `{ x ∈ X | P }`, `A is empty`, `A is inhabited`, `A is disjoint from B`.
+Sets are built on `Ensemble`: `subset X` ≔ `Ensemble X`.
 
-Bounded quantifiers combine a binder with a predicate: `∀ x ∈ A, P`, `∃ ε > 0, P`, `∀ n ≥ N, P`, `∃ y ≠ 0, P`, and `∃! x ∈ A, P`. The predicates `∈ A`, `< y`, `≤ y`, `> y`, `≥ y`, `≠ y` are first-class here; internally `∀ x > 0, P` unfolds to `∀ x, x > 0 ⇒ P` and `∃ x > 0, P` to `∃ x, x > 0 ∧ P`.
+Set syntax: `x ∈ A`, `x ∉ A`, `A ⊂ B`, `A ∩ B`, `A ∪ B`, `A \ B`, `∅`, `Ω`, `𝒫(X)`, `{ x ∈ X | P }`, `A is empty`, `A is inhabited`, `A is disjoint from B`.
+
+Bounded quantifiers fuse a binder with a test: `∀ x ∈ A, P`, `∃ ε > 0, P`, `∀ n ≥ N, P`, `∃ y ≠ 0, P`, and `∃! x ∈ A, P`. Recognized predicates include `∈ A`, `< y`, `≤ y`, `> y`, `≥ y`, `≠ y`. Under the hood, `∀ x > 0, P` becomes `∀ x, x > 0 ⇒ P` and `∃ x > 0, P` becomes `∃ x, x > 0 ∧ P`.
 
 ### 2.3 Numbers and analysis
 
-`ℕ ℤ ℚ ℝ`; `≤ ≥`; `|x|` for `Rabs`; intervals `[a,b]`, `[a,b)`, `(a,b]`, `(a,b)`, `[a,∞)`, `(a,∞)` as subsets of ℝ; `a ⟶ c` for `converges_to`; `Σ Cn equals x` for `infinite_sum`. `RealsWithSubsets` provides ℤ, ℚ as subsets of ℝ.
+`ℕ ℤ ℚ ℝ`; relations `≤ ≥`; `|x|` for `Rabs`. Intervals `[a,b]`, `[a,b)`, `(a,b]`, `(a,b)`, `[a,∞)`, `(a,∞)` live as subsets of ℝ. Limit notation: `a ⟶ c` for `converges_to`, and `Σ Cn equals x` for `infinite_sum`. Use `RealsWithSubsets` when you need ℤ or ℚ as subsets of ℝ.
 
-### 2.4 Chains of (in)equalities
+### 2.4 Inequality chains
 
-Prefix a chain with `&`:
+Prefix any chain with `&`:
 
 ```coq
 We conclude that & 3 < 5 = 2 + 3 ≤ 6.
 ```
 
-A chain elaborates to the conjunction of adjacent relations (and its "global" consequence, e.g. `3 ≤ 6`). Mixing `<`/`≤` with `>`/`≥` in one chain is not allowed; `=` can be mixed with either direction.
+Chains turn into a conjunction of adjacent steps plus the end-to-end inequality (`3 ≤ 6`). Do not mix `<`/`≤` with `>`/`≥` in the same chain. Equality (`=`) mixes with either direction.
 
 ---
 
-## 3. The tactic language
+## 3. Tactics
 
-Grammar convention below: `(...)` around a statement means an arbitrary Coq term; parenthesize any statement containing spaces or operators when in doubt. The optional `as (label)` names the created hypothesis; otherwise Waterproof generates labels like `_H`, and unnamed hypotheses are best referenced via `By`/`Since` with their *statement*.
+Parenthesize any term containing spaces or operators: `(...)`. Hypotheses can be named with `as (label)`. If omitted, Waterproof assigns names like `_H`; cite unnamed hypotheses by statement using `Since (P) ...`.
 
-### 3.1 Managing the goal
+### 3.1 Goals
 
-| Sentence | Effect |
+| Sentence | What it does |
 |---|---|
-| `We need to show that (P).` / `To show that (P).` | Checks the goal is (convertible to) `P`; also converts the displayed goal to your phrasing. Mandatory signposting after case splits. |
-| `We conclude that (P).` / `It follows that (P).` | Solves the goal `P` by automation. Accepts a chain `& a ≤ b < c`. |
-| `By (lemma_or_hyp) we conclude that (P).` | Same, giving automation an extra fact to use. |
-| `Since (Q) we conclude that (P).` | Same, but you cite the *statement* `Q` (must be provable from context). |
-| `It suffices to show that (P).` | Backward step: replaces goal by `P` if automation proves `P ⇒ goal` (also `By ... it suffices ...`, `Since ... it suffices ...`). |
-| `Indeed, (P).` | Closes a small side-goal (e.g. membership after `Choose`). |
+| `We need to show that (P).` / `To show that (P).` | Checks that the goal matches `P` (up to conversion) and reformulates the goal window. Required after case splits. |
+| `We conclude that (P).` / `It follows that (P).` | Closes `P` via automation. Accepts chains: `& a ≤ b < c`. |
+| `By (lemma_or_hyp) we conclude that (P).` | Closes `P`, passing automation an extra lemma or hypothesis. |
+| `Since (Q) we conclude that (P).` | Same, but takes the *statement* `Q` instead of an identifier (must follow from context). |
+| `It suffices to show that (P).` | Backward step: replaces current goal with `P` if automation proves `P ⇒ goal` (also `By ... it suffices ...`, `Since ... it suffices ...`). |
+| `Indeed, (P).` | Discharges small side-goals, such as the membership check after `Choose`. |
 
 ### 3.2 Quantifiers
 
-| Sentence | Effect |
+| Sentence | What it does |
 |---|---|
-| `Take x ∈ ℝ.` / `Take n : ℕ.` / `Take x, y : ℝ and n : ℕ.` | Introduce ∀-bound variables. Fails on ∃-goals. Warns if you rename bound variables. |
-| `Take x : ℝ; such that (P) as (i).` | Introduce variable and immediately assume the bounding hypothesis. |
-| `Choose y := (2).` / `Choose (2).` | Provide a witness for ∃. With a bounded ∃ this opens a side-goal (`y ∈ A`, `y > 0`, …) which you close with `{ Indeed, ... . }`. |
-| `Obtain such an n.` / `Obtain such n, m.` | Destruct an ∃-hypothesis introduced last (e.g. right after `Assume that`). |
-| `Obtain n according to (i).` | Destruct the ∃ in labeled hypothesis `(i)`. |
-| `Use ε := (1/2) in (i).` | Specialize a ∀-hypothesis `(i)`; bounded ∀ opens a side-goal (`1/2 > 0`) closed with `{ Indeed, ... . }`. Multiple: `Use x := a, y := b in (i).` |
+| `Take x ∈ ℝ.` / `Take n : ℕ.` / `Take x, y : ℝ and n : ℕ.` | Introduces ∀-bound variables. Fails on ∃. Warns on variable renames. |
+| `Take x : ℝ; such that (P) as (i).` | Introduces the variable and binds its bounding assumption in one step. |
+| `Choose y := (2).` / `Choose (2).` | Supplies an existential witness. Bounded quantifiers leave a side-goal (`y ∈ A`, `y > 0`) that you close with `{ Indeed, ... . }`. |
+| `Obtain such an n.` / `Obtain such n, m.` | Unpacks the most recently introduced ∃-hypothesis. |
+| `Obtain n according to (i).` | Unpacks the ∃ from named hypothesis `(i)`. |
+| `Use ε := (1/2) in (i).` | Instantiates a ∀ in hypothesis `(i)`. Bounded ∀ opens a side-condition (`1/2 > 0`) closed with `{ Indeed, ... . }`. Multiple: `Use x := a, y := b in (i).` |
 
-### 3.3 Assumptions and forward reasoning
+### 3.3 Assumptions and forward steps
 
-| Sentence | Effect |
+| Sentence | What it does |
 |---|---|
-| `Assume that (P).` / `Assume that (P) as (i).` | Introduce the antecedent of an implication (or ¬). Fails if `P` isn't the actual antecedent. |
-| `It holds that (P) as (i).` | Assert `P`, proved by automation. |
-| `By (ref) it holds that (P).` / `Since (Q) it holds that (P).` | Assert with an extra fact / cited statement. |
-| `We claim that (P) as (i).` | Assert `P` and open a subproof for it (you prove it yourself, typically in a `{ ... }` block or bullet). |
-| `Define u := (t).` | Local definition. |
-| `Because (i) both (P) as (h1) and (Q) as (h2).` | Destruct a conjunction hypothesis `(i)`. |
-| `Because (i) either (P) or (Q).` | Case split on a disjunction hypothesis `(i)`; follow with `- Case (P). ...` bullets. |
+| `Assume that (P).` / `Assume that (P) as (i).` | Introduces the antecedent of an implication or negation. Rejects statements that don't match. |
+| `It holds that (P) as (i).` | Proves `P` via automation and adds it to the context. |
+| `By (ref) it holds that (P).` / `Since (Q) it holds that (P).` | Adds `P` using an explicit reference or provable statement. |
+| `We claim that (P) as (i).` | Asserts `P` and opens a focused subproof for you to prove manually. |
+| `Define u := (t).` | Adds a local definition. |
+| `Because (i) both (P) as (h1) and (Q) as (h2).` | Unpacks a conjunction `P ∧ Q` from hypothesis `(i)`. |
+| `Because (i) either (P) or (Q).` | Splits on disjunction `(i)`; prove each branch under `- Case (P).` bullets. |
 
-### 3.4 Structure: cases, conjunctions, iff, contradiction, induction
+### 3.4 Proof structure
 
 ```coq
-Either x < y or x ≥ y.            (* case split on a decidable comparison *)
+Either x < y or x ≥ y.            (* split on a decidable relation *)
 - Case x < y.  ...
 - Case x ≥ y.  ...
 
-Either x < 0, x = 0 or x > 0.     (* three-way *)
+Either x < 0, x = 0 or x > 0.     (* three-way trichotomy *)
 
-We show both statements.          (* goal A ∧ B; also: We show both (A) and (B). *)
+We show both statements.          (* goal: A ∧ B; also: We show both (A) and (B). *)
 * We need to show that (A). ...
 * We need to show that (B). ...
 
-We show both directions.          (* goal A ⇔ B *)
+We show both directions.          (* goal: A ⇔ B *)
 ++ We need to show that (A ⇒ B). ...
 ++ We need to show that (B ⇒ A). ...
 
@@ -157,19 +165,17 @@ We use induction on k.
   Take k ∈ ℕ. Assume that (P k). ... (* prove P (k+1) *)
 ```
 
-Bullets (`-`, `+`, `*`, `++`, …) and `{ }` blocks are standard Coq; Waterproof's relaxed bullet mode plus mandatory `We need to show that` / `Case` sentences enforce signposting.
+### 3.5 Inspection and help
 
-### 3.5 Definitions and help
-
-| Sentence | Effect |
+| Sentence | What it does |
 |---|---|
-| `Expand the definition of (f).` / `Expand (f).` | Prints suggested `That is, write ...` reformulations of goal/hypotheses with `f` unfolded (registered definitions only). Remove from final proof. |
-| `Expand All.` | Suggestions for every registered definition occurring. |
-| `Help.` | Prints hints about applicable tactics for the current goal. Remove from final proof. |
+| `Expand the definition of (f).` / `Expand (f).` | Prints suggested `That is, write ...` rewrites with `f` unfolded. Interactive only; delete before submitting. |
+| `Expand All.` | Suggestions for all recognized definitions in the goal. Delete from final script. |
+| `Help.` | Prints tactics that might make progress on the current goal. Interactive only. |
 
 ---
 
-## 4. A worked example
+## 4. Worked example
 
 ```coq
 Lemma sequence_bound :
@@ -187,7 +193,7 @@ Contradiction.
 Qed.
 ```
 
-And a chain-based conclusion:
+Chaining an inequality:
 
 ```coq
 By f_increasing we conclude that & 2 < f(0) ≤ f(1).
@@ -195,68 +201,67 @@ By f_increasing we conclude that & 2 < f(0) ≤ f(1).
 
 ---
 
-## 5. Common pitfalls
+## 5. Pitfalls and failure modes
 
-1. **`Take` on an ∃-goal.** `Take` only introduces universally quantified variables; for `∃` use `Choose`. Conversely `Choose` fails on ∀-goals.
-2. **Renaming bound variables.** `Take y : ℝ` when the goal reads `∀ x, ...` produces a warning ("Expected variable name x instead of y") — in teaching setups treat warnings as errors. Same for `Obtain such an m` when the binder was `n`.
-3. **Wrong types or too many variables in `Take`.** `Take n : bool` on `∀ n : ℕ` fails; so does taking more variables than the goal's quantifier prefix supplies.
-4. **Forgetting the side-goal of bounded quantifiers.** `Choose y := 2` for `∃ y ∈ ℝ, ...` leaves a membership goal; close it immediately with `{ Indeed, y ∈ ℝ. }`. Note the required **space between `.` and `}`**. Same after `Use ε := 1/2 in (i)`.
-5. **`Assume that` with the wrong statement.** The assumed statement must match the actual antecedent (up to conversion). Also, `Assume` refuses to work when the goal is not an implication/negation.
-6. **Automation can't bridge a big gap.** `We conclude that ...` runs a bounded search; if it fails, either (a) insert intermediate `It holds that` steps, (b) supply the key lemma: `By lem we conclude that ...`, or (c) check the right dataset is enabled. `By magic it holds that ...` (i.e. unrestricted search) exists but signals a proof your reader wouldn't accept.
-7. **The shield.** With the automation shield on, `It holds that`/`We conclude that` will not instantiate quantifiers or split iffs for you; you must `Use`, `Obtain`, `Choose`, `We show both directions`, etc., explicitly.
-8. **Label reuse.** `It holds that (P) as (h)` fails if `h` already names a hypothesis.
-9. **Scopes.** With `R_scope` open, natural-number statements need `%nat`: `(k ≤ n(k))%nat`. Off-by-scope errors typically show up as type errors on `≤` or `+`.
-10. **Parentheses.** Statements are parsed as `lconstr`; when a sentence misparses, wrap the statement in parentheses: `We conclude that (x + 3 = 3 + x).`
-11. **Chains.** `& a < b > c` (mixed directions) is rejected; split it. A chain proves the conjunction of its links — when *using* a chain hypothesis you may need the derived global inequality via `It holds that`.
-12. **Case bullets without signposting.** After `Either ... or ...` each bullet must begin `Case (…).`; after `We show both statements/directions`, each bullet must begin with `We need to show that (…).` — omitting these is an error by design.
-13. **`Obtain` scope.** `Obtain such an n` only destructs the most recently introduced existential hypothesis; otherwise use `Obtain n according to (label)`.
-14. **Leaving `Help.` / `Expand ...` in the final script.** They are interactive aids; remove them (in graded notebooks they may be flagged).
-15. **Grouped binders in `∀`/`∃`.** The unicode `∀`/`∃` notations reject a single binder group with several names or several typed groups: `∀ x y : ℝ, P` and `∃ (phi : ℕ → ℕ) (x : ℝ), P` fail with "The reference y/x was not found in the current environment". Write each binder separately — `∀ x, ∀ y` / `∃ phi : ℕ → ℕ, ∃ x : ℝ` — or use the membership form `∀ x ∈ ℝ, ∀ y ∈ ℝ, P`. (Note `Take x, y : ℝ` *is* fine — this restriction is on the statement notation, not the `Take` tactic.)
-16. **`Type`-sorted binders in `∀`.** `∀ I : Type, P` (e.g. quantifying over the index type of an open cover) fails the `∀` notation with a "pat"/`True` elaboration error. Use ASCII `forall (I : Type), P` for `Type`/`Set`-sorted binders; the unicode `∀` is meant for element-level (`ℝ`, `ℕ`, set-membership) quantification.
-17. **Bare identifiers resolving to Stdlib globals instead of your binder.** Inside a natural-language statement (`It holds that`, `We need to show`, `We conclude`, `Since`, `We claim`, `Define`) some single-letter names resolve to a global constant rather than the local binder. When the global is a function or a `family`, application misparses: *"The term x … expected to have type family"*, or a stray `Logic.I : True` / `BinNums.N` type error. Known offenders: `f` (`Rtopology.f`, a `family`), `N` (`BinNums.N`), `I` (`Logic.I`), `d` (`Sequences.d`), `d1` (`Ranalysis1.d1`), `E1` (`Exp_prop.E1` — bites as *"Cannot find a relation to rewrite"* on `rewrite E1`). Rename lemma parameters (`f'`, `Nn`, `Idx`, `dlt`, `Ea1`) before proving; as a rule avoid single-letter names that are Stdlib constants.
-18. **Restate the goal after `Choose`.** After `Choose δ := ...`, a bounded `∀` body must be restated with `We need to show that ∀ x ∈ ℝ, ...` *before* `Take x ∈ ℝ` — otherwise `Take` is rejected ("follow the advice in the goal window"). Applies inside `We show both statements` bullets too.
-19. **Bounded binders are subset-typed.** `∀ ε > 0, P` binds `ε : subset_type ℝ (> 0)`, and `∀ n ∈ ℕ` binds `subset_type ℕ`. That breaks nat arithmetic on the binder (`(n + p)%nat` becomes subset addition) and prevents handing the value to a helper lemma or `mkposreal`. Use `∀ n : ℕ` / `Take n : ℕ`, or restate as `∀ ε : ℝ, ε > 0 → …`, or push the arithmetic into a plain-reals helper.
-20. **`%nat` on one argument can break a sibling lambda.** `partial_sums (fun k => 1 / (INR k + 1)) (n + p)%nat` fails with *"INR(k) has type ℝ while it is expected to have type ℕ"*. Write `(Nat.add n p)`. (`%nat` is fine inside `INR`, and fine when the function argument is a variable rather than a lambda.)
-21. **Ltac plumbing that doesn't parse.** `refine (conj _ _)` and goal selectors like `split; [|split]` are rejected (bare `_`/`[`). Build a conjunction by proving each conjunct with `By … it holds that … as (Hk)` then `We conclude that (… ∧ … ∧ …)`. `eq_sym` does not elaborate in term position ("expected to have type Type") — use the `symmetry.` tactic. `rewrite`, `destruct`, `apply`, `exact` are Ltac2 and fine to use directly.
-22. **Leaving arguments implicit in `By … we conclude that …`** can send the automation into a search of many minutes. Supply the arguments explicitly, or use `exact (lemma a b c H)`. The same holds for `By … it holds that …`: a `¬ In a (map fst l)`-style goal handed to the automation can hang indefinitely, while `exact (lemma l a p H1 H2 H3)` is instantaneous.
-23. **`(x, r)` is not a pair.** In `R_scope` the notations `(a, b)` and `[a, b]` are *intervals*, so `Choose p := (x, r)` fails with "has type ℝ ⇨ Prop". Build pairs through a named constructor: `Definition idx (c r : ℝ) : ball_index := pair c r.` For the same reason `ℝ * ℝ` inside a statement is read as `Rmult`; hide it behind `Definition ball_index : Type := (ℝ * ℝ)%type.`
-24. **`Choose` opens the membership side-goal as a block, and binds a local definition.** For `∃ a ∈ A, P a`, `Choose a := t.` is followed by `{ Indeed, a ∈ A. }` or `{ We need to verify that a ∈ A. … }` — note `We need to *verify*`, not `show` — and afterwards `a` is available as a let-bound name, so the remaining goal is about `a` rather than about `t`. State subsequent goals with `a`.
-25. **`Obtain such a y` destructs the *last* existential hypothesis in the context, which is the last one you labelled** — not necessarily the one you just created. For nested `∃ x, ∃ y, …`, restate the inner existential (`It holds that (∃ y : ℝ, …) as (Hy).`) before the second `Obtain`; otherwise you silently destruct the outer statement again and get "Expected variable name x0 instead of y".
-26. **`By the Archimedean property it holds that …` takes no `as (label)`** (it is a notation for the lemma `archimedN_exists`, from `Waterproof.Libs.Reals.ArchimedN`); label the fact with a following `It holds that … as (H).` if you need a name.
-27. **`Use x := t in (H)` is refused in some states** (e.g. while the goal is "Derive a contradiction"), with a hint suggesting an `It holds that` instead. Follow the hint: restate the instance you want, `By (H) it holds that (<instance>) as (H1).`, discharging the bound of a bounded `∀` as a separate fact first.
-
----
-
-## 5b. Interoperating with the Coq standard library
-
-Many "hard" analysis lemmas are one Stdlib lemma away, so `Search`/`Print`/`Check` first: drop a temporary `Search "bar".` into the file and compile it to read the output. Useful entry points for a real-analysis course: `continuity_ab_maj`/`_min` (EVT), `IVT_interv`, `Heine` + `compact_P3`, `continuity_seq`, `continuity_implies_RiemannInt`, `RiemannInt_P*`, `MVT`/`MVT_cor1`/`Rolle`, `derive_increasing_interv`, `compact_carac`.
-
-Points of friction:
-
-- **Waterproof's own definitions are not Stdlib's.** `a ⟶ L` is `converges_to`, not `Un_cv`; bridge with `convergence_equivalence : a ⟶ q ⇔ Un_cv a q`. Likewise Waterproof `is_open`/`is_closed` is a *different framework* from Rtopology `open_set`/`closed_set` — mixing them needs an explicit bridge.
-- **Implicit arguments.** Most `RiemannInt_P*` lemmas take nearly everything implicitly; on *"has type … while it is expected to have type ℝ"*, drop the explicit `f a b` and pass only the proof terms. Implicit insertion also only fires on a *variable* head-argument: `RiemannInt (RiemannInt_P14 a b M)` fails while `RiemannInt prc` works — `pose (prc := RiemannInt_P14 a b M).` first.
-- **`%F` function algebra.** `continuity_pt_plus/_mult/_scal` conclude about `(f1 + g)%F`, definitionally but not syntactically `fun x => f1 x + g x`, and the `exact`/`apply` wrappers reject it. Either `We need to show that continuity_pt (fun x => f1 x + g x) c.` and *then* `apply (lemma …)`, or feed it as a fact with `By (lemma f1 g c Hf Hg) it holds that <goal-shaped statement> as (H1).`
-- **Sigma-typed results.** Consume `{z | P z}` (e.g. `IVT_interv`) with plain `destruct (…) as [z Hz].`, then split `Hz` with `It holds that …`. To repackage an `∃ c, ∃ P, …` into a course statement: `destruct (Lemma …) as [c [P H]]` then `Choose c1 := c. Choose Hc := P.`
-- **Facts automation lacks.** It does not know `INR (S n) = INR n + 1`, `INR 0 = 0`, `0 ≤ INR n`, `1 ≤ INR n + 1` — feed them via `By S_INR / pos_INR / plus_INR it holds that …`. Similarly, inverses need a nudge: `By Rinv_r it holds that b * / b = 1 as (Ei).` makes surrounding field identities closable, and cross-multiplying (`|/b - /l| * (|b| * |l|) = |b - l|`) removes the inverse from the goal.
-- **`Contradiction` runs the automation** to find the inconsistency, so no `exfalso` is needed — e.g. to sharpen `a ≤ z` to `a < z`: `Either a = z or a ≠ z.` then `- Case (a = z). … Contradiction.`
+1. **`Take` on an existential goal.** `Take` is strictly for `∀`. Use `Choose` for `∃`.
+2. **Renaming binders.** If the goal says `∀ x, ...`, running `Take y : ℝ` throws a warning (*"Expected variable name x instead of y"*). In course grading, treat warnings as fatal errors. Same for `Obtain such an m` when the binder was `n`.
+3. **Mismatched types in `Take`.** `Take n : bool` against `∀ n : ℕ` fails immediately. Don't supply more variables than the goal's quantifier prefix contains.
+4. **Skipping side-goals on bounded quantifiers.** `Choose y := 2` on `∃ y ∈ ℝ, ...` generates a membership subproof. Close it on the spot: `{ Indeed, y ∈ ℝ. }`. Note the space before `}`. Same deal after `Use ε := 1/2 in (i)`.
+5. **Drift in `Assume that`.** The text inside `Assume that (P)` must match the actual antecedent term-for-term. `Assume` also rejects goals that aren't implications or negations.
+6. **Automation running out of gas.** `We conclude that` runs a depth-bounded search. When it gets stuck: add intermediate `It holds that` statements, hand it the key lemma (`By lem we conclude that ...`), or check which dataset is active. `By magic it holds that` skips the search limits, but nobody grades that kindly.
+7. **The automation shield.** With the shield on, `It holds that` won't instantiate quantifiers or split iffs. You have to write `Use`, `Obtain`, `Choose`, and `We show both directions` yourself.
+8. **Reusing hypothesis names.** `It holds that (P) as (h)` fails if `h` is already taken in the current context.
+9. **Scope collisions with `ℕ`.** With `R_scope` open, nat arithmetic needs an explicit `%nat` annotation, as in `(k ≤ n(k))%nat`. Otherwise you get cryptic type errors on `≤` and `+`.
+10. **Unparenthesized expressions.** The parser expects statements as `lconstr`. If a line throws a parse error, wrap the proposition in parens: `We conclude that (x + 3 = 3 + x).`
+11. **Direction flipping in chains.** `& a < b > c` fails to parse. Split it into two statements. When you need the end-to-end inequality from a previous chain hypothesis, extract it with a separate `It holds that`.
+12. **Missing case signposts.** Every bullet under `Either ... or ...` must begin with `Case (...)`. Every bullet under `We show both statements` must begin with `We need to show that (...)`. Drop them and the proof script fails.
+13. **`Obtain` target confusion.** `Obtain such an n` grabs only the most recently introduced existential. If you need an older one, call `Obtain n according to (label)`.
+14. **Leftover interactive commands.** `Help.` and `Expand ...` exist for interactive inspection. Delete them from submitted proofs.
+15. **Grouped quantifiers in `∀` / `∃`.** The unicode notations reject multiple names in one binder block: `∀ x y : ℝ, P` and `∃ (phi : ℕ → ℕ) (x : ℝ), P` fail with *"The reference y/x was not found"*. Write `∀ x, ∀ y` or `∀ x ∈ ℝ, ∀ y ∈ ℝ, P`. (`Take x, y : ℝ` is fine—this limit applies to propositions, not tactics.)
+16. **`Type`-sorted binders.** `∀ I : Type, P` chokes the unicode notation with an internal `True`/`pat` error. Fall back to ASCII `forall (I : Type), P` when quantifying over index types or sets.
+17. **Variable names hijacked by the standard library.** In lines like `It holds that`, `We need to show`, or `Define`, single-letter names often resolve to Stdlib globals rather than your local binder. Common traps: `f` hits `Rtopology.f` (a family), `N` hits `BinNums.N`, `I` hits `Logic.I`, `d` hits `Sequences.d`, `d1` hits `Ranalysis1.d1`, and `E1` hits `Exp_prop.E1` (which breaks rewrites with *"Cannot find a relation to rewrite"*). Rename your parameters to `f'`, `Nn`, `Idx`, `dlt`, `Ea1` to stay out of trouble.
+18. **Goal restatements after `Choose`.** After `Choose δ := ...`, a trailing bounded `∀` needs a fresh `We need to show that ∀ x ∈ ℝ, ...` before `Take x ∈ ℝ` will work.
+19. **Bounded binders produce subset types.** Writing `∀ ε > 0, P` binds `ε : subset_type ℝ (> 0)`. That breaks nat arithmetic on binders (`(n + p)%nat` becomes subset addition) and prevents feeding the variable to `mkposreal`. Write `∀ n : ℕ` / `Take n : ℕ`, or expand to `∀ ε : ℝ, ε > 0 → …`.
+20. **Scope leakage in lambdas.** Writing `partial_sums (fun k => 1 / (INR k + 1)) (n + p)%nat` fails with *"INR(k) has type ℝ while it is expected to have type ℕ"*. Use `(Nat.add n p)` instead.
+21. **Unsupported Ltac plumbing.** Expressions like `refine (conj _ _)` and goal selectors like `split; [|split]` fail to parse. Build conjunctions by proving each piece (`By … it holds that … as (Hk)`) and finishing with `We conclude that (A ∧ B)`. `eq_sym` also fails in term position; use the `symmetry.` tactic instead.
+22. **Search hangs on implicit arguments.** Calling `By … we conclude that …` with uninstantiated arguments can stall the prover for minutes. Pass arguments explicitly, or use `exact (lemma a b c H)`.
+23. **Interval notation breaks pairs.** In `R_scope`, `(a, b)` and `[a, b]` represent intervals. `Choose p := (x, r)` throws *"has type ℝ ⇨ Prop"*. Wrap pair creation in a helper: `Definition idx (c r : ℝ) : ball_index := pair c r.` Same for `ℝ * ℝ`, which gets parsed as multiplication; hide it with `Definition ball_index : Type := (ℝ * ℝ)%type.`
+24. **`Choose` creates a local definition.** For `∃ a ∈ A, P a`, `Choose a := t.` sets up `{ Indeed, a ∈ A. }` (or `{ We need to verify that a ∈ A. … }` — note `verify`, not `show`). The variable `a` enters the context as a let-binding, so subsequent statements must refer to `a`, not `t`.
+25. **`Obtain` order with nested existentials.** `Obtain such a y` pulls from the most recent existential in the context list, not the one you wrote last in the script. For `∃ x, ∃ y, …`, restate the inner existential (`It holds that (∃ y : ℝ, …) as (Hy).`) before running the second `Obtain`.
+26. **Archimedean notation syntax.** `By the Archimedean property it holds that …` cannot take an `as (label)` suffix (it is notation for `Waterproof.Libs.Reals.ArchimedN.archimedN_exists`). Label it on the next line with `It holds that … as (H).` if you need a handle.
+27. **`Use` blocked during contradictions.** When the goal is "Derive a contradiction", `Use x := t in (H)` gets rejected. Restate the instance directly: `By (H) it holds that (<instance>) as (H1).`, proving the bounding condition first.
 
 ---
 
-## 6. Extending the library
+## 6. Standard library interop
 
-### 6.1 Adding lemmas to the automation
+Analysis proofs frequently lean on Coq's standard library. Put a temporary `Search "name".` in your file to locate lemmas. Reliable entry points: `continuity_ab_maj`/`_min` (EVT), `IVT_interv`, `Heine` + `compact_P3`, `continuity_seq`, `continuity_implies_RiemannInt`, `RiemannInt_P*`, `MVT`/`MVT_cor1`/`Rolle`, `derive_increasing_interv`, `compact_carac`.
 
-The closing tactics search the hint databases of the enabled dataset. To make your own results available:
+Common friction points:
+
+- **Divergent definitions.** Waterproof's `a ⟶ L` is `converges_to`, not Stdlib's `Un_cv`. Convert between them using `convergence_equivalence : a ⟶ q ⇔ Un_cv a q`. Similarly, Waterproof's `is_open`/`is_closed` does not match `Rtopology`'s `open_set`/`closed_set`.
+- **Implicit arguments in integrals.** Most `RiemannInt_P*` lemmas keep almost everything implicit. If you hit *"has type … while it is expected to have type ℝ"*, strip the explicit `f a b` terms and pass only the proofs. Also, implicit resolution needs a named variable: `RiemannInt (RiemannInt_P14 a b M)` fails, but `pose (prc := RiemannInt_P14 a b M).` followed by `RiemannInt prc` succeeds.
+- **Function algebra (`%F`).** Lemmas like `continuity_pt_plus` produce statements about `(f1 + g)%F`. That matches `fun x => f1 x + g x` definitionally, but not syntactically, so `apply` will reject it. Run `We need to show that continuity_pt (fun x => f1 x + g x) c.` first, or supply the result via `By (lemma f1 g c Hf Hg) it holds that <statement> as (H1).`
+- **Sigma types.** Unpack sigma types like `{z | P z}` (from `IVT_interv`) using `destruct (…) as [z Hz].`, then split `Hz` with `It holds that`.
+- **Missing arithmetic facts.** The automation has blind spots around `INR`. It does not know `INR (S n) = INR n + 1`, `INR 0 = 0`, `0 ≤ INR n`, or `1 ≤ INR n + 1`. Feed them manually: `By S_INR / pos_INR / plus_INR it holds that …`. Inverses also need help: `By Rinv_r it holds that b * / b = 1 as (Ei).` clears up stuck field identities.
+- **Contradiction handling.** `Contradiction` runs automation to locate the clash automatically. To sharpen `a ≤ z` to `a < z`: run `Either a = z or a ≠ z.` and close the equality branch with `- Case (a = z). … Contradiction.`
+
+---
+
+## 7. Extending Waterproof
+
+### 7.1 Hint databases
+
+To register lemmas with the automation:
 
 ```coq
 Lemma my_lemma : ∀ x ∈ ℝ, ... .
 Proof. ... Qed.
 
-#[export] Hint Resolve my_lemma : wp_reals.   (* or a fresh db, see below *)
-(* also useful: Hint Extern <cost> <pattern> => <tactic> : db. *)
+#[export] Hint Resolve my_lemma : wp_reals.
 ```
 
-Cleaner for course material — define your own database and dataset:
+For course assignments, isolate hints in a custom database:
 
 ```coq
 Create HintDb course_db.
@@ -269,11 +274,11 @@ Waterproof Set Shorten Databases Course wp_core.
 Waterproof Enable Automation Course.
 ```
 
-(`Main` = general closing search; `Decidability` = powering `Either ... or ...`; `Shorten` = used to keep `Since`/`By` justifications minimal.)
+`Main` handles general closing search, `Decidability` powers `Either ... or ...`, and `Shorten` trims redundant steps in `Since`/`By`.
 
-Keep hints cheap: prefer `Hint Resolve` over expensive `Hint Extern`; the search is depth-bounded and every hint you add slows every `We conclude that` in the file (the source itself comments that adding `eq_sym` to `wp_core` was too costly).
+Stick to `Hint Resolve`. Avoid heavy `Hint Extern` hooks; automation search is depth-bounded, and bloated databases slow down every `We conclude that` across the file.
 
-### 6.2 Registering definitions for `Expand`
+### 7.2 Registering definitions for `Expand`
 
 ```coq
 Definition square (x : ℝ) := x^2.
@@ -283,34 +288,34 @@ Waterproof Register Expand "square";
   as "Definition square".
 ```
 
-After this, `Expand square.` and `Expand All.` will suggest natural-language reformulations, and in the VS Code UI students can click *replace*. Definitions phrased as characterizations (e.g. `a is a lower bound for A`) should also get supporting lemmas in `wp_definitions` / `wp_alt_chars` so the automation can move between the name and its unfolding.
+Now `Expand square.` will suggest natural-language reformulations that students can click to apply in VS Code.
 
-### 6.3 Custom notation
-
-Ordinary Coq `Notation` works; the library's own style is a good template, e.g.
+### 7.3 Custom notation
 
 ```coq
 Notation "'max(' x , y )" := (Rmax x y) (format "'max(' x ,  y ')'").
 Notation "a 'is' 'even'" := (Nat.Even a) (at level 68).
 ```
 
-For predicate-style phrases (`x is a _lower bound_ for A`) look at `theories/Libs/Analysis/SupAndInf.v` and `Notations/Sets.v` for level conventions (`is`-notations around level 68–70, set operations in `subset_scope`).
+For predicate styles like `x is a lower bound for A`, inspect `theories/Libs/Analysis/SupAndInf.v` for precedence patterns (`is`-notations sit around level 68–70).
 
-### 6.4 Contributing new tactics
+### 7.4 Adding tactics
 
-Tactics live in `theories/Tactics/*.v` as **Ltac2** notations wrapping Ltac2 functions, with error/feedback helpers from `theories/Util/MessagesToUser.v`; heavy machinery (automation, backtracking search, unfolding framework) is OCaml in `src/`. To add a sentence form: write the Ltac2 function, expose it via `Ltac2 Notation "My" "sentence" x(lconstr) := ...`, export from `theories/Tactics.v`, and add a test file in `tests/tactics/` mirroring the existing ones (`Fail`-based negative tests plus `assert_feedback_with_string` for warnings; enable `Waterproof Enable Redirect Feedback` in tests). Build with `dune build` / `make`; see `Developer-instructions.md`.
+Tactics live in `theories/Tactics/*.v` as Ltac2 notations over Ltac2 functions. Diagnostic messaging is handled by `theories/Util/MessagesToUser.v`. The heavy lifting (backtracking search, automation engines, unfolding) lives in OCaml under `src/`.
+
+To add a sentence: write the Ltac2 function, bind it with `Ltac2 Notation "My" "tactic" x(lconstr) := ...`, re-export from `theories/Tactics.v`, and add test coverage to `tests/tactics/`. Build with `dune build`.
 
 ---
 
-## 7. Writing exercise notebooks (`.mv`)
+## 8. Exercise notebooks (`.mv`)
 
-A Waterproof notebook is a **markdown file** with fenced `coq` code blocks plus two special HTML-like tags, rendered by the VS Code extension:
+Waterproof notebooks are Markdown files with fenced Coq blocks and custom tags:
 
-- ` ```coq ... ``` ` — read-only checked code (visible).
-- `<input-area> ```coq ... ``` </input-area>` — the editable region where students write their proof.
-- `<hint title="💡 Hint (click to open/close)"> ... </hint>` — collapsible block; commonly used both for hints and to hide the import preamble.
+- ` ```coq ... ``` ` — Checked, read-only code.
+- `<input-area> ```coq ... ``` </input-area>` — Editable student solution box.
+- `<hint title="💡 Hint (click to open/close)"> ... </hint>` — Collapsible section for hints or hidden preambles.
 
-Skeleton:
+### Template
 
 ````markdown
 # Homework 3: Suprema
@@ -332,7 +337,7 @@ Set Bullet Behavior "Waterproof Relaxed Subproofs".
 </hint>
 
 ## Exercise 1
-State the exercise in prose here.
+State the problem here.
 
 ```coq
 Lemma exercise_1 : ∀ x ∈ ℝ, x + 3 = 3 + x.
@@ -348,20 +353,18 @@ Qed.
 ```
 ````
 
-Design guidelines (taken from the official tutorial's structure):
+### Course design tips
 
-1. **Example → exercise pairs.** Show a complete worked `Lemma example_...` proof, then a structurally identical `Lemma exercise_...` with an empty input area.
-2. **Lock the statement.** Keep `Lemma ... Proof.` and `Qed.` *outside* the input area so students cannot alter what they must prove; only the proof body is editable.
-3. **One new sentence form per section**, in the order: `We conclude that` → `We need to show that` → `Take` → `Choose`/`Indeed` → `Assume` → chains → `It suffices` → `It holds` → `Use` → `Obtain` → contradiction → `Either` → `∧`/`⇔` → induction → `Expand`.
-4. **Definitions**: introduce them in a visible code block, register them with `Waterproof Register Expand` inside a technical-details `<hint>`, and tell students about `Expand ...`/`Help.` (and to delete those lines).
-5. **Autocomplete**: remind students of Ctrl/Cmd+Space, which lists the sentence templates.
-6. Test the notebook by completing every input area yourself; the whole file must compile as a Coq document when concatenated (that is exactly how the checker processes it — `tests/test-folder.py` in the repo does the analogue for `.v` tests).
-
-For plain-Coq courses, the same pedagogy works in `.v` files: worked examples followed by `Lemma exercise ... Proof. (* your proof here *) Admitted.`, with `Admitted` to be replaced by a `Qed`-terminated proof.
+1. **Pair examples with exercises.** Provide a completed `Lemma example_...`, then give an identical structure in `Lemma exercise_...` with an empty `<input-area>`.
+2. **Lock statements.** Keep `Lemma ... Proof.` and `Qed.` outside `<input-area>` so students cannot alter what they are proving.
+3. **Pace sentence introduction.** Follow the canonical sequence: `We conclude that` → `We need to show that` → `Take` → `Choose`/`Indeed` → `Assume` → inequality chains → `It suffices` → `It holds` → `Use` → `Obtain` → contradiction → `Either` → `∧`/`⇔` → induction → `Expand`.
+4. **Hide administrative setup.** Wrap `Waterproof Register Expand` commands and imports inside collapsible `<hint>` blocks.
+5. **Autocompletion.** Remind students that Ctrl+Space / Cmd+Space displays the available sentence templates.
+6. **Verify end-to-end.** Solve every input area before assigning the notebook. The concatenated file must compile cleanly with `coqc`.
 
 ---
 
-## 8. Quick reference card
+## 9. Quick reference card
 
 ```
 Take x ∈ ℝ.                     Take n, m : ℕ and b : bool.

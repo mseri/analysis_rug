@@ -31,23 +31,49 @@ Please read this section very carefully since it provides important information 
 | Wed 28 January 2026 | Final exam (11:45–13:45) |
 | Thu 26 February 2026 | Resit exam (18:30–20:30) |
 
-## Compulsory peer-review homework tutorials
+## Peer-review homework and Waterproof proof-assistant labs
 
-The peer-review homework tutorials are compulsory. While the homework itself is not graded, **participation in the tutorials with an attempted homework is mandatory**. These tutorials will help you develop and assess the level of your mathematical writing and problem-solving skills through peer feedback. Therefore we expect you to fully engage and wait for the end of the session before leaving.
+These 5 sessions, while not compulsory, are your only opportunity to get direct feedback and have focussed work on how to write correct and understandable analysis proofs. 
 
-You don't need to sign the homework but you need to write your student code on the homework sheets, so that we can find it easily at the end of the session. The TA will record your student code and the student code of the person that you reviewed. We will use this information to check your participation and in case there are issues with the feedback you provided or received.
+While the homework itself is not graded, **active and collaborative participation to the 4 main sessions will grant 0.25 points each**. These tutorials will help you develop and assess the level of your mathematical writing and problem-solving skills through peer feedback. Therefore we expect you to come on time, fully engage with the session and wait for the end of the session before leaving.
 
-For each compulsory session there will be a corresponding remediation session to allow to catch up any student that may have missed it for a valid reason or that did not bring a homework to the session. Missing both the compulsory session and the remediation session will result in a fail for the course.
+There is a first tutorial session where we discuss the expectations on the peer-review feedback and help you to setup the Waterproof proof assistant and learn how to use it. **In the four subsequent lab sessions we expect you are already familiar with all this, in case this is not the case and you had not attended the tutorial session, you will not get the points**.
+
+You don't need to sign the homework but you need to write your student code on the homework sheets, so that we can find it easily at the end of the session. 
+
+At the beginning of the session you will register your participation and we will randomly assign the peer-review pair. This will happen in the first 15 min of class, while we present the solution of the homework: if you arrive later than that, you will have lost the points.
+
+In the pair, you are expected to exchange your homework solutions, study them and provide feedback to each other (see below). The homework should include your student code, the person that gives the feedback, by the end of the lab, is expected to add their student code, scan the homework with the feedback (before returning it to the owner) and upload it on their Group page in Brightspace. **Failure to do so, will mean that you don't receive the points.**
+
+In the second half of the lab, you will work on the formalization of your solution (or a new one if you think is more fit) in the Waterproof proof assistant (see below). This is a constrained natural-language proof assistant that can give you automatically (and deterministically) feedback on the proof and could be a useful tool to check some of you other coursework for Analysis for correctness or completeness. **The first tutorial lab will be all dedicated to learn Waterproof and smoothen out any rough edges.**
+
+At the end of the session you will upload your formalization on the Group page in Brightspace. **Failure to do so, will mean that you don't receive the points.**
+
+After the sessions, we will revise the homework solutions, the feedback and the attempt at formalization. If this shows meaningful feedback (see below), a serious attempt at solving the homework (even if incorrect or incomplete) and a serious attempt at formalization, then you will be awarded the 0.25 points for the session.
 
 ## Peer-review homework guidelines: mathematical writing skills are important
 
-In the degree programmes Mathematics and Applied Mathematics you are not only supposed to learn mathematics, but also to communicate mathematical ideas to others. The style of communication depends on the context. The slides that I use in the lectures are very minimalistic. This is because I am presenting them orally, giving additional context where needed. In contrast, a written document that can be read by someone else without additional explanations needs to be self-contained and more elaborate.
+In the degree programmes Mathematics and Applied Mathematics you are not only supposed to learn mathematics, but also to communicate mathematical ideas to others. This is especially more relevant now that AI is forcing mathematicians to reach out to a wider public, to make its relevance clearer and to improve understanding and sharing of ideas acrooss specialization boundaries.
+
+The style of communication depends on the context. For examples, the slides that I use in the lectures are very minimalistic. This is because I am presenting them orally, giving additional context where needed. In contrast, a written document that can be read by someone else without additional explanations needs to be self-contained and more elaborate.
 
 During the peer-review homework tutorials, you will both get feedback on your own work and review the work of your peers. While these assignments are not graded, you should still focus not only on *validity* (mathematical correctness) but also on *readability* and *fluency* (correct use of mathematical language and notation).
 
+When you read the solution, ask yourself
+
+- is the proof using all the hypotheses of the homework? If not, why?
+- is the proof actually proving the expected statement? If not, what is it proving?
+- in particular, if the proof is unclear, ask to explain the idea beforehand
+- if specific steps are unclear, ask what is the reason for it
+- are all the steps in the proof justified?
+- for any theorem applied, are all the hypotheses justified?
+- is the statement of the applied theorems used in the appropriate way?
+
+Some of the questions above already highlight potential comments for your feedback. Moreover, for a perfectly valid homework, you should express what made it clear and correct, and what particularly helped you, in the way it is written, to understand it.
+
 Tip: an example of a good style of writing is Abbott's text book! For more tips, see the writing tips section below.
 
-Note: the exam will *not* be assessed using detailed rubrics. The reason is that the conditions are very different. For the homework you have time to think and write properly, and we expect you to take that time. During the exam you do not have that time, and therefore we will be more lenient when it comes to writing.
+Note: the exam will *not* be assessed using detailed rubrics. The reason is that the conditions are very different. For the homework and the feedback you have time to think and write properly, and we expect you to take that time. During the exam you do not have that time, and therefore we will be more lenient when it comes to writing. Nevertheless, clarity and completeness will remain an important evaluation point also for the exam.
 
 ![](../fig/rvf-rubric.pdf)
 
@@ -59,21 +85,21 @@ Note: the exam will *not* be assessed using detailed rubrics. The reason is that
 
 What is most important is that Waterproof uses controlled natural language. From all practical purposes, this means that the proof you write in Waterproof is a regular mathematical proof written in English. This makes Waterproof a great tool to practice your mathematical writing skills (and it can directly run in the browser).
 
-This year we start an optional experimentation with Waterproof. Many exercises will be provided with a Waterproof template that you can use to write your proof. You can then get instant feedback on its correctness. If you want to try it out, please follow the instructions on Brightspace or on [the course repository](https://github.com/mseri/waterproof-analysis).
+This year we start an experimentation with Waterproof. We spent a substantial amount of time to formalize all the lectures in Waterproof and the homework exercises will be provided with a Waterproof template that you can use to write your proof. You can then get instant feedback on its correctness. If you want to try it out, please follow the instructions on Brightspace or on [the course repository](https://github.com/mseri/analysis_rug).
 
 It would be extremely beneficial for us, if you would upload both your handwritten solutions and (if you used it) the Waterproof solutions on your Brightspace group folder. We will use anonymized data to make an educational research on how Waterproof affects the learning.
 
 ## Computation of the final grade
 
-Your final grade is based on the midterm exam and the final exam. The midterm can affect the final grade only if the final exam grade is 5.5 or higher.
+Your final grade is based on the the final exam and the bonus lab points. The latter can affect the final grade only if the final exam grade is 5.5 or higher.
 
-Let $ME$ denote the midterm exam grade and $FE$ denote the final exam grade. Your final grade $G$ is computed by means of the following formula:
+Let $L$ denote the lab points and $FE$ denote the final exam grade. Your final grade $G$ is computed by means of the following formula:
 
 $$
 G =
 \begin{cases}
 FE & \text{ if } FE < 5.5 \\
-\max\{FE,\; 0.3 \cdot ME + 0.7 \cdot FE\} & \text{ if } FE \geq 5.5
+\max\{FE + L, 10\} & \text{ if } FE \geq 5.5
 \end{cases}
 $$
 
@@ -203,7 +229,7 @@ You may not be able to solve all problems during the tutorials. In that case you
 
 These assignments are part of the compulsory peer-review homework tutorials. While the homework itself is not graded, participation in the tutorials is mandatory. Specific due dates and peer-review instructions will be announced via Brightspace.
 
-## Assignment 1 (tutorial on 20 November 2025)
+## Assignment 1 (lab on 20 November 2025)
 
 Determine the greatest lower bound (infimum) of the following set:
 $$
@@ -216,7 +242,7 @@ Notes:
 - Provide arguments: only answering "yes", "no", or "42" is not sufficient. You may use all theorems and statements in the book, but you should clearly indicate which of them you are using.
 - Try to strive for a balance between conciseness and completeness. A solution consisting of just a few lines may be a sign that too many logical steps are skipped, and a solution that takes several pages may be a sign that too many irrelevant details are included.
 
-## Assignment 2 (tutorial on 4 December 2025)
+## Assignment 2 (lab on 4 December 2025)
 
 Let $(a_n)$ and $(b_n)$ be two sequences of non-negative real numbers. Prove that if
 $$
@@ -232,7 +258,7 @@ Notes:
 - Provide arguments: only answering "yes", "no", or "42" is not sufficient. You may use all theorems and statements in the book, but you should clearly indicate which of them you are using.
 - Try to strive for a balance between conciseness and completeness.
 
-## Assignment 3 (tutorial on 13 January 2026)
+## Assignment 3 (lab on 13 January 2026)
 
 Using the concept of open covers (and explicitly avoiding the Bolzano–Weierstrass Theorem), prove that every bounded infinite set has a limit point.
 
@@ -242,7 +268,7 @@ Notes:
 - Provide arguments: only answering "yes", "no", or "42" is not sufficient. You may use all theorems and statements in the book, but you should clearly indicate which of them you are using.
 - Try to strive for a balance between conciseness and completeness.
 
-## Assignment 4 (tutorial on 15 January 2026)
+## Assignment 4 (lab on 15 January 2026)
 
 Consider the sequence of functions $f_n : (0,\infty) \to \mathbb{R}$ given by
 $$
@@ -306,7 +332,7 @@ Writing clear and logically structured arguments is an essential skill in mathem
 | Uncountable set | Overaftelbare verzameling |
 | Union | Vereniging |
 
-## Supplement to §1.5: countable versus finite sets
+## Supplement to §1.5: countable versus finite sets (no longer part of the course)
 
 Abbott's book defines a set to be *countable* if there is a bijective map between that set and the set of natural numbers. According to this definition finite sets are not countable! A practical consequence is that proofs always need to make a case distinction between a set being finite or countable which is rather inconvenient. Therefore, I will deviate from the book and use the following definition which is more commonly used in the literature.
 

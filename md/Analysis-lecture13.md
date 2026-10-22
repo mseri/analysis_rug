@@ -276,19 +276,6 @@ $$
 
 ---
 
-## Abel's lemma
-
-**Proof:** if $s_n = u_1 + \dots + u_n$, then
-$$\begin{aligned}
-\left|\sum_{k=1}^n u_k v_k \right|
-& =     \left|s_n v_{n+1} + \sum_{k=1}^n s_k(v_k - v_{k+1})\right| \\[3mm]
-& \leq  |s_n| v_{n+1} + \sum_{k=1}^n |s_k|(v_k - v_{k+1}) \\[3mm]
-& \leq  C\left(v_{n+1} + \sum_{k=1}^n (v_k - v_{k+1})\right) \\[4mm]
-& =     Cv_{1}
-\end{aligned}$$
-
----
-
 ## Abel's theorem
 
 **Theorem:**
@@ -296,35 +283,7 @@ $$\begin{aligned}
 1. PS converges at $x=R \;\;\Rightarrow\;\;$ PS conv.~uniformly on $[0,R]$
 2. PS converges at $x=-R \;\;\Rightarrow\;\;$ PS conv.~uniformly on $[-R,0]$
 
----
-
-## Abel's theorem
-
-**Proof (1):** for all $\epsilon>0$ there exists $N\in\mathbb{N}$ s.t.
-$$
-n > m \geq N \quad\Rightarrow\quad
-\bigg|\sum_{k=m+1}^n a_k R^k\bigg| < \epsilon
-$$
-
-Take any $x\in[0,R]$ and set
-$$
-v_k = \left(\frac{x}{R}\right)^k, \qquad
-u_k
-=
-\begin{cases}
-a_k R^k & \text{if } k \geq m+1, \\
-0       & \text{otherwise}
-\end{cases}
-$$
-
-From Abel's lemma we get the Cauchy criterion:
-$$
-\bigg|\sum_{k=m+1}^n a_k x^k \bigg|
-=
-\bigg|\sum_{k=1}^n u_k v_k\bigg|
-<
-\epsilon \cdot \frac{x}{R} \leq \epsilon \qquad \forall\, x\in[0,R]
-$$
+_Without proof_
 
 ---
 

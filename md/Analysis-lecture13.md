@@ -246,36 +246,6 @@ What if convergence is **conditional** at $x=R$ or $x=-R$?
 
 ---
 
-## Summation by parts
-
-**Lemma:** if $s_n = u_1 + \dots + u_n$, then
-$$
-\sum_{k=1}^n u_k v_k = s_n v_{n+1} + \sum_{k=1}^n s_k(v_k - v_{k+1})
-$$
-
-**Proof:** set $s_0 = 0$, then
-$$\begin{aligned}
-u_k v_k
-& =  (s_k-s_{k-1})v_k \\[4mm]
-& =  s_k (v_k-v_{k+1}) + \underbrace{s_k v_{k+1} - s_{k-1}v_k}_{\text{telescoping terms!}} \qquad \forall\, k=1,\dots,n
-\end{aligned}$$
-
----
-
-## Abel's lemma
-
-**Lemma:** assume that $(u_n)$ and $(v_n)$ satisfy
-
-- $|u_1 + \dots + u_n| \leq C \quad \forall\,n\in\mathbb{N}$
-- $0 \leq v_{n+1} \leq v_n \quad \forall\,n\in\mathbb{N}$
-
-Then
-$$
-\bigg|\sum_{k=1}^n u_k v_k \bigg| \leq C v_{1} \qquad\forall\,n\in\mathbb{N}
-$$
-
----
-
 ## Abel's theorem
 
 **Theorem:**

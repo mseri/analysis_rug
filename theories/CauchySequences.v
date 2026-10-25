@@ -1,13 +1,13 @@
 (** * RUG.Analysis.CauchySequences — Cauchy sequences and completeness of ℝ.
 
-  #<a href="../../index.html##lecture05">Lecture 5</a>#, first part.
+  #<a href="../../index.html##lecture04">Lecture 4</a>#, first part.
 
   Formalizes Abbott §2.6 (Cauchy criterion for sequences): a real sequence
   converges iff it is Cauchy. The forward direction is elementary; the converse
   is completeness of ℝ, proved via Bolzano–Weierstrass.
 
   Cauchy sequences ([is_cauchy] / [_Cauchy_]) and [cauchy_is_bounded] are
-  developed in [Analysis.Subsequences] (lecture 4) and reused here. These results
+  developed in [Analysis.Subsequences] (lecture 3) and reused here. These results
   are in turn used by [Analysis.Series] for the Cauchy criterion of series. *)
 
 From Stdlib Require Import Reals.Reals.

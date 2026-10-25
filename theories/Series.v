@@ -1,6 +1,6 @@
 (** * RUG.Analysis.Series — Convergence of infinite series.
 
-  #<a href="../../index.html##lecture05">Lecture 5</a>#.
+  #<a href="../../index.html##lecture03">Lecture 3</a># and #<a href="../../index.html##lecture04">Lecture 4</a>#.
 
   Formalizes Abbott §2.6 (Cauchy criterion) and §2.7 (series, comparison test,
   absolute convergence, alternating series test, geometric series).
@@ -672,7 +672,7 @@ Proof.
   Contradiction.
 Qed.
 
-(** ** Two classical series from Lecture 4 *)
+(** ** Two classical series from Lecture 3 *)
 
 (** _The series [∑ 1/k²] converges_.
 

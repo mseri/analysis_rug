@@ -9,28 +9,17 @@ Topics:
 - Abbott §6.4: Series of functions
 - Abbott §6.5: Power series and radius of convergence
 
+Formalization: [`FunctionSequences.v`](docs/rocq/RUG.Analysis.FunctionSequences.html), [`PowerSeries.v`](docs/rocq/RUG.Analysis.PowerSeries.html)
 
 ---
 
-Topics:
-- Abbott §6.3: Uniform convergence and differentiation
-- Abbott §6.4: Series of functions
 
-Formalization: [`FunctionSequences.v`](docs/rocq/RUG.Analysis.FunctionSequences.html), [`Series.v`](docs/rocq/RUG.Analysis.Series.html)
----
 
-## Cauchy criterion
+## Uniform convergence, continuity and differentiability
 
-**Theorem:** the following statements are equivalent:
+**Last lecture**: uniform convergence preserves continuity.
 
-1. $f_n$ converges uniformly on $A$
-2. for all $\epsilon>0$ there exists $N_\epsilon\in\mathbb{N}$ s.t.
-$$
-n, m \geq N_\epsilon
-\quad\Rightarrow\quad
-|f_n(x)-f_m(x)| < \epsilon
-\qquad\forall\,x\in A
-$$
+**Question**: Does it also preserve differentiability?
 ---
 
 ## A counter example
@@ -240,6 +229,33 @@ $$
 *Term-wise Differentiability Theorem*
 ---
 
+## Preservation of differentiability
+
+**Example:** $f(x)=\displaystyle\sum_{n=0}^\infty \frac{\sin(2^n x)}{3^n}$ is
+differentiable on every $[-c,c]$
+
+- $f_n(x) = \sin(2^n x) / 3^n$ is differentiable for all $n \in \mathbb{N}$
+
+- $|f_n'(x)| \leq (\tfrac{2}{3})^n \quad\forall\,x\in[-c,c]$
+
+  Weierstrass $\;\Rightarrow\; \sum_{n=1}^\infty f_n'(x)$ converges uniformly on $[-c,c]$
+
+- $\sum_{n=1}^\infty f_n(x)$ converges at $x=0$
+
+Apply "Term-wise Differentiability Theorem" *(needs compact intervals!)*
+---
+
+## From function series to power series
+
+A **power series** is a series of functions of the special form
+
+$$\sum_{n=0}^\infty a_n(x-c)^n.$$
+
+The Weierstrass test will let us control its convergence on intervals strictly inside its radius of convergence.
+
+**Question:** why can the behavior at the two endpoints be different?
+---
+
 # Pointwise convergence
 
 ## Power series
@@ -315,6 +331,19 @@ Methods for **computing** $R$ from the $a_n$'s
 **Ratio test:** if $L = \lim \left|\displaystyle\frac{a_{n+1}}{a_n}\right|$ exists, then $R = 1/L$
 
 *[interpret $L = 0$ as $R = \infty$]*
+---
+
+## Root test
+
+**Proof:** $\lim \sqrt[n]{|a_n x^n|} = L|x| \qquad\forall\,x\in\mathbb{R}$ fixed
+
+For all $\epsilon>0$ there exists $N\in\mathbb{N}$ s.t.
+$$\begin{aligned}
+n \geq N
+& \Rightarrow  \left|\sqrt[n]{|a_nx^n|} - L|x|\right| < \epsilon \\[5mm]
+& \Rightarrow  L|x|-\epsilon < \sqrt[n]{|a_nx^n|} < L|x| + \epsilon \\[7mm]
+& \Rightarrow  (L|x|-\epsilon)^n < |a_n x^n| < (L|x|+\epsilon)^n
+\end{aligned}$$
 ---
 
 ## Root test

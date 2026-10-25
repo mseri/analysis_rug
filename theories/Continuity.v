@@ -1,6 +1,6 @@
 (** * RUG.Analysis.Continuity — Continuous functions and their consequences.
 
-  #<a href="../../index.html##lecture09">Lecture 9</a>#.
+  #<a href="../../index.html##lecture07">Lecture 7</a># and #<a href="../../index.html##lecture08">Lecture 8</a>#.
 
   Formalizes Abbott §4.3–4.5: continuity at a point, continuity on sets,
   the extreme value theorem, the intermediate value theorem, and uniform

@@ -8,6 +8,7 @@ Topics:
 - Abbott §6.5: Uniform convergence and differentiation of power series
 - Abbott §6.6: Taylor series and Lagrange remainder
 
+Formalization: [`PowerSeries.v`](docs/rocq/RUG.Analysis.PowerSeries.html), [`Taylor.v`](docs/rocq/RUG.Analysis.Taylor.html)
 
 ---
 
@@ -172,29 +173,7 @@ $$
 $$
 ---
 
-Topics:
-- Abbott §6.6: Taylor series
-
-Formalization: [`Taylor.v`](docs/rocq/RUG.Analysis.Taylor.html)
----
-
-# Taylor series
-
-## Taylor series
-
-**Recap:**
-$$
-\sum_{n=0}^\infty a_n x^n \to f(x) \text{ on } (-R,R)
-\quad\Rightarrow\quad
-f : (-R,R) \to \mathbb{R} \text{ is infinitely often differentiable}
-$$
-
-**Converse question:**
-
-Can we write any inf. often differentiable function as a power series?
----
-
-## Taylor series
+## From power series to Taylor series
 
 | | | | | |
 |---|---|---|---|---|
@@ -338,6 +317,13 @@ $$
 The Taylor series of $f$ converges uniformly to $f$ on $[-a,a]$!
 ---
 
+## Taylor series for $f(x) = e^x$
+
+![Animated Taylor approximations of the exponential](../fig/lec15-taylor-exp-animated.svg)
+
+$f(x) = e^x$, $s_n(x) = \sum_{k=0}^n \dfrac{x^k}{k!}$, $n=1,2,3,4,5$
+---
+
 ## Taylor series for $f(x) = \sin(x)$
 
 | $n$ | $f^{(n)}(x)$ | $a_n = f^{(n)}(0) / n!$ |
@@ -375,6 +361,20 @@ $$
 $$
 ---
 
+## Taylor series for $f(x) = \sin(x)$
+
+![Animated Taylor approximations of sine](../fig/lec15-taylor-sin-animated.svg)
+
+$f(x) = \sin(x)$, $s_{2m+1}(x) = \sum_{k=0}^m \dfrac{(-1)^k x^{2k+1}}{(2k+1)!}$, $m=0,1,2,3$
+---
+
+## Taylor series for $f(x) = \cos(x)$
+
+![Animated Taylor approximations of cosine](../fig/lec15-taylor-cos-animated.svg)
+
+$f(x) = \cos(x)$, with successive Taylor approximations around $x=0$
+---
+
 ## Taylor series for $f(x) = \ln(1+x)$
 
 $$
@@ -392,6 +392,13 @@ $$
 
 1. the Taylor series converges uniformly to $f$ on $[0,1]$
 2. $\ln(2) = 1 - \tfrac{1}{2} + \tfrac{1}{3} - \tfrac{1}{4} + \cdots$
+---
+
+## Taylor series for $f(x) = \ln(1+x)$
+
+![Animated Taylor approximations of the logarithm](../fig/lec15-taylor-log-animated.svg)
+
+$f(x) = \ln(1+x)$, $s_n(x) = \sum_{k=1}^n \dfrac{(-1)^{k+1}x^k}{k}$, $n=1,2,3,4,5$
 ---
 
 ## Taylor series for $f(x)=\arctan(x)$
@@ -420,3 +427,19 @@ f^{(n)}(0)=0 \quad\forall\,n\in\mathbb{N}
 $$
 
 The Taylor series of $f$ does **NOT** converge to $f$!
+---
+
+# Applications
+
+## Approximating square roots
+
+2nd order approximation of $\sqrt{5} = 2.236...$
+
+$$\begin{aligned}
+\sqrt{x} & = 1 + \tfrac{1}{2}(x-1) - \tfrac{1}{8}(x-1)^2 + E_3(x) \\[2mm]
+\sqrt{5} & \approx 1 + \tfrac{4}{2} - \tfrac{16}{8} \;\; = \;\; 1 \\[6mm]
+\sqrt{x} & = 2 + \tfrac{1}{4}(x-4) - \tfrac{1}{64}(x-4)^2 + \widetilde{E}_3(x) \\[2mm]
+\sqrt{5} & \approx 2 + \tfrac{1}{4} - \tfrac{1}{64} \;\; = \;\; 2.234375
+\end{aligned}$$
+
+Truncated Taylor series around $x=4$ much more accurate!

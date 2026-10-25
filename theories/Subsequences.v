@@ -1,6 +1,6 @@
 (** * RUG.Analysis.Subsequences — Monotone convergence and Bolzano-Weierstrass.
 
-  #<a href="../../index.html##lecture04">Lecture 4</a>#.
+  #<a href="../../index.html##lecture03">Lecture 3</a>#.
 
   Formalizes Abbott §2.4–2.5: the monotone convergence theorem,
   subsequences, the Bolzano-Weierstrass theorem, and Cauchy sequences. *)

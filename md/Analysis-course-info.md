@@ -35,7 +35,7 @@ All times are local Groningen time.
 | Fri 22 January 2027 | 09:00–11:00 | Homework 4 deadline; peer review and formalization | 5161.0105 |
 | Wed 27 January 2027 | 11:45–13:45 | Final exam | 5263.0102 (Exam Hall 1) |
 
-**Resit:** No resit is listed in the linked rooster feed. Its date, time and room will be added when available.
+**Resit:** No resit is currently listed in the linked rooster feed. Its date, time and room will be added when available.
 
 ## Peer-review homework and Waterproof proof-assistant labs
 
@@ -164,72 +164,51 @@ I will do my best and keep an oversight on the behaviour of the class during the
 
 You may not be able to solve all problems during the tutorials. In that case you will have to finish problems at home. (Remember that you should spend at least 6 hours per week on self-study.) It helps if you prepare the tutorials by at least reading the problems in advance and by reviewing the relevant theory.
 
-| Activity | # | Sections & exercises from Abbott (2nd edition) |
-|---|---|---|
-| **Week 46: 10–14 November 2025** | | |
-| Lecture | 1 | §1.2, 1.3, 1.4 |
-| Tutorial | 1 | §1.2 ex. 2, 5, 7, 9 |
-| | | §1.3 ex. 1, 6, 8 |
-| Lecture | 2 | §1.5, 1.6 |
-| Tutorial | 2 | §1.4 ex. 1, 3, 4 |
-| | | §1.5 ex. 3(b,c), 5, 9 |
-| Lecture | 3 | §2.2, 2.3 |
-| **Week 47: 17–20 November 2025** | | |
-| Lecture | 4 | §2.4, 2.5 |
-| Tutorial | 3 | §2.2 ex. 2, 3, 4 |
-| | | §2.3 ex. 3, 4, 7, 10 |
-| Lecture | 5 | §2.6, 2.7 |
-| Tutorial | 4 | §2.4 ex. 1, 5, 7 |
-| | | §2.5 ex. 1, 2 |
-| | | **Peer-Review of HW1: 20 November 2025** |
-| **Week 48: 24–27 November 2025** | | |
-| Lecture | 6 | §3.2 |
-| Tutorial | 5 | §2.6 ex. 2, 4 |
-| | | §2.7 ex. 2, 4, 8, 9 |
-| Lecture | 7 | §3.3 |
-| Tutorial | 6 | §3.2 ex. 1, 2, 4, 6, 8 |
-| **Week 49: 1–4 December 2025** | | |
-| Lecture | 8 | §4.2, 4.3 |
-| Tutorial | 7 | §3.3 ex. 2(a,b), 4, 5, 11(a,b) |
-| Lecture | 9 | §4.4, 4.5 |
-| Wed, Dec 3 | | **Remediation for PR of HW1 (17:00–18:00, room 5161.0293)** |
-| Tutorial | 8 | §4.2 ex. 2, 5(c,d), 8(a,b) |
-| | | §4.3 ex. 1, 6, 8, 9, 10 |
-| | | **Peer-Review of HW2: 4 December 2025** |
-| **Week 50: 8–12 December 2025** | | |
-| Lecture | 10 | §5.2, 5.3, 5.4 |
-| Tutorial | 9 | §4.4 ex. 1, 2(b,c), 4, 9 |
-| | | §4.5 ex. 2, 7 |
-| Lecture | 11 | §6.2 |
-| Tutorial | 10 | §5.2 ex. 2, 4, 5 |
-| | | §5.3 ex. 2, 3, 7 |
-| | | **Midterm: Fri 12 December 2025** |
-| **Christmas break** | | |
-| **Week 2: 5–8 January 2026** | | |
-| Lecture | 12 | §6.3, 6.4 |
-| Tutorial | 11 | §6.2 ex. 1, 2, 3 |
-| Lecture | 13 | §6.5 |
-| ~~Wed, Jan 7~~ | | ~~Remediation for PR of HW2 (17:00–18:00, room 5161.0293)~~ |
-| Tutorial | 12 | §6.3 ex. 1, 3, 5(a,b) |
-| | | §6.4 ex. 3, 5, 7, 10 |
-| | | ~~Peer-Review of HW3: 8 January 2026~~ |
-| **Week 3: 12–15 January 2026** | | |
-| Lecture | 14 | §6.6 |
-| Tutorial | 13 | §6.5 ex. 1, 2, 4, 6 |
-| | | **Peer-Review of HW3: 13 January 2026** |
-| Lecture | 15 | §7.2, 7.3 |
-| Wed, Jan 14 | | **Remediation for PR of HW2 (17:00–18:00, room 5161.0041b)** |
-| Tutorial | 14 | §6.6 ex. 1, 2, 4, 7 |
-| | | **Peer-Review of HW4: 15 January 2026** |
-| **Week 4: 19–22 January 2026** | | |
-| Lecture | 16 | §7.4, 7.5 |
-| Tutorial | 15 | §7.2 ex. 2, 5 |
-| | | §7.3 ex. 1, 3, 6 |
-| Lecture | 17 | **Remediation for PR of HW3 and HW4** |
-| Tutorial | 16 | §7.4 ex. 3, 6, 8 |
-| | | §7.5 ex. 1, 2, 8 |
-| **Week 5: 26–29 January 2026** | | |
-| | | **Final exam: Wed 28 January 2026** |
+## Lecture schedule
+
+Monday lectures run **09:00–11:00 in 5111.0080**; Wednesday lectures run **11:00–13:00 in 5161.0253**. The 14 lectures below leave two scheduled slots for revision and problem solving.
+
+| Date | Teaching sequence | Lecture topic | Abbott reading |
+|---|---|---|---|
+| Mon 9 November 2026 | 1 | Completeness and the real numbers | §§1.2–1.4 |
+| Wed 11 November 2026 | 2 | Sequences and limits | §§2.2–2.3 |
+| Mon 16 November 2026 | 3 | Subsequences and Bolzano–Weierstrass | §§2.4–2.5 |
+| Wed 18 November 2026 | 4 | Cauchy sequences and series | §§2.6–2.7 |
+| Mon 23 November 2026 | 5 | Open and closed sets | §3.2 |
+| Wed 25 November 2026 | 6 | Compactness, including the open-cover proof | §3.3 |
+| Mon 30 November 2026 | 7 | Limits and continuity | §§4.2–4.3 |
+| Wed 2 December 2026 | 8 | Continuous functions on compact sets | §§4.4–4.5 |
+| Mon 7 December 2026 | 9 | Differentiation and mean value theorems | §§5.2–5.4 |
+| Wed 9 December 2026 | 10 | Pointwise/uniform convergence and continuity | §§6.2–6.3 |
+| Mon 4 January 2027 | 11 | Differentiation, function series, power-series introduction | §§6.3–6.5 |
+| Wed 6 January 2027 | 12 | Power series, Taylor series and remainder | §§6.5–6.6 |
+| Mon 11 January 2027 | 13 | Riemann integral | §§7.2–7.3 |
+| Wed 13 January 2027 | 14 | Integral properties and fundamental theorem | §§7.4–7.5 |
+| Mon 18 January 2027 | — | Revision and problem solving | — |
+| Wed 20 January 2027 | — | Revision and exam preparation | — |
+
+## Revised tutorial sequence — with explicit self-study prerequisites
+
+The exercises below are from **Abbott, 2nd edition**. Some self-study prerequisites are specified in the table: complete them before attempting the indicated exercises.
+
+| Date | Tutorial | In-class focus | Abbott (2nd ed.) exercises and preparation |
+|---|---|---|---|
+| Tue 10 November 2026 | 1 | Preliminaries and completeness | §1.2 ex. 2, 5, 7, 9; §1.3 ex. 1, 6, 8 |
+| Thu 12 November 2026 | 2 | Consequences of completeness; cardinality | §1.4 ex. 1, 3, 4 |
+| Tue 17 November 2026 | 3 | Sequences and limits | §2.2 ex. 2, 3, 4; §2.3 ex. 3, 4, 7, 10 |
+| Thu 19 November 2026 | 4 | Subsequences and Bolzano–Weierstrass | §2.4 ex. 1, 5, 7; §2.5 ex. 1, 2 |
+| Tue 24 November 2026 | 5 | Cauchy sequences and series | §2.6 ex. 2, 4; §2.7 ex. 2, 4, 8, 9 |
+| Thu 26 November 2026 | 6 | Open and closed sets | §3.2 ex. 1, 2, 4, 6, 8 |
+| Tue 1 December 2026 | 7 | Compactness | §3.3 ex. 2(a,b), 4, 5, 11(a,b) |
+| Thu 3 December 2026 | 8 | Limits and continuity | §4.2 ex. 2, 5(c,d), 8(a,b); §4.3 ex. 1, 6, 8, 9, 10 |
+| Tue 8 December 2026 | 9 | Continuous functions on compact sets | §4.4 ex. 1, 2(b,c), 4, 9; §4.5 ex. 2, 7 |
+| Thu 10 December 2026 | 10 | Differentiation and mean value theorems | §5.2 ex. 2, 4, 5; §5.3 ex. 2, 3, 7 |
+| Tue 5 January 2027 | 11 | Pointwise and uniform convergence | §6.2 ex. 1, 2, 3. Revisit the uniform Cauchy criterion after self-study of Abbott §6.2 |
+| Thu 7 January 2027 | 12 | Uniform convergence of derivatives; series of functions | §6.3 ex. 1, 3, 5(a,b); §6.4 ex. 3, 5. **Self-study:** read Abbott §§6.3-6.4 for proofs and additional counterexamples  before attempting §6.4 ex. 3, 5 |
+| Tue 12 January 2027 | 13 | Radius of convergence and endpoint behavior | §6.4 ex. 7, 10; §6.5 ex. 1, 2, 4, 6. **Self-study:** read the detailed root-test/radius proof in Abbott §6.5 before attempting §6.5 ex. 1, 2, 4, 6 |
+| Thu 14 January 2027 | 14 | Taylor polynomials and remainder | §6.6 ex. 1, 2, 4, 7. **Self-study:** read the additional approximation applications in Abbott §6.6 and review the lecture's Lagrange remainder proof before attempting §6.6 ex. 4, 7 |
+| Tue 19 January 2027 | 15 | Riemann integration | §7.2 ex. 2, 5; §7.3 ex. 1, 3, 6 |
+| Thu 21 January 2027 | 16 | Properties of the integral and FTC | §7.4 ex. 3, 6, 8; §7.5 ex. 1, 2, 8 |
 
 ---
 

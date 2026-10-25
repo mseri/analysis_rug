@@ -1,6 +1,6 @@
 (** * RUG.Analysis.Compactness — Compact subsets of ℝ.
 
-  #<a href="../../index.html##lecture07">Lecture 7</a>#.
+  #<a href="../../index.html##lecture06">Lecture 6</a># and #<a href="../../index.html##lecture08">Lecture 8</a>#.
 
   Formalizes Abbott §3.3: the Heine-Borel theorem (compact ↔ closed and bounded),
   properties of compact sets, and the nested compact sets property. *)

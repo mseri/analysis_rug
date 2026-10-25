@@ -1,6 +1,6 @@
 (** * RUG.Analysis.Taylor — Taylor's theorem and Taylor series.
 
-  #<a href="../../index.html##lecture14">Lecture 14</a>#.
+  #<a href="../../index.html##lecture12">Lecture 12</a>#.
 
   Formalizes Abbott §6.6 and §8.6: Taylor polynomials, the Lagrange
   remainder formula, and Taylor series for exp, sin, cos. *)

@@ -6,13 +6,6 @@ date: "Revised lecture 10 — draft (date to be set)"
 
 Topics:
 - Abbott §6.2: Pointwise and uniform convergence
-- Abbott §6.3: Uniform limits and continuity
-
-
----
-
-Topics:
-- Abbott §6.2: Pointwise and uniform convergence
 
 Formalization: [`FunctionSequences.v`](docs/rocq/RUG.Analysis.FunctionSequences.html)
 ---
@@ -270,6 +263,20 @@ x \neq  0 & \Rightarrow f_n(x) = \frac{x^2}{1+nx^2} = \frac{1}{\displaystyle\fra
 \frac{1}{n} \\[5mm]
 & \Rightarrow \sup_{x\in\mathbb{R}} |f_n(x)| \leq \frac{1}{n} \to 0
 \end{aligned}$$
+---
+
+## Cauchy criterion
+
+**Theorem:** the following statements are equivalent:
+
+1. $f_n$ converges uniformly on $A$
+2. for all $\epsilon>0$ there exists $N_\epsilon\in\mathbb{N}$ s.t.
+$$
+n, m \geq N_\epsilon
+\quad\Rightarrow\quad
+|f_n(x)-f_m(x)| < \epsilon
+\qquad\forall\,x\in A
+$$
 ---
 
 ## Preservation of continuity

@@ -1,8 +1,8 @@
 (** * RUG.Analysis.SequenceExamples — Examples of sequence limits.
 
-  #<a href="../../index.html##lecture03">Lecture 3</a>#.
+  #<a href="../../index.html##lecture02">Lecture 2</a>#.
 
-  Contains examples from Lecture 3: specific limit computations and standard limits.
+  Contains examples from Lecture 2: specific limit computations and standard limits.
   Formalizes examples from Abbott §2.2–2.3.
 
   Note: The rational-limit example and the standard limits 1/n, 1/n^2 and c^n
@@ -29,7 +29,7 @@ Set Default Goal Selector "!".
 Set Bullet Behavior "Waterproof Relaxed Subproofs".
 
 
-(** ** Basic limit examples from lecture 3 *)
+(** ** Basic limit examples from lecture 2 *)
 
 
 (** ** Example: limit of (6n+7)/(3n+1)
@@ -102,7 +102,7 @@ Proof.
 Qed.
 
 
-(** ** Standard limits from lecture 3 *)
+(** ** Standard limits from lecture 2 *)
 
 
 (** ** Standard limit: 1/n → 0 

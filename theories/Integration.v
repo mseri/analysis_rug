@@ -1,6 +1,6 @@
 (** * RUG.Analysis.Integration — The Riemann integral.
 
-  #<a href="../../index.html##lecture15">Lecture 15</a>#.
+  #<a href="../../index.html##lecture13">Lecture 13</a># and #<a href="../../index.html##lecture14">Lecture 14</a>#.
 
   Formalizes Abbott §7.2–7.4: partitions and Darboux (upper/lower) sums, the
   refinement lemmas, the upper and lower integrals, the Riemann/Darboux
@@ -247,7 +247,7 @@ Proof.
 
 (** ** The integral test *)
 
-(** _Integral test_ (Lecture 4): for a nonnegative decreasing [f] on [[1, ∞)],
+(** _Integral test_ (Lecture 3): for a nonnegative decreasing [f] on [[1, ∞)],
     the series [∑ f(k)] converges iff the sequence of integrals
     [∫_1^{n} f] is bounded.
 

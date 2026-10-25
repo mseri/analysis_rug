@@ -191,8 +191,8 @@ $$
 **Examples:**
 $$
 \begin{split}
-\sup\bigg\{\frac{1}{2}, \frac{2}{3}, \frac{3}{4}, \frac{4}{5},\dots\bigg\} & = 1 \qquad\text{but there is **no largest element**!} \\[3mm]
-\inf\bigg\{1, \frac{1}{2}, \frac{1}{3}, \frac{1}{4}, \dots\bigg\} & = 0 \qquad\text{but there is **no smallest element**!}
+\sup\bigg\{\frac{1}{2}, \frac{2}{3}, \frac{3}{4}, \frac{4}{5},\dots\bigg\} & = 1 \qquad\text{but there is \textbf{no largest element}!} \\[3mm]
+\inf\bigg\{1, \frac{1}{2}, \frac{1}{3}, \frac{1}{4}, \dots\bigg\} & = 0 \qquad\text{but there is \textbf{no smallest element}!}
 \end{split}
 $$
 
@@ -426,7 +426,7 @@ Hint: it is sufficient to show that $\displaystyle \left|\frac{1}{y}\right| = \f
 **Triangle inequality:**
 $$
 |x + y| \leq |x| + |y|
-\qquad\text{(**important!**)}
+\qquad\text{(\textbf{important!})}
 $$
 
 **Proof:**
@@ -443,7 +443,7 @@ x+y & \leq  |x| + y \;\;\leq\;\; |x| + |y| \\[5mm]
 **Reverse triangle inequality:**
 $$
 \big||x| - |y|\big| \leq |x - y|
-\qquad\text{(**important!**)}
+\qquad\text{(\textbf{important!})}
 $$
 
 **Proof:**

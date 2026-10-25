@@ -1,199 +1,109 @@
 ---
 title: "Analysis"
 author: "Marcello Seri, m.seri@rug.nl, slides by Alef Sterk"
-date: "Lecture 13, Wednesday 8 January 2025"
+date: "Lecture 13, Wednesday 15 January 2025"
 ---
 
 Topics:
+- Abbott §6.6: Taylor series
 
-- Abbott §6.5: Power series
-
-Formalization: [`PowerSeries.v`](docs/rocq/RUG.Analysis.PowerSeries.html)
-
----
-
-# Pointwise convergence
-
-## Power series
-
-General form of a PS:
-
-$$
-\sum_{n=0}^\infty a_n x^n = a_0 + a_1 x + a_2 x^2 + a_3 x^3 + \cdots
-$$
-
-Convergence?
-
-Continuity / differentiability of the limit?
+Formalization: [`Taylor.v`](docs/rocq/RUG.Analysis.Taylor.html)
 
 ---
 
-## Pointwise convergence
+# Taylor series
 
-**Theorem:**
+## Taylor series
+
+**Recap:**
 $$
-\sum_{n=0}^\infty a_n x^n \text{ converges at } c\neq 0
-\;\;\Rightarrow\;\;
-\sum_{n=0}^\infty \big|a_n x^n\big| \text{ converges for } |x| < |c|
-$$
-
-**Proof:**
-$$\begin{aligned}
-\sum_{n=0}^\infty a_n c^n \;\text{ converges}
-& \Rightarrow  \lim a_n c^n = 0 \\[2mm]
-& \Rightarrow  \big(a_n c^n\big) \text{ is bounded} \\[4mm]
-& \Rightarrow  \exists\,M>0 \quad\text{s.t.}\quad \big|a_n c^n\big| \leq M \quad\forall\,n\in\mathbb{N}
-\end{aligned}$$
-
----
-
-## Pointwise convergence
-
-**Proof (ctd):**
-$$
-\big|a_n x^n\big|
-=
-\left|a_n\left(c\cdot\frac{x}{c}\right)^n\right|
-=
-\big|a_n c^n\big| \cdot \left|\frac{x}{c}\right|^n
-\leq
-M\cdot \left|\frac{x}{c}\right|^n \qquad \forall\,n\in\mathbb{N}
-$$
-
-Note: $|x| < |c| \;\Rightarrow\; \left|\displaystyle\frac{x}{c}\right|<1$
-
-Apply comparison test:
-$$
-\sum_{n=0}^\infty M\left|\frac{x}{c}\right|^n \text{ converges}
+\sum_{n=0}^\infty a_n x^n \to f(x) \text{ on } (-R,R)
 \quad\Rightarrow\quad
-\sum_{n=0}^\infty \big|a_n x^n\big| \text{ converges}
+f : (-R,R) \to \mathbb{R} \text{ is infinitely often differentiable}
 $$
 
----
+**Converse question:**
 
-## Radius of convergence
-
-**Corollary:** there exists $R \geq 0$ such that
-
-- $|x| < R \;\;\Rightarrow\;\;$ PS converges at $x$
-- $|x| > R \;\;\Rightarrow\;\;$ PS diverges at $x$
-
-$R$ is called the **radius of convergence**
+Can we write any inf. often differentiable function as a power series?
 
 ---
 
-## Radius of convergence
+## Taylor series
 
-Methods for **computing** $R$ from the $a_n$'s
+| | | | | |
+|---|---|---|---|---|
+| $f(x)$ | $=$ | $a_0 + a_1 x + a_2 x^2 + a_3 x^3 + \cdots$ | $\Rightarrow$ | $f(0) = a_0$ |
+| $f'(x)$ | $=$ | $a_1 + 2a_2 x + 3a_3 x^2 + \cdots$ | $\Rightarrow$ | $f'(0) = a_1$ |
+| $f''(x)$ | $=$ | $2a_2 + 6a_3 x + \cdots$ | $\Rightarrow$ | $f''(0) = 2a_2$ |
+| $f'''(x)$ | $=$ | $6a_3 + \cdots$ | $\Rightarrow$ | $f'''(0) = 6a_3$ |
 
-**Root test:** if $L = \lim \sqrt[n]{|a_n|}$ exists, then $R = 1/L$
-
-**Ratio test:** if $L = \lim \left|\displaystyle\frac{a_{n+1}}{a_n}\right|$ exists, then $R = 1/L$
-
-*[interpret $L = 0$ as $R = \infty$]*
-
----
-
-## Root test
-
-**Proof:** $\lim \sqrt[n]{|a_n x^n|} = L|x| \qquad\forall\,x\in\mathbb{R}$ fixed
-
-For all $\epsilon>0$ there exists $N\in\mathbb{N}$ s.t.
-$$\begin{aligned}
-n \geq N
-& \Rightarrow  \left|\sqrt[n]{|a_nx^n|} - L|x|\right| < \epsilon \\[5mm]
-& \Rightarrow  L|x|-\epsilon < \sqrt[n]{|a_nx^n|} < L|x| + \epsilon \\[7mm]
-& \Rightarrow  (L|x|-\epsilon)^n < |a_n x^n| < (L|x|+\epsilon)^n
-\end{aligned}$$
+Taylor's formula: $\displaystyle \quad a_n = \frac{f^{(n)}(0)}{n!}$
 
 ---
 
-## Root test
+## Taylor series
 
-**Proof (ctd):** if $|x| < 1/L$ then pick $\epsilon < 1 - L|x|$
+Assume $f$ is inf. often differentiable on interval around $x=0$
 
-Apply comparison test:
-$$\begin{aligned}
-L|x|+\epsilon < 1
-& \quad\Rightarrow\quad
-\sum_{n=0}^\infty (L|x|+\epsilon)^n \text{ converges} \\
-& \quad\Rightarrow\quad
-\sum_{n=0}^\infty |a_n x^n| \text{ converges} \\
-& \quad\Rightarrow\quad
-\sum_{n=0}^\infty a_n x^n \text{ converges}
-\end{aligned}$$
-
----
-
-## Root test
-
-**Proof (ctd):** if $|x| > 1/L$ then pick $\epsilon < L|x|-1$:
-
-$$\begin{aligned}
-L|x|-\epsilon > 1
-& \quad\Rightarrow\quad
-(L|x|-\epsilon)^n \text{ unbounded} \\[4mm]
-& \quad\Rightarrow\quad
-|a_n x^n| \text{ unbounded} \\[3mm]
-& \quad\Rightarrow\quad
-\sum_{n=0}^\infty a_n x^n \text{ diverges}
-\end{aligned}$$
-
----
-
-## Root test
-
-**Example:** $\displaystyle\sum_{n=0}^\infty \frac{x^n}{5^{n^2}}$
-
-Radius of convergence:
-$$\begin{aligned}
-a_n = \frac{1}{5^{n^2}}
-& \quad\Rightarrow\quad \sqrt[n]{|a_n|} = \frac{1}{5^n} \\[4mm]
-& \quad\Rightarrow\quad L = 0 \\[4mm]
-& \quad\Rightarrow\quad R = \infty
-\end{aligned}$$
-
----
-
-## Ratio test
-
-**Example:** $\displaystyle\sum_{n=1}^\infty \frac{x^n}{n^2}$
-
-Radius of convergence:
-$$\begin{aligned}
-a_n = \frac{1}{n^2}
-& \quad\Rightarrow\quad \frac{a_{n+1}}{a_n} = \frac{n^2}{(n+1)^2} \\[4mm]
-& \quad\Rightarrow\quad L = 1 \\[4mm]
-& \quad\Rightarrow\quad R = 1
-\end{aligned}$$
-
----
-
-## Beware of the boundary points!
-
-| Example | Radius | at $x=-R$ | at $x=R$ |
-|---|---|---|---|
-| $\displaystyle\sum_{n=1}^\infty x^n$ | $R=1$ | **divergent** | **divergent** |
-| $\displaystyle\sum_{n=1}^\infty \frac{1}{n}x^n$ | $R=1$ | convergent | **divergent** |
-| $\displaystyle\sum_{n=1}^\infty \frac{(-1)^n}{n}x^n$ | $R=1$ | **divergent** | convergent |
-| $\displaystyle\sum_{n=1}^\infty \frac{1}{n^2}x^n$ | $R=1$ | convergent | convergent |
-
----
-
-# Uniform convergence
-
-## Uniform convergence
-
-**Theorem:**
+**Definition:** the Taylor series of $f$ around $x=0$ is given by
 $$
-\sum_{n=0}^\infty |a_n c^n| \text{ convergent}
-\;\;\Rightarrow\;\;
-\sum_{n=0}^\infty a_n x^n \text{ uniformly conv.~on } [-|c|,|c|]
+\sum_{n=0}^\infty \frac{f^{(n)}(0)}{n!} x^n
 $$
 
-**Proof:** for $|x| \leq |c|$ we have
+**Question:** does the series converge to $f$?
+
+---
+
+# Lagrange remainder
+
+## Lagrange remainder
+
+**Definition:**
+$$\begin{aligned}
+s_n(x) & = \sum_{k=0}^n \frac{f^{(k)}(0)}{k!}x^k \hspace{28mm}\text{(partial sum)} \\[4mm]
+E_n(x) & = f(x) - s_n(x) \hspace{30mm}\text{(remainder)}
+\end{aligned}$$
+
+**Theorem:** for $n \in \mathbb{N}$ and $x > 0$ there exists $c \in (0,x)$ such that
 $$
-|a_n x^n| = |a_n|\cdot |x|^n \leq |a_n|\cdot |c|^n = |a_n c^n| =: M_n
+E_n(x) = \frac{f^{(n+1)}(c)}{(n+1)!} x^{n+1}
+$$
+
+**Note:** $c$ depends on both $n$ and $x$!
+
+*If $x<0$, then $c \in (x,0)$*
+
+---
+
+## Lagrange remainder
+
+**Lemma:** assume that
+
+- $x>0$ and $h(t)$ is $n+1$ times differentiable on $[0,x]$
+- $h(x)=0$ and $h^{(k)}(0) = 0$ for all $k = 0,\dots,n$
+
+Then $h^{(n+1)}(c) = 0$ for some $c \in (0,x)$
+
+**Proof:** repeated application of Rolle's theorem gives
+$$\begin{aligned}
+h(0) = h(x) & \Rightarrow h'(c_1) = 0 \text{ for some } c_1 \in (0,x) \\
+h'(0) = h'(c_1) & \Rightarrow h''(c_2) = 0 \text{ for some } c_2 \in (0,c_1) \\
+& \vdots \\
+h^{(n)}(0) = h^{(n)}(c_n) & \Rightarrow h^{(n+1)}(c_{n+1}) = 0 \text{ for some } c_{n+1} \in (0,c_n)
+\end{aligned}$$
+
+---
+
+## Lagrange remainder
+
+**Theorem:** for $n \in \mathbb{N}$ and $x > 0$ there exists $c \in (0,x)$ such that
+$$
+E_n(x) = \frac{f^{(n+1)}(c)}{(n+1)!} x^{n+1}
+$$
+
+**Proof:** fix $x>0$ and consider
+$$
+h(t) = f(t) - s_n(t) - \left(\frac{f(x) - s_n(x)}{x^{n+1}}\right)t^{n+1}
 $$
 
 Apply Weierstrass' test:
@@ -332,29 +242,286 @@ $$\begin{aligned}
 \end{aligned}$$
 
 Note that:
+$$
+h(x) = 0
+\quad\text{and}\quad
+h^{(k)}(0) = 0, \quad k = 0,\dots,n
+$$
 
-- $C = f(0) = 0$ so $f(x) = \log|1+x|$
-- Abel's Theorem $\;\Rightarrow\;$ PS in ($*$) converges uniformly on $[0,1]$
-- Hence, PS in ($*$) is continuous at $x=1$
+*If $x<0$, then $c \in (x,0)$*
 
 ---
 
-## Differentiation
+## Lagrange remainder
 
-**Example (ctd):**
+**Proof (ctd):** the lemma gives $c \in (0,x)$ such that
 $$
-\sum_{n=1}^\infty \frac{(-1)^{n+1}}{n}
+f^{(n+1)}(c) - \underbrace{s_n^{(n+1)}(c)}_{= \, 0} - (n+1)! \left(\frac{f(x) - s_n(x)}{x^{n+1}}\right) = 0
+$$
+
+Rearranging gives
+$$
+f(x) - s_n(x) = \frac{f^{(n+1)}(c)}{(n+1)!} x^{n+1}
+$$
+
+---
+
+## Taylor series around different points
+
+Assume $f$ is inf. often differentiable on interval around $a$
+
+**Definition:** the Taylor series of $f$ around $x=a$ is given by
+$$
+\sum_{n=0}^\infty \frac{f^{(n)}(a)}{n!} (x-a)^n
+$$
+
+**Lagrange remainder:** for $x>a$ there exists $c \in (a,x)$ such that
+$$
+E_n(x) = f(x) - s_n(x) = \frac{f^{(n+1)}(c)}{(n+1)!}(x-a)^{n+1}
+$$
+
+*If $x<a$, then $c \in (x,a)$*
+
+---
+
+# Examples
+
+## Taylor series for $f(x) = e^x$
+
+| $n$ | $f^{(n)}(x)$ | $a_n = f^{(n)}(0) / n!$ |
+|---|---|---|
+| $0$ | $e^x$ | $1$ |
+| $1$ | $e^x$ | $1$ |
+| $2$ | $e^x$ | $1/2!$ |
+| $3$ | $e^x$ | $1/3!$ |
+| $4$ | $e^x$ | $1/4!$ |
+| $\vdots$ | $\vdots$ | $\vdots$ |
+
+---
+
+## Taylor series for $f(x) = e^x$
+
+For $x \neq 0$ there exists $c \in (-|x|,|x|)$ such that
+$$
+e^x = \sum_{k=0}^n \frac{1}{k!}x^k + \frac{e^c}{(n+1)!}x^{n+1}
+$$
+
+For any $a>0$ we have
+$$
+\sup_{x \in [-a,a]} \bigg|e^x - \sum_{k=0}^n \frac{1}{k!}x^k\bigg|\leq e^a\cdot\frac{a^{n+1}}{(n+1)!} \to 0
+\quad\text{as}\quad n\to\infty
+$$
+
+The Taylor series of $f$ converges uniformly to $f$ on $[-a,a]$!
+
+---
+
+## Taylor series for $f(x) = e^x$
+
+![](../fig/lec15-taylor-exp1.svg)
+
+$f(x) = e^x$, $s_1(x) = 1+x$
+
+---
+
+## Taylor series for $f(x) = e^x$
+
+![](../fig/lec15-taylor-exp2.svg)
+
+$f(x) = e^x$, $s_2(x) = 1+x+\dfrac{x^2}{2!}$
+
+---
+
+## Taylor series for $f(x) = e^x$
+
+![](../fig/lec15-taylor-exp3.svg)
+
+$f(x) = e^x$, $s_3(x) = 1+x+\dfrac{x^2}{2!}+\dfrac{x^3}{3!}$
+
+---
+
+## Taylor series for $f(x) = e^x$
+
+![](../fig/lec15-taylor-exp4.svg)
+
+$f(x) = e^x$, $s_4(x) = 1+x+\dfrac{x^2}{2!}+\dfrac{x^3}{3!}+\dfrac{x^4}{4!}$
+
+---
+
+## Taylor series for $f(x) = \sin(x)$
+
+| $n$ | $f^{(n)}(x)$ | $a_n = f^{(n)}(0) / n!$ |
+|---|---|---|
+| $0$ | $\phantom{-}\sin(x)$ | $\phantom{-}0$ |
+| $1$ | $\phantom{-}\cos(x)$ | $\phantom{-}1$ |
+| $2$ | $-\sin(x)$ | $\phantom{-}0$ |
+| $3$ | $-\cos(x)$ | $-1/3!$ |
+| $4$ | $\phantom{-}\sin(x)$ | $\phantom{-}0$ |
+| $5$ | $\phantom{-}\cos(x)$ | $\phantom{-}1/5!$ |
+| $\vdots$ | $\phantom{--}\vdots$ | $\phantom{-}\vdots$ |
+
+---
+
+## Taylor series for $f(x) = \sin(x)$
+
+For $x \neq 0$ there exists $c \in (-|x|,|x|)$ such that
+$$
+|E_n(x)|
 =
-\lim_{x \to 1} \sum_{n=1}^\infty \frac{(-1)^{n+1}}{n}x^n
-=
-\lim_{x \to 1} f(x)
-=
-f(1)
-=
-\log 2
+\left|\frac{f^{(n+1)}(c)}{(n+1)!}x^{n+1}\right|
+\leq
+\frac{|x|^{n+1}}{(n+1)!}
+$$
+
+Remainder converges to 0 uniformly on any interval $[-a,a]$:
+$$
+\sup_{x\in[-a,a]} |E_n(x)| \leq  \frac{a^{n+1}}{(n+1)!} \to 0
+\quad\text{as}\quad
+n\to\infty
 $$
 
 Conclusion:
 $$
-\log 2 = 1 - \frac{1}{2} + \frac{1}{3} - \frac{1}{4} + \cdots
+\sin(x) = x - \frac{1}{3!}x^3 + \frac{1}{5!}x^5 - \frac{1}{7!}x^7 + \cdots \qquad\forall\,x\in\mathbb{R}
+$$
+
+---
+
+## Taylor series for $f(x) = \sin(x)$
+
+![](../fig/lec15-taylor-sin1.svg)
+
+$f(x) = \sin(x)$, $s_1(x) = x$
+
+---
+
+## Taylor series for $f(x) = \sin(x)$
+
+![](../fig/lec15-taylor-sin2.svg)
+
+$f(x) = \sin(x)$, $s_3(x) = x - \dfrac{x^3}{3!}$
+
+---
+
+## Taylor series for $f(x) = \sin(x)$
+
+![](../fig/lec15-taylor-sin3.svg)
+
+$f(x) = \sin(x)$, $s_5(x) = x - \dfrac{x^3}{3!} + \dfrac{x^5}{5!}$
+
+---
+
+## Taylor series for $f(x) = \sin(x)$
+
+![](../fig/lec15-taylor-sin4.svg)
+
+$f(x) = \sin(x)$, $s_7(x) = x - \dfrac{x^3}{3!} + \dfrac{x^5}{5!} - \dfrac{x^7}{7!}$
+
+---
+
+## Taylor series for $f(x) = \ln(1+x)$
+
+$$
+f(x) = \ln(1+x)
+\quad\Rightarrow\quad
+f^{(n)}(x) = \frac{(-1)^{n+1} (n-1)!}{(1+x)^n} \qquad \forall\, n \in \mathbb{N}
+$$
+
+For $x>0$ there exists $c \in (0,x)$ such that
+$$
+\ln(1+x) = \sum_{k=1}^n \frac{(-1)^{k+1}}{k}x^k + \frac{(-1)^n}{(n+1)(1+c)^{n+1}}\,x^{n+1}
+$$
+
+**Exercise:** prove that
+
+1. the Taylor series converges uniformly to $f$ on $[0,1]$
+2. $\ln(2) = 1 - \tfrac{1}{2} + \tfrac{1}{3} - \tfrac{1}{4} + \cdots$
+
+---
+
+## Taylor series for $f(x)=\arctan(x)$
+
+On $[-1,1]$ we have
+$$
+\arctan(x) = x - \frac{1}{3} x^3 + \frac{1}{5}x^5 - \frac{1}{7}x^7 + \cdots
+$$
+
+The convergence is uniform on $[-1,1]$
+
+For $x=1$ we get
+$$
+\frac{\pi}{4} = 1 - \frac{1}{3} + \frac{1}{5} - \frac{1}{7} + \cdots
+$$
+
+---
+
+## A counter example
+
+![](../fig/lec15-counterexample.svg)
+
+$$
+f(x) = \begin{cases} e^{-1/x^2} & \text{if } x \neq 0 \\ 0 & \text{if } x = 0 \end{cases}
+\qquad\Rightarrow\qquad
+f^{(n)}(0)=0 \quad\forall\,n\in\mathbb{N}
+$$
+
+The Taylor series of $f$ does **NOT** converge to $f$!
+
+---
+
+# Applications
+
+## Approximating square roots
+
+2nd order approximation of $\sqrt{5} = 2.236...$
+
+$$\begin{aligned}
+\sqrt{x} & = 1 + \tfrac{1}{2}(x-1) - \tfrac{1}{8}(x-1)^2 + E_3(x) \\[2mm]
+\sqrt{5} & \approx 1 + \tfrac{4}{2} - \tfrac{16}{8} \;\; = \;\; 1 \\[6mm]
+\sqrt{x} & = 2 + \tfrac{1}{4}(x-4) - \tfrac{1}{64}(x-4)^2 + \widetilde{E}_3(x) \\[2mm]
+\sqrt{5} & \approx 2 + \tfrac{1}{4} - \tfrac{1}{64} \;\; = \;\; 2.234375
+\end{aligned}$$
+
+Truncated Taylor series around $x=4$ much more accurate!
+
+---
+
+## Approximating integrals
+
+According to Wolfram Alpha:
+
+$$
+\int_0^1 \frac{e^x-1}{x}\,dx = \text{Ei}(1) - \gamma \approx 1.3179
+$$
+
+---
+
+## Approximating integrals
+
+For $x > 0$ there exists $c \in (0,x)$ such that
+$$\begin{aligned}
+e^x & = \sum_{k=0}^n \frac{x^k}{k!} + \frac{e^{c}}{(n+1)!}x^{n+1} \\[5mm]
+\frac{e^x-1}{x} & = \sum_{k=1}^n \frac{x^{k-1}}{k!} + \frac{e^{c}}{(n+1)!}x^{n} \\[5mm]
+\int_0^1 \frac{e^x-1}{x}\,dx & = \sum_{k=1}^n \frac{1}{k!\,k} + \int_0^1 \frac{e^{c}}{(n+1)!}x^{n}\,dx
+\end{aligned}$$
+
+---
+
+## Approximating integrals
+
+Upper bound for remainder term:
+$$\begin{aligned}
+R_n
+& = \int_0^1 \frac{e^{c}}{(n+1)!}x^{n}\,dx \\
+& < \int_0^1 \frac{3}{(n+1)!}x^{n}\,dx \\
+& = \frac{3}{(n+1)!\,(n+1)}
+\end{aligned}$$
+
+Approximation with $n=5$:
+$$
+\int_0^1 \frac{e^x-1}{x}\,dx
+\approx
+\sum_{k=1}^5\frac{1}{k!\,k} =
+1.31763...
+\qquad (R_5 < 0.001)
 $$

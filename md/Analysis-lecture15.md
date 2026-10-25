@@ -1,341 +1,395 @@
 ---
 title: "Analysis"
 author: "Marcello Seri, m.seri@rug.nl, slides by Alef Sterk"
-date: "Lecture 15, Wednesday 15 January 2025"
+date: "Lecture 15, Friday 17 January 2025"
 ---
 
 Topics:
-- Abbott §7.2: the Riemann integral
-- Abbott §7.3: integrals of discontinuous functions
+- Abbott §7.4: properties of integrals
+- Abbott §7.5: the fundamental theorem of calculus
 
-Formalization: [`Integration.v`](docs/rocq/RUG.Analysis.Integration.html)
-
----
-
-# Upper and lower sums
-
-## Partitions
-
-**Definition:** a **partition** of $[a,b]$ is a set of the form
-$$
-P = \{a = x_0 < x_1 < x_2 < \dots < x_n = b\}
-$$
-
-**Examples:**
-
-$P_1 = \{0, \tfrac{1}{4}, \tfrac{1}{2}, 1\}$ is a partition of $[0,1]$
-
-$P_2 = \{0, 1, 2\}$ is NOT a partition of $[0,1]$
-
-$P_3 = \{0, \tfrac{1}{2}\}$ is NOT a partition of $[0,1]$
+Formalization: [`Integration.v`](docs/rocq/RUG.Analysis.Integration.html), [`FTC.v`](docs/rocq/RUG.Analysis.FTC.html)
 
 ---
 
-## Lower sums
+## A useful lemma
 
-Let $f : [a,b]\to\mathbb{R}$ be bounded and $P$ be a partition of $[a,b]$
-
-**Definition:** **lower sum** of $f$ w.r.t. $P$
-$$\begin{aligned}
-m_k & = \inf\{f(x) \,:\, x \in [x_{k-1},x_k]\} \\[5mm]
-L(f,P) & = \sum_{k=1}^n m_k (x_k-x_{k-1})
-\end{aligned}$$
-
-"Approximate area below the graph of $f$"
-
----
-
-## Upper sums
-
-Let $f : [a,b]\to\mathbb{R}$ be bounded and $P$ be a partition of $[a,b]$
-
-**Definition:** **upper sum** of $f$ w.r.t. $P$
-$$\begin{aligned}
-M_k & = \sup\{f(x) \,:\, x \in [x_{k-1},x_k]\} \\[5mm]
-U(f,P) & = \sum_{k=1}^n M_k (x_k-x_{k-1})
-\end{aligned}$$
-
-"Approximate area above the graph of $f$"
-
----
-
-## Approximate areas
-
-![](../fig/lec16-sums.png)
-
-*[Source: Stephen Abbott, *Understanding Analysis*, Springer, 2015]*
-
-$L(f,P) \leq U(f,P)$ for any partition $P$ of $[a,b]$
-
----
-
-## Refinements
-
-**Definition:** $Q$ is called a **refinement** of $P$ if $P \subseteq Q$
-
-*(Provided that $P$ and $Q$ are partitions of the same interval)*
-
-**Example:**
-
-$P = \{0, \tfrac{1}{2}, 1\}$ is a partition of $[0,1]$
-
-$Q_1 = \{0, \tfrac{1}{4}, \tfrac{1}{2}, \tfrac{9}{10}, 1\}$ refines $P$
-
-$Q_2 = \{0, \tfrac{1}{2}, 1, 2\}$ does NOT refine $P$
-
----
-
-## Refinements
-
-**Lemma:** if $P \subseteq Q$ then
+**Lemma:**
 $$
-L(f,P) \leq L(f,Q)
-\quad\text{and}\quad
-U(f,P) \geq U(f,Q)
-$$
-
-**Corollary:** if $P \subseteq Q$ then
-$$
-U(f,Q) - L(f,Q) \leq U(f,P) - L(f,P)
-$$
-
----
-
-## Refinements
-
-![](../fig/lec16-refine.png)
-
-*[Source: Stephen Abbott, *Understanding Analysis*, Springer, 2015]*
-
----
-
-## Refinements
-
-**Proof (lower sum):** refine $P$ by adding one point $z \in [x_{k-1}, x_k]$
-$$\begin{aligned}
-m_k   & = \inf\{f(x) \,:\, x \in [x_{k-1},x_k]\} \\[3mm]
-m_k'  & = \inf\{f(x) \,:\, x \in [z,x_k]\} \\[3mm]
-m_k'' & = \inf\{f(x) \,:\, x \in [x_{k-1},z]\} \\[6mm]
-m_k(x_k-x_{k-1}) & = m_k(x_k - z) + m_k (z - x_{k-1}) \\[3mm]
-& \leq m_k'(x_k-z) + m_k'' (z-x_{k-1})
-\end{aligned}$$
-
-Then proceed by induction
-
----
-
-## Refinements
-
-**Lemma:** for any two partitions $P_1$ and $P_2$ we have
-$$
-L(f, P_1) \leq U(f, P_2)
-$$
-
-**Proof:** let $Q = P_1 \cup P_2$ then $P_1, P_2 \subseteq Q$ so
-$$
-L(f,P_1) \leq L(f,Q) \leq U(f,Q) \leq U(f,P_2)
-$$
-
----
-
-# The Riemann integral
-
-## Best possible approximate area
-
-Assume $f : [a,b] \to \mathbb{R}$ is bounded
-
-Let $\mathcal{P}$ denote the collection of all partitions of $[a,b]$
-
-**Definition:**
-$$\begin{aligned}
-U(f) & = \inf\{ U(f,P) \,:\, P \in \mathcal{P}\} \\[5mm]
-L(f) & = \sup\{ L(f,P) \,:\, P \in \mathcal{P}\}
-\end{aligned}$$
-
----
-
-## Best possible approximate area
-
-**Lemma:** $L(f) \leq U(f)$
-
-**Proof:**
-$$\begin{aligned}
-L(f,P_1) & \leq U(f,P_2) \hspace{10mm} \text{for all } P_1, P_2 \in \mathcal{P} \\[3mm]
-L(f) & \leq U(f,P_2) \hspace{10mm} \text{for all } P_2 \in \mathcal{P} \text{ (take sup over $P_1$)}\\[3mm]
-L(f) & \leq U(f) \hspace{16mm}\text{(take inf over $P_2$)}
-\end{aligned}$$
-
----
-
-## The Riemann integral
-
-**Definition:** a bounded function $f : [a,b] \to \mathbb{R}$ is called **Riemann integrable** if $U(f) = L(f)$
-
-**Notation:**
-$$
-\int_a^b f = U(f) = L(f)
-\qquad\text{or}\qquad
-\int_a^b f(x)dx = U(f) = L(f)
-$$
-
----
-
-## Criterion for integrability
-
-**Theorem:** the following statements are equivalent
-
-1. $f$ is integrable
-2. for all $\epsilon>0$ there exists a partition $P_\epsilon$ such that
-   $$
-   U(f,P_\epsilon) - L(f,P_\epsilon) < \epsilon
-   $$
-
-**Proof ($2 \Rightarrow 1$):**
-$$
-\left.
-\begin{matrix}
-U(f) & \leq & U(f,P_\epsilon) \\[3mm]
-L(f) & \geq & L(f,P_\epsilon)
-\end{matrix}
-\right\}
+x \leq y + \epsilon \quad\forall\,\epsilon > 0
 \quad\Rightarrow\quad
-U(f)-L(f) \leq U(f,P_\epsilon) - L(f,P_\epsilon) < \epsilon
+x \leq y
 $$
 
-This holds for all $\epsilon>0$ so $U(f)=L(f)$
+**Proof:** assume $x > y$
+
+Taking $0 < \epsilon < x-y$ gives
+$$
+y + \epsilon < y + (x-y) = x
+$$
+Contradiction!
 
 ---
 
-## Criterion for integrability
+# Properties of integrals
 
-**Proof ($1 \Rightarrow 2$)**: let $\epsilon>0$ and choose $P_1$ and $P_2$ such that
+## The split property
+
+**Theorem:** let $f : [a,b] \to \mathbb{R}$ be bounded and $c \in (a,b)$, then
 $$
-L(f,P_1) > L(f) - \tfrac{1}{2}\epsilon
-\quad\text{and}\quad
-U(f,P_2) < U(f) + \tfrac{1}{2}\epsilon
+f \text{ integrable on } [a,b]
+\quad\Leftrightarrow\quad
+f \text{ integrable on } [a,c] \text{ and } [c,b]
 $$
 
-Let $P_\epsilon = P_1 \cup P_2$ then
+In that case
+$$
+\int_a^b f = \int_a^c f + \int_c^b f
+$$
+
+---
+
+## The split property
+
+**Proof ($\Rightarrow$):** let $\epsilon>0$ and pick a partition $P$ of $[a,b]$ s.t.
+$$
+U(f,P)-L(f,P) < \epsilon
+$$
+
+Let $P_c = P \cup \{c\}$ then
+$$
+U(f,P_c)-L(f,P_c) < \epsilon
+$$
+
+Then $Q = P_c \cap [a,c]$ is a partition of $[a,c]$ and
+$$
+m := \# \text{intervals in } Q < n := \# \text{intervals in } P_c
+$$
+
+---
+
+## The split property
+
+**Proof ($\Rightarrow$, ctd):** $m < n$ implies
 $$\begin{aligned}
-U(f,P_\epsilon) - L(f,P_\epsilon) & \leq U(f,P_2) - L(f,P_1) \\[3mm]
-& = \big[U(f, P_2) - U(f)\big] + \big[L(f) - L(f,P_1)\big] \\[3mm]
-& < \tfrac{1}{2}\epsilon + \tfrac{1}{2}\epsilon \\[3mm]
+U(f,Q) - L(f,Q)
+& = \sum_{k=1}^{m} (M_k - m_k)(x_k-x_{k-1}) \\[3mm]
+& \leq \sum_{k=1}^{n} (M_k - m_k)(x_k-x_{k-1}) \\[3mm]
+& = U(f,P_c) - L(f,P_c) \\[3mm]
+& < \epsilon
+\end{aligned}$$
+
+Conclusion: $f$ is integrable on $[a,c]$
+
+*Proof for $[c,b]$ is similar*
+
+---
+
+## The split property
+
+**Proof ($\Leftarrow$):** let $P_1$ and $P_2$ be partitions of $[a,c]$ and $[c,b]$ s.t.
+$$
+U(f,P_i) - L(f,P_i) < \tfrac{1}{2}\epsilon, \qquad i=1,2
+$$
+
+Then $P = P_1 \cup P_2$ is a partition of $[a,b]$ and
+$$\begin{aligned}
+U(f,P) & = U(f,P_1) + U(f,P_2) \\[3mm]
+L(f,P) & = L(f,P_1) + L(f,P_2) \\[3mm]
+U(f,P) - L(f,P) & < \tfrac{1}{2}\epsilon + \tfrac{1}{2}\epsilon \;\; = \;\; \epsilon
+\end{aligned}$$
+
+Conclusion: $f$ is integrable on $[a,b]$
+
+---
+
+## The split property
+
+**Proof ($\Leftarrow$, ctd):** let $\epsilon$ and $P_1,P_2$ be as before
+$$\begin{aligned}
+\int_a^b f & \leq U(f,P) \\[3mm]
+& < L(f,P) + \epsilon \\[3mm]
+& = L(f,P_1) + L(f,P_2) + \epsilon \\[3mm]
+& \leq \int_a^c f + \int_c^b f + \epsilon \\[8mm]
+\int_a^b f & \leq \int_a^c f + \int_c^b f
+\end{aligned}$$
+
+---
+
+## The split property
+
+**Proof ($\Leftarrow$, ctd):** let $\epsilon$ and $P_1,P_2$ be as before
+$$\begin{aligned}
+\int_a^c f + \int_c^b f
+& \leq U(f,P_1) + U(f,P_2) \\[3mm]
+& < L(f,P_1) + L(f,P_2) + \epsilon \\[3mm]
+& = L(f,P) + \epsilon \\[3mm]
+& \leq \int_a^b f + \epsilon \\[8mm]
+\int_a^c f + \int_c^b f & \leq \int_a^b f
+\end{aligned}$$
+
+---
+
+## The split property
+
+**Definition:** if $f$ is integrable on $[a,b]$ then
+$$
+\int_a^b f = -\int_b^a f
+\qquad\text{and}\qquad
+\int_c^c f = 0 \quad\text{for all } c \in [a,b]
+$$
+
+**Corollary:** regardless of the order of $a,b,c$ we have
+$$
+\int_a^b f = \int_a^c f + \int_c^b f
+$$
+
+---
+
+## Algebraic properties
+
+**Theorem:** if $f,g$ are integrable on $[a,b]$ then
+
+1. $f+g$ integrable and $\displaystyle\int_a^b (f+g) = \int_a^b f + \int_a^b g$
+2. $kf$ integrable and $\displaystyle\int_a^b kf = k\int_a^b f$ for all $k\in\mathbb{R}$
+
+**Proof:** see book
+
+---
+
+## Order properties
+
+**Theorem:** if $f$ is integrable on $[a,b]$ then
+$$
+m \leq f(x) \leq M \quad\Rightarrow\quad m(b-a) \leq \int_a^b f \leq M(b-a)
+$$
+
+**Proof:** for all partitions $P$ of $[a,b]$
+$$
+L(f,P) \leq \int_a^b f \leq U(f,P)
+$$
+Taking $P = \{a,b\}$ gives
+$$\begin{aligned}
+U(f,P) & = (b-a)\cdot \sup\{f(x)\,:\, x\in[a,b]\} \;\; \leq \;\; M(b-a) \\[3mm]
+L(f,P) & = (b-a)\cdot \inf\{f(x)\,:\, x\in[a,b]\} \;\;\; \geq \;\; m(b-a)
+\end{aligned}$$
+
+---
+
+## Order properties
+
+**Theorem:** if $f,g$ are integrable on $[a,b]$ then
+$$
+f(x) \leq g(x) \quad\text{for all } x\in [a,b] \quad\Rightarrow\quad \int_a^b f \leq \int_a^b g
+$$
+
+**Proof:** since $0 \leq g(x) - f(x)$ for all $x \in [a,b]$ we have
+
+$$
+0 \cdot (b-a) \leq \int_a^b (g-f)
+\Rightarrow 0 \leq \int_a^b g - \int_a^b f
+$$
+
+---
+
+## Order properties
+
+**Theorem:** if $f$ is integrable on $[a,b]$ then $|f|$ is integrable and
+$$
+\left|\int_a^b f\right| \leq \int_a^b |f|
+$$
+
+**Proof:** let $P$ be any partition of $[a,b]$ and
+$$\begin{aligned}
+M_k   & = \sup\{f(x)\,:\, x\in[x_{k-1},x_k]\} \\[3mm]
+m_k   & = \inf\{f(x)\,:\, x\in[x_{k-1},x_k]\} \\[3mm]
+M_k' & = \sup\{|f(x)|\,:\, x\in[x_{k-1},x_k]\} \\[3mm]
+m_k' & = \inf\{|f(x)|\,:\, x\in[x_{k-1},x_k]\}
+\end{aligned}$$
+
+**Claim:** $M_k'-m_k' \leq M_k - m_k$
+
+---
+
+## Order properties
+
+**Proof (ctd):** for all $\epsilon>0$ there exist $y,z \in [x_{k-1},x_k]$ s.t.
+$$\begin{aligned}
+M_k' - \tfrac{1}{2}\epsilon & < |f(y)| \\[3mm]
+m_k' + \tfrac{1}{2}\epsilon & > |f(z)| \\[6mm]
+M_k'-m_k' -\epsilon & < |f(y)| - |f(z)| \\[2mm]
+& \leq |f(y)-f(z)| \\[2mm]
+& \leq M_k - m_k \\[6mm]
+M_k'-m_k' & \leq M_k - m_k
+\end{aligned}$$
+
+---
+
+## Order properties
+
+**Proof (ctd):** let $P$ be any partition of $[a,b]$ then
+$$\begin{aligned}
+U(|f|,P) - L(|f|,P)
+& = \sum_{k=1}^n (M_k' - m_k')(x_k-x_{k-1}) \\[4mm]
+& \leq \sum_{k=1}^n (M_k - m_k)(x_k-x_{k-1}) \\[4mm]
+& = U(f,P) - L(f,P)
+\end{aligned}$$
+
+Hence, $f$ integrable $\;\Rightarrow\; |f|$ integrable
+
+---
+
+## Order properties
+
+**Proof (ctd):**
+$$\begin{aligned}
+-|f(x)| \leq f(x) \leq |f(x)| & \Rightarrow -\int_a^b |f| \leq \int_a^b f \leq \int_a^b |f| \\[5mm]
+& \Rightarrow \left|\int_a^b f\right| \leq \int_a^b |f|
+\end{aligned}$$
+
+---
+
+# Fundamental theorem of calculus
+
+## The fundamental theorem
+
+**Theorem (FTC part 1):** assume that
+
+1. $f$ is integrable on $[a,b]$
+2. $F$ is differentiable on $[a,b]$ and
+   $$F'(x) = f(x) \qquad\forall\,x \in [a,b]$$
+
+Then
+$$
+\int_a^b f = F(b) - F(a)
+$$
+
+---
+
+## The fundamental theorem
+
+**Proof:** let $P$ be any partition of $[a,b]$
+$$\begin{aligned}
+F(b)-F(a)
+& = \sum_{k=1}^n \big[F(x_k)-F(x_{k-1})\big] \\[1mm]
+& \stackrel{\text{MVT}}{=} \sum_{k=1}^n f(t_k)(x_k-x_{k-1}) \qquad t_k \in (x_{k-1},x_k) \\[1mm]
+& \leq \sum_{k=1}^n M_k(x_k-x_{k-1}) \\[1mm]
+& = U(f,P) \\[5mm]
+F(b)-F(a) & \geq L(f,P) \qquad \text{by similar proof}
+\end{aligned}$$
+
+---
+
+## The fundamental theorem
+
+**Proof:** let $P$ be any partition of $[a,b]$, then
+$$
+L(f,P) \leq F(b) - F(a) \leq U(f,P)
+$$
+
+Taking sup/inf over all partitions gives
+$$
+L(f) \leq F(b) - F(a) \leq U(f)
+$$
+
+Since $f$ is integrable it follows that
+$$
+L(f) = U(f) = F(b) - F(a)
+$$
+
+---
+
+## The fundamental theorem
+
+**Theorem (FTC part 2):** let $f$ be integrable on $[a,b]$ and define
+$$
+F(x) = \int_a^x f(t)\,dt \qquad\text{where}\quad x \in [a,b]
+$$
+
+Then
+
+1. $F$ is uniformly continuous on $[a,b]$
+2. if $f$ is **continuous** at $c$, then $F$ is differentiable at $c$ and
+   $$F'(c) = f(c)$$
+
+---
+
+## The fundamental theorem
+
+**Proof (1):** since $f$ is integrable on $[a,b]$ there exists $M>0$ s.t.
+$$
+|f(x)| \leq M \qquad\forall\,x \in [a,b]
+$$
+
+If $x,y \in [a,b]$ with $x \geq y$, then
+$$\begin{aligned}
+|F(x) - F(y)|
+& = \left|\int_y^x f(t)\,dt\right| \\[3mm]
+& \leq \int_y^x |f(t)|\,dt \\[3mm]
+& \leq M |x-y|
+\end{aligned}$$
+
+For given $\epsilon>0$ take $\delta=\epsilon/M$
+
+---
+
+## The fundamental theorem
+
+**Proof (2):** for $x\neq c$ we have
+
+$$\begin{aligned}
+\frac{F(x)-F(c)}{x-c}-f(c)
+& = \frac{1}{x-c}\int_c^x f(t)\,dt - f(c) \\[7mm]
+& = \frac{1}{x-c}\int_c^x f(t)-f(c)\,dt
+\end{aligned}$$
+
+---
+
+## The fundamental theorem
+
+**Proof (2):** let $\epsilon>0$ be arbitrary and pick $\delta>0$ s.t.
+$$
+|x-c| < \delta \quad\Rightarrow\quad |f(x)-f(c)| < \epsilon
+$$
+
+Since $|t-c| \leq |x-c| < \delta$ it follows that
+$$\begin{aligned}
+\left|\frac{F(x)-F(c)}{x-c}-f(c)\right|
+& = \frac{1}{|x-c|}\left|\int_c^x f(t)-f(c)\,dt\right| \\[5mm]
+& \leq \frac{1}{|x-c|} \cdot |x-c|\cdot \epsilon \\[5mm]
 & = \epsilon
 \end{aligned}$$
 
 ---
 
-## Continuous functions are integrable
+## The fundamental theorem
 
-**Theorem:** $f$ continuous on $[a,b] \;\Rightarrow\; f$ integrable on $[a,b]$
+**Example:** let
+$f(x) = \begin{cases} 1 & \text{if } x \neq 1 \\ 0 & \text{if } x = 1 \end{cases}$
 
-**Proof:** $f$ is uniformly continuous on $[a,b]$
+$f$ is integrable on $[0,2]$ and define $F(x) = \displaystyle\int_0^x f(t)\,dt$
 
-For all $\epsilon>0$ there exists $\delta>0$ such that
-$$
-|x-y| < \delta \quad\Rightarrow\quad |f(x)-f(y)| < \frac{\epsilon}{b-a} \qquad\text{for all } x,y \in [a,b]
-$$
+**Common mistake:** $F'(1) = f(1) = 0$
 
-Let $P$ be a partition such that $x_k - x_{k-1} < \delta$ for all $k=1,\dots,n$
+FTC2 **NOT** applicable because $f$ is not continuous at $x=1$!
 
 ---
 
-## Continuous functions are integrable
+## The fundamental theorem
 
-**Proof (ctd):** there exist $y_k, z_k \in [x_{k-1},x_k]$ such that
+**Example (ctd):** write $f(x) = 1 + g(x)$ where
 $$
-f(y_k) = M_k
-\qquad\text{and}\qquad
-f(z_k) = m_k
+g(x) = \begin{cases} \phantom{-}0 & \text{if } x \neq 1 \\ -1 & \text{if } x = 1 \end{cases}
 $$
 
-Note
+**Exercise:** show that $g$ is integrable and
 $$
-|y_k-z_k| < \delta
-\quad\Rightarrow\quad
-M_k - m_k = f(y_k) - f(z_k) < \frac{\epsilon}{b-a}
+\int_0^x g(t)\,dt = 0 \qquad \forall\,x\in[0,2]
 $$
 
----
+Hence,
+$$
+F(x) = \int_0^x 1 + g(t)\,dt = \int_0^x 1\,dt + \int_0^x g(t)\,dt = x
+$$
 
-## Continuous functions are integrable
-
-**Proof (ctd):**
-$$\begin{aligned}
-U(f,P)-L(f,P) & = \sum_{k=1}^n (M_k-m_k)(x_k - x_{k-1}) \\[4mm]
-& < \frac{\epsilon}{b-a}\sum_{k=1}^n (x_k - x_{k-1}) \\[4mm]
-& = \frac{\epsilon}{b-a}\cdot (b-a) \;\; = \;\; \epsilon
-\end{aligned}$$
-
----
-
-# Integrals of discontinuous functions
-
-## Integrals of discontinuous functions
-
-**Example:** $f(x) = \begin{cases} 1 & \text{if } x\neq 1 \\ 0 & \text{if } x=1\end{cases}$
-is integrable on $[0,2]$
-
-Let $0<\epsilon<1$ and take the partition
-$$\begin{aligned}
-P & = \{0, 1 - \tfrac{1}{4}\epsilon, 1+\tfrac{1}{4}\epsilon, 2\} \\[3mm]
-U(f,P) & = 2 \\[3mm]
-L(f,P) & = 2-\tfrac{1}{2}\epsilon \\[3mm]
-U(f,P) - L(f, P) & < \epsilon
-\end{aligned}$$
-
-*[What if $\epsilon \geq 1$?]*
-
----
-
-## Integrals of discontinuous functions
-
-![](../fig/lec09-dirichlet.png)
-
-*[Source: Stephen Abbott, *Understanding Analysis*, Springer, 2015]*
-
-**Example:**
-$f(x) = \begin{cases} 1 & \text{if } x \in \mathbb{Q} \\ 0 & \text{if } x \notin\mathbb{Q}\end{cases}$
-is NOT integrable on $[0,1]$
-
----
-
-## Integrals of discontinuous functions
-
-Let $P$ be any partition of $[0,1]$ then
-$$\begin{aligned}
-[x_{k-1},x_k]\cap\mathbb{Q}^c \neq \varnothing
-& \Rightarrow m_k=0 \text{ for all } k=1,\dots,n \\[3mm]
-& \Rightarrow L(f,P) = 0 \\[6mm]
-[x_{k-1},x_k]\cap\mathbb{Q} \neq \varnothing
-& \Rightarrow M_k=1 \text{ for all } k=1,\dots,n \\[3mm]
-& \Rightarrow U(f,P) = 1
-\end{aligned}$$
-
----
-
-## Integrals of discontinuous functions
-
-**Example:** any **increasing** function $f : [a,b]\to\mathbb{R}$ is integrable
-
-For **any** partition of $[a,b]$ we have
-$$\begin{aligned}
-M_k & = \sup\{f(x) \,:\, x \in [x_{k-1},x_k]\} \\[2mm]
-& = f(x_k) \\[6mm]
-m_k & = \inf\{f(x) \,:\, x \in [x_{k-1},x_k]\} \\[2mm]
-& = f(x_{k-1})
-\end{aligned}$$
-
----
-
-## Integrals of discontinuous functions
-
-**Example (ctd):** an **equispaced** partition $P$ gives
-$$\begin{aligned}
-U(f,P) - L(f,P)
-& = \sum_{k=1}^n (M_k-m_k)(x_k-x_{k-1}) \\[2mm]
-& = \frac{(b-a)}{n} \sum_{k=1}^n \big[f(x_k)-f(x_{k-1})\big] \\[2mm]
-& = \frac{(b-a)(f(b)-f(a))}{n} \to 0 \quad\text{ as }\quad n \to \infty
-\end{aligned}$$
-
-**Exercise:** show that decreasing functions are also integrable
+In particular, $F'(1)=1 \neq f(1)$!

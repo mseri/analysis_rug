@@ -1,6 +1,8 @@
-# Analysis (WBMA012-05) — Course Information 2025–2026
+# Analysis (WBMA012-05) — Course Information 2026–2027
 
 **Marcello Seri** — Bernoulliborg, room 484 — m.seri@rug.nl
+
+> **Calendar:** Dates, times and rooms follow the [2026–2027 RUG rooster](https://rooster.rug.nl/current?courseOffering=WBMA012-05.2026-2027.1). Check the live rooster for changes. The allocation of teaching topics and tutorial exercises remains provisional after lecture 9.
 
 ---
 
@@ -21,15 +23,19 @@ Please read this section very carefully since it provides important information 
 
 ## Important dates
 
-| Date | Event |
-|---|---|
-| 20 November 2025 | Peer-review homework tutorial 1 |
-| 4 December 2025 | Peer-review homework tutorial 2 |
-| 13 January 2026 | Peer-review homework tutorial 3 *(postponed from 8 January)* |
-| 15 January 2026 | Peer-review homework tutorial 4 |
-| Fri 12 December 2025 | Midterm exam (18:30–20:30) |
-| Wed 28 January 2026 | Final exam (11:45–13:45) |
-| Thu 26 February 2026 | Resit exam (18:30–20:30) |
+All times are local Groningen time.
+
+| Date | Time | Event | Room |
+|---|---|---|---|
+| Fri 13 November 2026 | 09:00–11:00 | Waterproof proof-writing workshop (introductory lab; no homework deadline) | 5161.0105 |
+| Fri 20 November 2026 | 09:00–11:00 | Homework 1 deadline; peer review and formalization | 5161.0105 |
+| Fri 4 December 2026 | 09:00–11:00 | Homework 2 deadline; peer review and formalization | 5161.0105 |
+| Fri 11 December 2026 | 18:30–20:30 | Midterm exam | **There is no midterm** |
+| Fri 8 January 2027 | 09:00–11:00 | Homework 3 deadline; peer review and formalization | 5161.0105 |
+| Fri 22 January 2027 | 09:00–11:00 | Homework 4 deadline; peer review and formalization | 5161.0105 |
+| Wed 27 January 2027 | 11:45–13:45 | Final exam | 5263.0102 (Exam Hall 1) |
+
+**Resit:** No resit is listed in the linked rooster feed. Its date, time and room will be added when available.
 
 ## Peer-review homework and Waterproof proof-assistant labs
 
@@ -37,7 +43,9 @@ These 5 sessions, while not compulsory, are your only opportunity to get direct 
 
 While the homework itself is not graded, **active and collaborative participation to the 4 main sessions will grant 0.25 points each**. These tutorials will help you develop and assess the level of your mathematical writing and problem-solving skills through peer feedback. Therefore we expect you to come on time, fully engage with the session and wait for the end of the session before leaving.
 
-There is a first tutorial session where we discuss the expectations on the peer-review feedback and help you to setup the Waterproof proof assistant and learn how to use it. **In the four subsequent lab sessions we expect you are already familiar with all this, in case this is not the case and you had not attended the tutorial session, you will not get the points**.
+The **Waterproof proof-writing workshop on 13 November 2026** is the introductory lecture for the peer-review sessions: we discuss expectations for peer-review feedback, help you set up Waterproof, and practise writing proofs with it. It has no homework deadline and does not award bonus points. **In the four subsequent lab sessions we expect you are already familiar with all this, in case this is not the case and you had not attended the workshop, you will not get the points**.
+
+The four subsequent labs are the **homework peer-review and formalization sessions**. Bring your prepared solution by the start of the corresponding session (**09:00 on 20 November, 4 December, 8 January and 22 January** -- these are the four homework deadlines). You will be asked to upload the peer-review feedback and formalization during the session as described below.
 
 You don't need to sign the homework but you need to write your student code on the homework sheets, so that we can find it easily at the end of the session. 
 
@@ -45,7 +53,7 @@ At the beginning of the session you will register your participation and we will
 
 In the pair, you are expected to exchange your homework solutions, study them and provide feedback to each other (see below). The homework should include your student code, the person that gives the feedback, by the end of the lab, is expected to add their student code, scan the homework with the feedback (before returning it to the owner) and upload it on their Group page in Brightspace. **Failure to do so, will mean that you don't receive the points.**
 
-In the second half of the lab, you will work on the formalization of your solution (or a new one if you think is more fit) in the Waterproof proof assistant (see below). This is a constrained natural-language proof assistant that can give you automatically (and deterministically) feedback on the proof and could be a useful tool to check some of you other coursework for Analysis for correctness or completeness. **The first tutorial lab will be all dedicated to learn Waterproof and smoothen out any rough edges.**
+In the second half of the lab, you will work on the formalization of your solution (or a new one if you think is more fit) in the Waterproof proof assistant (see below). This is a constrained natural-language proof assistant that can give you automatically (and deterministically) feedback on the proof and could be a useful tool to check some of you other coursework for Analysis for correctness or completeness. **The introductory Waterproof proof-writing workshop is dedicated to learning Waterproof and resolving setup issues.**
 
 At the end of the session you will upload your formalization on the Group page in Brightspace. **Failure to do so, will mean that you don't receive the points.**
 
@@ -75,7 +83,7 @@ Tip: an example of a good style of writing is Abbott's text book! For more tips,
 
 Note: the exam will *not* be assessed using detailed rubrics. The reason is that the conditions are very different. For the homework and the feedback you have time to think and write properly, and we expect you to take that time. During the exam you do not have that time, and therefore we will be more lenient when it comes to writing. Nevertheless, clarity and completeness will remain an important evaluation point also for the exam.
 
-![](../fig/rvf-rubric.pdf)
+![](../fig/rvf-rubric.svg)
 
 *Evaluation criteria for peer-review homework tutorials. This rubric can guide you in both completing your own work and reviewing your peers' submissions. Note that while the homework is not graded, these criteria remain important for developing your mathematical writing skills. Observe that almost half of the assessment criteria focus on writing skills!*
 
@@ -119,7 +127,7 @@ To make the most out of the tutorials, use them to work through the exercises *i
 
 Ideally, you should study the lecture material and do the exercise from the lecture notes before the tutorials. This leaves space for the best use of tutorials: a way to discuss the course and the exercises with your peers, compare your understanding and opinions on the course material, and ask any question that may arise to the TAs.
 
-Since this course is worth 5 EC the study load is $5\times 28 = 140$ hours. The lectures take $17\times 2 = 34$ hours and the tutorials take $16\times 2 = 32$ hours. This leaves $140 - 34 - 32 = 74$ hours for self-study.
+Since this course is worth 5 EC the study load is $5\times 28 = 140$ hours. The schedule lists $16\times 2 = 32$ hours of lectures, $16\times 2 = 32$ hours of tutorials per student, and $5\times 2 = 10$ hours of labs. Attending all these sessions leaves $140 - 32 - 32 - 10 = 66$ hours for self-study and assessment.
 
 You are expected to:
 
@@ -227,9 +235,9 @@ You may not be able to solve all problems during the tutorials. In that case you
 
 # Homework assignments
 
-These assignments are part of the compulsory peer-review homework tutorials. While the homework itself is not graded, participation in the tutorials is mandatory. Specific due dates and peer-review instructions will be announced via Brightspace.
+These assignments are prepared for the four homework peer-review and formalization labs. Participation is optional, but the requirements in the assessment section must be met to earn the bonus points. **Each prepared solution is due at the start of its lab**, on the dates below. You must bring it for the peer review, and at the end of the session upload the feedback you gave and your formalization during the session as described above. Further submission instructions will be provided via Brightspace.
 
-## Assignment 1 (lab on 20 November 2025)
+## Assignment 1 (due 20 November 2026, 09:00; lab 09:00–11:00)
 
 Determine the greatest lower bound (infimum) of the following set:
 $$
@@ -242,7 +250,7 @@ Notes:
 - Provide arguments: only answering "yes", "no", or "42" is not sufficient. You may use all theorems and statements in the book, but you should clearly indicate which of them you are using.
 - Try to strive for a balance between conciseness and completeness. A solution consisting of just a few lines may be a sign that too many logical steps are skipped, and a solution that takes several pages may be a sign that too many irrelevant details are included.
 
-## Assignment 2 (lab on 4 December 2025)
+## Assignment 2 (due 4 December 2026, 09:00; lab 09:00–11:00)
 
 Let $(a_n)$ and $(b_n)$ be two sequences of non-negative real numbers. Prove that if
 $$
@@ -258,7 +266,7 @@ Notes:
 - Provide arguments: only answering "yes", "no", or "42" is not sufficient. You may use all theorems and statements in the book, but you should clearly indicate which of them you are using.
 - Try to strive for a balance between conciseness and completeness.
 
-## Assignment 3 (lab on 13 January 2026)
+## Assignment 3 (due 8 January 2027, 09:00; lab 09:00–11:00)
 
 Using the concept of open covers (and explicitly avoiding the Bolzano–Weierstrass Theorem), prove that every bounded infinite set has a limit point.
 
@@ -268,7 +276,7 @@ Notes:
 - Provide arguments: only answering "yes", "no", or "42" is not sufficient. You may use all theorems and statements in the book, but you should clearly indicate which of them you are using.
 - Try to strive for a balance between conciseness and completeness.
 
-## Assignment 4 (lab on 15 January 2026)
+## Assignment 4 (due 22 January 2027, 09:00; lab 09:00–11:00)
 
 Consider the sequence of functions $f_n : (0,\infty) \to \mathbb{R}$ given by
 $$

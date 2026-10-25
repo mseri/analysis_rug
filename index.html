@@ -11,7 +11,7 @@
     html, body { height: 100%; font-family: Georgia, 'Times New Roman', serif; color: #1a1a1a; background: #f2f2ef; }
 
     /* ── App shell ─────────────────────────────────────────────── */
-    #app { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+    #app { display: flex; flex-direction: column; height: 100vh; height: 100dvh; overflow: hidden; }
 
     /* ── Top bar ────────────────────────────────────────────────── */
     #topbar {
@@ -53,7 +53,8 @@
     }
 
     /* ── Content area ───────────────────────────────────────────── */
-    #content { flex: 1; overflow: auto; }
+    #content { flex: 1; min-height: 0; overflow: auto; }
+    #content.slides-mode { overflow: hidden; }
 
     /* ── Welcome ────────────────────────────────────────────────── */
     #welcome {
@@ -207,20 +208,29 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 100%;
-      padding: 20px 16px;
+      height: 100%;
+      padding: 16px;
     }
 
+    .slide-frame { position: relative; flex-shrink: 0; }
+
     .slide-card {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform-origin: top left;
       background: #fff;
       border-radius: 8px;
       box-shadow: 0 2px 18px rgba(0,0,0,0.09);
       padding: 38px 48px;
       width: 760px;
-      max-width: 100%;
-      aspect-ratio: 4 / 3;
-      overflow-y: auto;
+      height: 570px;
+      overflow: hidden;
     }
+
+    .slide-content { display: flow-root; transform-origin: top left; }
+    .slide-card img { max-height: 300px; object-fit: contain; }
+    .slide-card .katex-display { overflow: visible; }
 
     .doc-wrap { max-width: 760px; margin: 0 auto; padding: 30px 20px 60px; }
 
@@ -286,6 +296,7 @@
       overflow-x: auto;
       margin: 0.6rem 0;
     }
+    .slide-card pre { overflow: visible; white-space: pre-wrap; overflow-wrap: anywhere; }
     .slide-card pre code, .doc-wrap pre code { background: none; padding: 0; }
 
     .slide-card hr, .doc-wrap hr {
@@ -305,20 +316,6 @@
     .stb-course { font-size: 1.45rem; font-weight: 700; color: #193352; }
     .stb-author { font-size: 0.93rem; color: #666; margin-top: 4px; }
     .stb-date   { font-size: 0.87rem; color: #888; margin-top: 2px; }
-
-    .pdf-link {
-      display: inline-block;
-      background: #f0f4f8;
-      border: 1px solid #c8d4df;
-      border-radius: 4px;
-      padding: 5px 13px;
-      color: #193352;
-      text-decoration: none;
-      font-family: sans-serif;
-      font-size: 0.86rem;
-      margin: 0.6rem 0;
-    }
-    .pdf-link:hover { background: #dce8f0; }
 
     /* KaTeX display: allow horizontal scroll on narrow screens */
     .katex-display { overflow-x: auto; overflow-y: hidden; }
@@ -346,9 +343,6 @@
 
     /* ── Mobile ─────────────────────────────────────────────────── */
     @media (max-width: 600px) {
-      .slide-card { padding: 20px 16px; }
-      .slide-card h1 { font-size: 1.25rem; }
-      .slide-card h2 { font-size: 1.05rem; }
       .nav-btn { padding: 6px 11px; font-size: 0.83rem; }
     }
   </style>
@@ -364,6 +358,7 @@
   <div class="nav-body" id="nav-body">
     <div class="nav-section">Info</div>
     <button class="nav-item" data-file="md/Analysis-course-info.md" data-mode="doc">Course Information</button>
+    <button class="nav-item" data-file="md/Analysis-final-exam-info.md" data-mode="slides">Information for the final exam</button>
     <div class="nav-section">Lectures</div>
     <!-- populated by JS -->
   </div>
@@ -408,7 +403,7 @@
   'use strict';
 
   // ── Config ────────────────────────────────────────────────────────
-  const LECTURE_COUNT = 17;
+  const LECTURE_COUNT = 15;
   const COURSE_FILE   = 'md/Analysis-course-info.md';
 
   // ── State ─────────────────────────────────────────────────────────
@@ -468,8 +463,8 @@
       return id;
     });
 
-    // Inline math: $...$ (single line, no nesting)
-    src = src.replace(/(?<!\$)\$(?!\$)((?:[^$\n\\]|\\.)+)\$(?!\$)/g, function (_, tex) {
+    // Single-dollar math may span lines (e.g. a cases environment).
+    src = src.replace(/(?<!\$)\$(?!\$)((?:[^$\\]|\\[\s\S])+?)\$(?!\$)/g, function (_, tex) {
       var id = '@@MI' + store.length + '@@';
       store.push({ display: false, tex: tex });
       return id;
@@ -506,15 +501,6 @@
     // Fix image paths: ../fig/ -> fig/
     html = html.replace(/(<img[^>]+src=")\.\.\/fig\//g, '$1fig/');
 
-    // Replace PDF <img> with a plain link
-    html = html.replace(
-      /<img[^>]+src="([^"]*\.pdf)"(?:[^>]*alt="([^"]*)")?[^>]*\/?>/g,
-      function (_, src, alt) {
-        return '<a class="pdf-link" href="' + src + '" target="_blank" rel="noopener">'
-          + 'View figure (PDF)' + (alt ? ': ' + alt : '') + '</a>';
-      }
-    );
-
     html = restoreMath(html, protected_.store);
     return html;
   }
@@ -543,10 +529,62 @@
   }
 
   // ── Render & navigate slides ──────────────────────────────────────
+  function fitSlide() {
+    if (mode !== 'slides') return;
+    const card = contentEl.querySelector('.slide-card');
+    if (!card) return;
+    const frame = card.parentElement;
+    const body = card.querySelector('.slide-content');
+    const style = getComputedStyle(card);
+    const width = card.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
+    const height = card.clientHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom);
+    body.style.transform = '';
+
+    // Keep the text at its normal size if reducing figures is enough.
+    const images = Array.from(body.querySelectorAll('img'));
+    function sizeImages(factor) {
+      images.forEach(function (img) { img.style.maxHeight = (300 * factor) + 'px'; });
+    }
+    sizeImages(1);
+    if (images.length && body.scrollHeight > height) {
+      let low = 0, high = 1;
+      for (let i = 0; i < 12; i++) {
+        const mid = (low + high) / 2;
+        sizeImages(mid);
+        if (body.scrollHeight <= height) low = mid;
+        else high = mid;
+      }
+      // If text alone is too tall, retain useful figures and scale everything.
+      sizeImages(low > 0.15 ? low : 1);
+    }
+    const innerScale = Math.min(1, width / body.scrollWidth, height / body.scrollHeight);
+    body.style.transform = 'scale(' + innerScale + ')';
+
+    // Scale the complete 4:3 card to the space between the two navigation bars.
+    const wrap = frame.parentElement;
+    const wrapStyle = getComputedStyle(wrap);
+    const availableWidth = wrap.clientWidth - parseFloat(wrapStyle.paddingLeft) - parseFloat(wrapStyle.paddingRight);
+    const availableHeight = wrap.clientHeight - parseFloat(wrapStyle.paddingTop) - parseFloat(wrapStyle.paddingBottom);
+    const scale = Math.max(0, Math.min(1, availableWidth / 760, availableHeight / 570));
+    frame.style.width = (760 * scale) + 'px';
+    frame.style.height = (570 * scale) + 'px';
+    card.style.transform = 'scale(' + scale + ')';
+  }
+
+  // Refit after viewport changes, image decoding and web-font loading.
+  new ResizeObserver(fitSlide).observe(contentEl);
+  if (document.fonts) document.fonts.addEventListener('loadingdone', fitSlide);
+
   function showSlide(idx) {
     slideIdx = Math.max(0, Math.min(idx, slides.length - 1));
     contentEl.innerHTML =
-      '<div class="slide-wrap"><div class="slide-card">' + slides[slideIdx] + '</div></div>';
+      '<div class="slide-wrap"><div class="slide-frame"><div class="slide-card"><div class="slide-content">'
+      + slides[slideIdx] + '</div></div></div></div>';
+    contentEl.querySelectorAll('img').forEach(function (img) {
+      img.addEventListener('load', fitSlide, { once: true });
+      img.addEventListener('error', fitSlide, { once: true });
+    });
+    fitSlide();
     contentEl.scrollTop = 0;
     slideCounter.textContent = (slideIdx + 1) + ' / ' + slides.length;
     prevBtn.disabled = slideIdx === 0;
@@ -584,6 +622,7 @@
   // ── Load file ─────────────────────────────────────────────────────
   async function loadFile(file, fileMode) {
     mode = fileMode;
+    contentEl.classList.toggle('slides-mode', fileMode === 'slides');
     contentEl.innerHTML = '<div class="loading">Loading…</div>';
     slideNav.classList.toggle('on', fileMode === 'slides');
 
@@ -624,9 +663,9 @@
     }
   }
 
-  // ── Item selection + hash routing (#lecture05, #course-info) ──────
+  // ── Item selection + hash routing (#lecture05, #course-info, #final-exam-info) ──
   function slugFor(item) {
-    var m = item.dataset.file.match(/Analysis-(lecture\d+|course-info)\.md$/);
+    var m = item.dataset.file.match(/Analysis-(lecture\d+|course-info|final-exam-info)\.md$/);
     return m ? m[1] : null;
   }
 

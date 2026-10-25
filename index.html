@@ -92,6 +92,20 @@
     }
     #slide-nav.on { display: flex; }
 
+    #exit-fullscreen-btn { display: none; }
+    #app:fullscreen { width: 100%; height: 100%; background: #f2f2ef; }
+    #app:fullscreen #topbar { display: none; }
+    #app:fullscreen #exit-fullscreen-btn {
+      display: block;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 20;
+    }
+    #app:fullscreen .slide-wrap { padding-top: 48px; }
+    #app:fullscreen #fullscreen-btn { display: none; }
+    .nav-btn:focus-visible { outline: 3px solid #5aabdc; outline-offset: 3px; }
+
     .nav-btn {
       background: #193352;
       color: #fff;
@@ -368,6 +382,7 @@
 
 <!-- ── App ──────────────────────────────────────────────────────── -->
 <div id="app">
+  <button class="nav-btn" id="exit-fullscreen-btn" aria-label="Exit fullscreen" aria-keyshortcuts="f" title="Exit fullscreen (F or Esc)">Exit fullscreen ↙</button>
   <header id="topbar">
     <button id="menu-btn" aria-label="Open menu" aria-expanded="false" aria-controls="nav-panel">
       <svg width="17" height="13" viewBox="0 0 17 13" fill="none">
@@ -392,6 +407,7 @@
     <button class="nav-btn" id="prev-btn" disabled>← Prev</button>
     <span id="slide-counter">1 / 1</span>
     <button class="nav-btn" id="next-btn">Next →</button>
+    <button class="nav-btn" id="fullscreen-btn" aria-label="Enter fullscreen" aria-keyshortcuts="f" title="Enter fullscreen (F)">Fullscreen ⛶</button>
   </div>
 </div>
 
@@ -424,6 +440,36 @@
   const prevBtn      = document.getElementById('prev-btn');
   const nextBtn      = document.getElementById('next-btn');
   const slideCounter = document.getElementById('slide-counter');
+  const app = document.getElementById('app');
+  const fullscreenBtn = document.getElementById('fullscreen-btn');
+  const exitFullscreenBtn = document.getElementById('exit-fullscreen-btn');
+
+  // ── Fullscreen presentation ───────────────────────────────────────
+  fullscreenBtn.disabled = !document.fullscreenEnabled;
+  if (fullscreenBtn.disabled) fullscreenBtn.title = 'Fullscreen is not supported by this browser';
+
+  async function toggleFullscreen() {
+    try {
+      if (document.fullscreenElement === app) {
+        await document.exitFullscreen();
+      } else if (mode === 'slides' && document.fullscreenEnabled) {
+        closeMenu();
+        await app.requestFullscreen();
+      }
+    } catch (err) {
+      // Permission or browser policy can reject a fullscreen request.
+      fullscreenBtn.title = 'Could not enter fullscreen: ' + err.message;
+    }
+  }
+
+  fullscreenBtn.addEventListener('click', toggleFullscreen);
+  exitFullscreenBtn.addEventListener('click', toggleFullscreen);
+  document.addEventListener('fullscreenchange', function () {
+    if (mode === 'slides') {
+      (document.fullscreenElement === app ? exitFullscreenBtn : fullscreenBtn).focus();
+    }
+    requestAnimationFrame(fitSlide);
+  });
 
   // ── Build lecture nav items ───────────────────────────────────────
   for (let i = 1; i <= LECTURE_COUNT; i++) {
@@ -565,7 +611,8 @@
     const wrapStyle = getComputedStyle(wrap);
     const availableWidth = wrap.clientWidth - parseFloat(wrapStyle.paddingLeft) - parseFloat(wrapStyle.paddingRight);
     const availableHeight = wrap.clientHeight - parseFloat(wrapStyle.paddingTop) - parseFloat(wrapStyle.paddingBottom);
-    const scale = Math.max(0, Math.min(1, availableWidth / 760, availableHeight / 570));
+    const maxScale = document.fullscreenElement === app ? Infinity : 1;
+    const scale = Math.max(0, Math.min(maxScale, availableWidth / 760, availableHeight / 570));
     frame.style.width = (760 * scale) + 'px';
     frame.style.height = (570 * scale) + 'px';
     card.style.transform = 'scale(' + scale + ')';
@@ -597,6 +644,14 @@
   // Keyboard navigation
   document.addEventListener('keydown', function (e) {
     if (mode !== 'slides') return;
+    if (e.target.closest('input, textarea, select, [contenteditable]:not([contenteditable="false"])')) return;
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (e.key.toLowerCase() === 'f' ||
+        (e.key === 'Escape' && document.fullscreenElement === app)) {
+      e.preventDefault();
+      if (!e.repeat) toggleFullscreen();
+      return;
+    }
     if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'PageDown') {
       e.preventDefault();
       showSlide(slideIdx + 1);
@@ -622,6 +677,9 @@
   // ── Load file ─────────────────────────────────────────────────────
   async function loadFile(file, fileMode) {
     mode = fileMode;
+    if (fileMode !== 'slides' && document.fullscreenElement === app) {
+      await document.exitFullscreen();
+    }
     contentEl.classList.toggle('slides-mode', fileMode === 'slides');
     contentEl.innerHTML = '<div class="loading">Loading…</div>';
     slideNav.classList.toggle('on', fileMode === 'slides');

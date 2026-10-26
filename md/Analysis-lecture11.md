@@ -1,7 +1,7 @@
 ---
 title: "Analysis"
-author: "Marcello Seri, m.seri@rug.nl, slides by Alef Sterk"
-date: "Revised lecture 11 — draft (date to be set)"
+author: "Marcello Seri, m.seri@rug.nl, adapted from slides by Alef Sterk"
+date: "Lecture 11"
 ---
 
 Topics:

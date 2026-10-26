@@ -1,7 +1,7 @@
 ---
 title: "Analysis"
 author: "Marcello Seri, m.seri@rug.nl"
-date: "Lecture 8, Wednesday 11 December 2024"
+date: "Lecture 8"
 ---
 
 Topics:

@@ -4,6 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Analysis — Lecture Notes</title>
+  <meta name="description" content="Real analysis lecture notes and course information.">
+  <meta property="og:title" content="Analysis — Lecture Notes">
+  <meta property="og:description" content="Real analysis lecture notes and course information.">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Analysis — Lecture Notes">
+  <meta name="twitter:description" content="Real analysis lecture notes and course information.">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -50,6 +56,13 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+    }
+
+    #share-link {
+      margin-left: auto;
+      flex-shrink: 0;
+      color: inherit;
+      font: 0.8rem sans-serif;
     }
 
     /* ── Content area ───────────────────────────────────────────── */
@@ -392,6 +405,7 @@
       </svg>
     </button>
     <span id="topbar-title">Analysis — Lecture Notes</span>
+    <a id="share-link" hidden title="Copy this link for a lecture-specific preview">Share link</a>
   </header>
 
   <div id="content">
@@ -688,6 +702,26 @@
     }
   }, { passive: true });
 
+  // Trick make the preview show the appropriate title
+  // and description
+  function updatePreview(description) {
+    var slug = slugFor(activeItem);
+    var lecture = slug.match(/^lecture(\d+)$/);
+    var title = lecture ? 'Analysis - Lecture ' + Number(lecture[1])
+      : slug === 'course-info' ? 'Course Information' : 'Information for the Final Exam';
+    document.title = title;
+    topbarTitle.textContent = title;
+    document.querySelector('meta[name="description"]').content = description;
+    ['og', 'twitter'].forEach(function (prefix) {
+      var attr = prefix === 'og' ? 'property' : 'name';
+      document.querySelector('meta[' + attr + '="' + prefix + ':title"]').content = title;
+      document.querySelector('meta[' + attr + '="' + prefix + ':description"]').content = description;
+    });
+    var shareLink = document.getElementById('share-link');
+    shareLink.href = slug + '.html';
+    shareLink.hidden = false;
+  }
+
   // ── Load file ─────────────────────────────────────────────────────
   async function loadFile(file, fileMode) {
     mode = fileMode;
@@ -704,6 +738,7 @@
       var text = await res.text();
 
       if (fileMode === 'doc') {
+        updatePreview('Analysis course information: syllabus, tutorials, and assignments.');
         contentEl.innerHTML = '<div class="doc-wrap">' + renderMd(text) + '</div>';
         // We use namespaces to make the anchors work
         var documentSlug = file.match(/Analysis-([^/]+)\.md$/)[1];
@@ -715,10 +750,12 @@
         var meta     = parsed.meta;
         var rawSlides = splitSlides(parsed.body);
 
-        // Update header
-        topbarTitle.textContent = meta.date
-          ? (meta.title || 'Analysis') + ' — ' + meta.date
-          : 'Analysis — ' + (activeItem ? activeItem.textContent : '');
+        var preview = document.createElement('div');
+        preview.innerHTML = renderMd(rawSlides[0] || '');
+        preview.querySelectorAll('p, li, h1, h2, h3').forEach(function (el) {
+          el.appendChild(document.createTextNode('\n'));
+        });
+        updatePreview(preview.textContent.trim());
 
         slides = rawSlides.map(function (slide, i) {
           var html = '';

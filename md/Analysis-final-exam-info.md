@@ -1,7 +1,7 @@
 ---
 title: "Information for the final exam"
-author: "Marcello Seri / m.seri@rug.nl / slides by Alef Sterk"
-date: "Bonus slides / Thursday 18 January 2024"
+author: "Marcello Seri / m.seri@rug.nl / adapted from slides by Alef Sterk"
+date: "Bonus slides"
 ---
 
 Topics:

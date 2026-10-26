@@ -548,7 +548,21 @@
     html = html.replace(/(<img[^>]+src=")\.\.\/fig\//g, '$1fig/');
 
     html = restoreMath(html, protected_.store);
-    return html;
+
+    // Workaround to make Markdown contents links work.
+    var template = document.createElement('template');
+    template.innerHTML = html;
+    var usedIds = new Set();
+    template.content.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach(function (heading) {
+      var base = heading.textContent.toLowerCase().trim()
+        .replace(/[^\p{L}\p{N}\p{M}_\s-]/gu, '').replace(/\s/g, '-');
+      var id = base;
+      var suffix = 0;
+      while (usedIds.has(id)) id = base + '-' + (++suffix);
+      usedIds.add(id);
+      heading.id = id;
+    });
+    return template.innerHTML;
   }
 
   // ── YAML frontmatter ──────────────────────────────────────────────
@@ -691,6 +705,11 @@
 
       if (fileMode === 'doc') {
         contentEl.innerHTML = '<div class="doc-wrap">' + renderMd(text) + '</div>';
+        // We use namespaces to make the anchors work
+        var documentSlug = file.match(/Analysis-([^/]+)\.md$/)[1];
+        contentEl.querySelectorAll('a[href^="#"]').forEach(function (link) {
+          link.setAttribute('href', '#' + documentSlug + '/' + link.getAttribute('href').slice(1));
+        });
       } else {
         var parsed   = parseFrontmatter(text);
         var meta     = parsed.meta;
@@ -727,7 +746,7 @@
     return m ? m[1] : null;
   }
 
-  function activate(item, updateHash) {
+  async function activate(item, updateHash) {
     navBody.querySelectorAll('.nav-item').forEach(function (b) { b.classList.remove('active'); });
     item.classList.add('active');
     activeItem = item;
@@ -741,15 +760,28 @@
       if (slug) history.replaceState(null, '', '#' + slug);
     }
 
-    loadFile(item.dataset.file, item.dataset.mode);
+    await loadFile(item.dataset.file, item.dataset.mode);
   }
 
-  function openFromHash() {
-    var slug = location.hash.replace(/^#/, '');
+  async function openFromHash() {
+    var parts = location.hash.replace(/^#/, '').split('/');
+    var slug = parts.shift();
     if (!slug) return;
     var items = navBody.querySelectorAll('.nav-item');
     for (var i = 0; i < items.length; i++) {
-      if (slugFor(items[i]) === slug) { activate(items[i], false); return; }
+      if (slugFor(items[i]) !== slug) continue;
+      if (activeItem !== items[i] || !contentEl.querySelector('.doc-wrap')) {
+        await activate(items[i], false);
+      }
+      if (parts.length) {
+        var id;
+        try { id = decodeURIComponent(parts.join('/')); } catch (_) { return; }
+        var target = document.getElementById(id);
+        if (target && contentEl.contains(target)) target.scrollIntoView();
+      } else {
+        contentEl.scrollTop = 0;
+      }
+      return;
     }
   }
 

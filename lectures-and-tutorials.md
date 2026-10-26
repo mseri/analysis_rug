@@ -126,7 +126,8 @@
   * **Pointwise convergence**
   * **Uniform convergence**
   * **Convergence types**: characterizations and examples
-  * **Preservation of continuity** under uniform convergence
+  * **Cauchy criterion** for uniform convergence
+  * **Preservation of continuity** under uniform convergence
 
 **Tutorial 10**
 
@@ -134,10 +135,12 @@
   * Does uniform convergence imply pointwise convergence? Does pointwise convergence imply uniform convergence? Justify the statement with a proof or a counterexample.
   * How does continuity behave in the limit? Provide an example of a sequence of continuous functions that converges pointwise to a discontinuous function. Can you find a different example than the one in the lecture?
 
-**Lecture 11 (Abbott §6.3, §6.4):**
+**Lecture 11 (Abbott §6.3, §6.4, §6.5):**
 
-  * **Uniform convergence** reprise: Cauchy criterion, **preservation of differentiability**
+  * **Uniform convergence and differentiability**: counterexample and preservation of differentiability under uniform convergence of the derivatives
   * **Series of functions**: Cauchy criterion, Weierstrass test, and **preservation of continuity and differentiability**
+  * **Power series**: general form, pointwise convergence, and comparison arguments
+  * **Radius of convergence**: definition, root and ratio tests, examples, and behavior at the endpoints
 
 **Tutorial 11**
 
@@ -145,58 +148,54 @@
   * Provide an example of a sequence of differentiable functions that converges uniformly to a function that is not differentiable.
   * How do all these concepts extend to series? Provide an example of a series of continuous functions that converges uniformly to a continuous function
 
-**Lecture 12 (Abbott §6.5):**
+**Lecture 12 (Abbott §6.5, §6.6):**
 
-  * **Power Series**: general form and convergence
-  * **Pointwise Convergence**: theorem and proof, including the comparison test
-  * **Radius of Convergence**: definition, methods for computing (root test, ratio test), and examples
-  * **Uniform Convergence**: theorem and proof, continuity of the limit
-  * **Summation by Parts** and **Abel's Lemma**
-  * **Abel's Theorem**: uniform convergence on intervals
-  * **Differentiation**: term-by-term differentiation of power series
+  * **Uniform convergence of power series** on compact intervals inside the radius of convergence, and continuity of the sum
+  * **Term-by-term differentiation** of power series and invariance of the radius of convergence
+  * **Taylor series**: coefficients, expansions about different centers, and convergence to the original function
+  * **Lagrange remainder**: statement, proof using Rolle's theorem, and error estimates
+  * **Examples and a counterexample**
 
 **Tutorial 12**
 
   * Explain in your own words the difference between pointwise and uniform convergence. How are they related? Justify your answers with examples and couterexamples
   * Under what conditions can we differentiate a power series term-by-term? Can you provide an example to illustrate this?
   * Show that \\(nc^n\\) with \\(|c| < 1\\) is bounded
-
-**Lecture 13 (Abbott §6.6):**
-
-  * **Taylor Series**: definition, Taylor's formula, and convergence to functions
-  * **Lagrange Remainder**: definition, lemma, theorem, and proof
-  * **Examples and a counter example**: a function whose Taylor series does not converge to the function
-  * **Approximating Square Roots and Integrals**: using Taylor series and remainder terms
-
-**Tutorial 13**
-
-  * Can you prove L'Hopital rule using Taylor series? What more do you get from using Taylor series?
+  * For functions sufficiently differentiable near the point in question, use Taylor expansions to derive the \\(0/0\\) case of L'Hopital's rule when the denominator has a nonzero first derivative. How can higher-order expansions handle the case where both first derivatives vanish? What information about the error do the remainders give?
   * Can you provide an example of a function whose Taylor series does not converge to the function itself? What are the implications of this?
+  * **Exercise: approximating an integral with Taylor series.** Let \\(f(x)=(e^x-1)/x\\) for \\(0<x\leq1\\), and define \\(f(0)=1\\). We want to approximate \\(I=\int_0^1 f(x)\,dx\\). _Use the integration rules from Calculus 1._
+    1. Show that this extension of \\(f\\) is continuous at zero.
+    2. Use the Taylor polynomial of degree \\(n\\) for \\(e^x\\) and its Lagrange remainder to obtain a polynomial approximation to \\(f\\). Show, for \\(0\leq x\leq1\\), that the error is nonnegative and at most \\(3x^n/(n+1)!\\). (Hint: \\(e^c<3\\) for \\(0<c<1\\).)
+    3. Integrate the polynomial and bound the error to prove
+       \\[0\leq I-\sum_{k=1}^n\frac{1}{k!\,k}\leq\frac{3}{(n+1)!\,(n+1)}.\\]
+       Justify this by bounding the remainder function, rather than treating the intermediate point \\(c\\) as a constant independent of \\(x\\).
+    4. Compute the approximation for \\(n=5\\) and show that its error is less than \\(10^{-3}\\). How large must \\(n\\) be for this bound to guarantee an error less than \\(10^{-6}\\)?
 
-**Lecture 14 (Abbott §7.2, §7.3):**
+**Lecture 13 (Abbott §7.2, §7.3):**
 
   * **Partitions and refinements**
   * **Riemann Integral**: definition with lower and upper sums, criterion for integrability
   * **Continuous Functions**: proof of integrability
   * **Integrals of Discontinuous Functions**: examples of integrable and non-integrable functions
 
-**Tutorial 14**
+**Tutorial 13**
 
   * How does refining a partition affect the lower and upper sums?
   * How does the definition of Riemann integral done in class relate to the one you saw in Calculus 1?
   * Can you provide examples of discontinuous functions that are integrable and others that are not? What characteristics make a discontinuous function non-integrable?
 
-**Lecture 15 (Abbott §7.4, §7.5):**
+**Lecture 14 (Abbott §7.4, §7.5):**
 
   * **Split, Algebraic and Order Properties** of Riemann integrals
   * **Fundamental Theorem of Calculus**:
     * Part 1: proof and example
     * Part 2: proof, uniform continuity, and differentiability at points of continuity
 
-**Tutorial 15**
+**Tutorial 14**
 
   * Name 3 takeaway messages of the analysis course and compare them with the ones from the other members of the group.
   * Name at least a memorable thing from the course and compare it with the ones from the other members of the group.
   * What did you find the hardest topic in the course was? Compare your answers in the group.
   * What are the statements that appear in the Fundamental Theorem of Calculus?
   * What happens if the function integrated is discontinuous?
+  * **Reading (Abbott §7.4):** read the proofs of the algebraic properties of the Riemann integral (linearity under addition and scalar multiplication), which the lecture leaves to the book. Explain how to use a common refinement to control the upper and lower sums.

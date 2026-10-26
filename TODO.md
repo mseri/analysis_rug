@@ -2,3 +2,4 @@
 - Complete all formalizations and ensire proofs use Waterproof syntax as much as possible
 - Move helpers back into Waterproof
 - Document Search and SearchPattern
+- Move the bonus lectures and exercises here

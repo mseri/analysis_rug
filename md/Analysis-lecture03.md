@@ -6,7 +6,7 @@ date: "Lecture 3"
 
 Topics:
 - Abbott §2.4. The monotone convergence theorem
-- Abbott §2.5. The Bolzano--Weierstrass theorem
+- Abbott §2.5. The Bolzano—Weierstrass theorem
 
 Formalization: [`Sequences.v`](docs/rocq/RUG.Analysis.Sequences.html), [`Subsequences.v`](docs/rocq/RUG.Analysis.Subsequences.html), [`Series.v`](docs/rocq/RUG.Analysis.Series.html)
 
@@ -223,7 +223,7 @@ Different subsequences have different limits $\;\Rightarrow\;$ $(a_n)$ diverges
 
 ---
 
-## Bolzano--Weierstrass theorem
+## Bolzano—Weierstrass theorem
 
 **Theorem:** every bounded sequence has a convergent subsequence
 
@@ -244,13 +244,14 @@ NIP $\Rightarrow$ there exists $x\in \bigcap_{n=1}^\infty I_n$
 
 ---
 
-## Bolzano--Weierstrass theorem
+## Bolzano—Weierstrass theorem
 
 **Proof (ctd):** each $I_k$ contains <span style="color:red">infinitely many</span> terms of the seq.
 - pick $n_1 \in \mathbb{N}$ with $a_{n_1} \in I_1$
 - pick $n_2 \in \mathbb{N}$ with $n_2 > n_1$ and $a_{n_2} \in I_2$
 - pick $n_3 \in \mathbb{N}$ with $n_3 > n_2$ and $a_{n_3} \in I_3$
-  $\quad\quad\vdots$
+
+$\quad\vdots$
 
 \pause
 

@@ -94,7 +94,7 @@ $$
 
 Lemma $\;\Rightarrow\;$ $(a_n)$ is bounded
 
-Bolzano--Weierstrass $\;\Rightarrow\;$ $(a_n)$ has a convergent subsequence $(a_{n_k})$,
+Bolzano—Weierstrass $\;\Rightarrow\;$ $(a_n)$ has a convergent subsequence $(a_{n_k})$,
 let $a = \lim a_{n_k}$
 
 ---

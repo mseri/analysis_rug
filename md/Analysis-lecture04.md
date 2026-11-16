@@ -14,6 +14,10 @@ Tutorial: [Tutorial 4](#tutorials/tutorial-4)
 
 ---
 
+Let's take 5 minutes to fill in the starting survey for the Waterproof experiment (QR code in a moment)
+
+---
+
 # Cauchy sequences
 
 ## Cauchy sequences

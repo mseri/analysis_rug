@@ -5,7 +5,7 @@ date: "Lecture 3"
 ---
 
 Topics:
-- Abbott §2.4. The monotone convergence theorem
+- Abbott §2.4. The monotone convergence theorem and a first look at infinite series
 - Abbott §2.5. The Bolzano—Weierstrass theorem
 
 Formalization: [`Sequences.v`](docs/rocq/RUG.Analysis.Sequences.html), [`Subsequences.v`](docs/rocq/RUG.Analysis.Subsequences.html), [`Series.v`](docs/rocq/RUG.Analysis.Series.html)

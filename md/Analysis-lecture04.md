@@ -352,7 +352,7 @@ $$
 
 **Definition:** $\sum_{k=1}^\infty a_k$ is called
 - <span style="color:red">absolutely convergent</span> if $\sum_{k=1}^\infty |a_k|$ converges
-- <span style="color:red">conditionally convergent</span> if it converges but $\sum_{k=1}^\infty |a_k|$ diverges
+- <span style="color:red">conditionally convergent</span><sup><a href="https://www.mseri.me/riemann-rearrangement-theorem/" style="text-decoration:none">↗</a></sup> if it converges but $\sum_{k=1}^\infty |a_k|$ diverges
 
 \pause
 

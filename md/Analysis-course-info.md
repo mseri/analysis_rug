@@ -37,35 +37,69 @@ All times are local Groningen time.
 
 **Resit:** No resit is currently listed in the linked rooster feed. Its date, time and room will be added when available.
 
-## Peer-review homework and Waterproof proof-assistant labs
+## Homework labs: structure and expectations
 
-These 5 sessions, while not compulsory, are your only opportunity to get direct feedback and have focussed work on how to write correct and understandable analysis proofs. 
+These 5 sessions, while not compulsory, are your main opportunity to get direct feedback and do focused work on how to write correct, clear, and understandable analysis proofs.
 
-While the homework itself is not graded, **active and collaborative participation to the 4 main sessions will grant 0.25 points each**. These tutorials will help you develop and assess the level of your mathematical writing and problem-solving skills through peer feedback. Therefore we expect you to come on time, fully engage with the session and wait for the end of the session before leaving.
+While the homework itself is not graded, **active and collaborative participation in the 4 main lab sessions earns 0.25 bonus points each** (up to 1.0 point total). Because these sessions rely on working together in real time, you are expected to arrive on time, stay for the entire session, and engage seriously with every part. **We stick strictly to the schedule: if you miss any part of a session, you cannot receive the bonus points.**
 
-The **Waterproof proof-writing workshop on 13 November 2026** is the introductory lecture for the peer-review sessions: we discuss expectations for peer-review feedback, help you set up Waterproof, and practise writing proofs with it. It has no homework deadline and does not award bonus points. **In the four subsequent lab sessions we expect you are already familiar with all this, in case this is not the case and you had not attended the workshop, you will not get the points**.
+### Prerequisite: the introductory Waterproof workshop (13 November 2026)
 
-The four subsequent labs are the **homework peer-review and formalization sessions**. At these, you are expected to bring your prepared solution by the start of the corresponding session (**09:00 on 20 November, 4 December, 8 January and 22 January** -- these are the four homework deadlines) and then there will be an exchange for the peer-review. At the beginning of the class you will upload your solution to the corresponding Brightspace Homework page, at the end you will be asked to upload there the peer-review feedback you gave during the session and your formalization (as described below).
+The **Waterproof proof-writing workshop on 13 November 2026** is the introductory session for the labs. In this session we discuss expectations for peer-review feedback, help you set up Waterproof, and practise writing proofs with it. It has no homework deadline and does not award bonus points. **Attending the workshop is not compulsory, but what it covers is a prerequisite for the four homework labs**: if you did not attend, you can work through it at home, but Waterproof must be working on your computer when you come to the first homework lab.
 
-You don't need to sign the homework but you need to write your student code on the homework sheets, so that it will be possible to find it at the end of the session.
+Install instructions are available on Brightspace and in [the course repository](https://github.com/mseri/analysis_rug).
 
-At the beginning of the session you will register your participation by uploading your solutions to the corresponding Brightspace Homework page and we will randomly assign the peer-review pair. This will happen in the first 15 min of class, while we present the solution of the homework: if you arrive later than that, you will have lost the points.
+Before the first homework lab, you must ensure that:
+- Waterproof works on your computer (locally or in the browser); and
+- you have completed **the entire Waterproof tutorial (`tutorial.mv`), especially the last exercise**, so that you are familiar with the syntax and reasoning style.
 
-In the pair, you are expected to exchange your homework solutions, study them and provide feedback to each other (see below). The homework should include your student code and the student code of the person that gives the feedback. In the last 10 minutes of the lab, you are expected to scan the homework with your feedback (before returning it to the owner) and upload it on their corresponding Brightspace Homework page. **Failure to do so, will mean that you don't receive the points.**
+In the four homework labs, we assume you already have this working knowledge (and a working Waterproof installation). If you have technical issues, feel free to contact us at any moment.
 
-In the second half of the lab, you will work on the formalization of your solution (or a new one if you think is more fit) in the Waterproof proof assistant (see below). This is a constrained natural-language proof assistant that can give you automatically (and deterministically) feedback on the proof and could be a useful tool to check some of you other coursework for Analysis for correctness or completeness. **The introductory Waterproof proof-writing workshop is dedicated to learning Waterproof and resolving setup issues.**
+### Before each homework lab: what to prepare and bring
 
-At the end of the session you will upload your formalization on the corresponding Brightspace Homework page. **Failure to do so, will mean that you don't receive the points.**
+1. **Solve the homework on paper:** Prepare a genuine attempt at the assigned homework **written on paper** before the lab starts (**09:00 on 20 November, 4 December, 8 January, and 22 January**).
+2. **Write your full name and student number on the sheets:** so your work can be tracked and returned to you.
+3. **Bring your paper solution to the lab:** You will need it on paper for the in-class peer review, and during the lab you will take a photo or scan of it to upload to Brightspace.
+4. **Have the right Waterproof template ready:** Each homework has a corresponding `.mv` file on the course website/repository:
+   - Homework 1: `hw1_infimum.mv` (Infimum)
+   - Homework 2: `hw2_series_ratio.mv` (Comparison of series)
+   - Homework 3: `hw3_limit_point.mv` (Limit points)
+   - Homework 4: `hw4_uniform_convergence.mv` (Uniform convergence)
 
-After the sessions, we will revise the homework solutions, the feedback and the attempt at formalization. If this shows meaningful feedback (see below), a serious attempt at solving the homework (even if incorrect or incomplete) and a serious attempt at formalization, then you will be awarded the 0.25 points for the session.
+### During the lab: step-by-step schedule
+
+- **Arrival and seating (09:00):** When you enter the room, you will be given a random seat/place so that peer-review pairs are formed smoothly without disrupting the session.
+- **Part 1 -- Solution presentation and peer review (about 45 minutes):**
+  - We present a solution to the homework.
+  - You exchange your paper homework with your assigned peer, read their solution carefully, and write **clear, constructive, and reasoned feedback** on it (see the guidelines below). Note that you are not expected to grade your peer's work, only to give written feedback.
+  - Make sure the full names and student numbers of both the author and the reviewer are written on the sheets.
+- **Part 2 -- Waterproof formalization (about 45 minutes):**
+  - You work on formalizing a solution of the homework in Waterproof using the corresponding `.mv` file.
+  - To help you ease into the language and focus on the mathematical reasoning, we will walk through the first part of the exercise together and leave the second part for you to work on.
+  - You are welcome to try the formalization beforehand and encouraged to finish it at home after the lab, but you are expected to work on it during this part of the session. You only upload the version you have at the end of the lab (there is no need to re-upload a later version).
+- **Uploads to Brightspace (last 5 minutes of the lab):**
+  - On the specific Brightspace Homework pages for that lab, you must upload three items **during the lab**:
+    1. **Your attempted homework:** a photo or scan of the paper solution you brought;
+    2. **The feedback you gave:** a photo or scan of your partner's homework showing your written feedback (taken before returning the sheets to the owner);
+    3. **Your attempted Waterproof formalization:** your `.mv` file.
+  - Failure to upload all three items during the lab means you will not receive the bonus points. For technical or practical hiccups, talk to the lecturer or the TA **during the session**, so that a solution can be found.
+
+### How the 0.25 bonus points are awarded
+
+After each lab, we will check the submissions on Brightspace and award a **pass/fail** for the 0.25 bonus points (and sends amended feedback for the homework when necessary).
+
+The pass is awarded for **active participation and genuine effort**, **not** for perfection or completeness:
+- a **good, genuine attempt** at solving the homework on paper (even if incomplete or containing mistakes);
+- **clear, constructive, and reasoned peer feedback** (no grades);
+- a **genuine attempt** at formalizing the solution in Waterproof during the lab (you do **not** need a complete or error-free verification, your effort during the session is what counts).
 
 ## Peer-review homework guidelines: mathematical writing skills are important
 
-In the degree programmes Mathematics and Applied Mathematics you are not only supposed to learn mathematics, but also to communicate mathematical ideas to others. This is especially more relevant now that AI is forcing mathematicians to reach out to a wider public, to make its relevance clearer and to improve understanding and sharing of ideas acrooss specialization boundaries.
+In the degree programmes Mathematics and Applied Mathematics you are not only supposed to learn mathematics, but also to communicate mathematical ideas to others. This is especially relevant now that AI is forcing mathematicians to reach out to a wider public, to make its relevance clearer and to improve understanding and sharing of ideas across specialization boundaries.
 
-The style of communication depends on the context. For examples, the slides that I use in the lectures are very minimalistic. This is because I am presenting them orally, giving additional context where needed. In contrast, a written document that can be read by someone else without additional explanations needs to be self-contained and more elaborate.
+The style of communication depends on the context. For example, the slides that I use in the lectures are very minimalistic. This is because I am presenting them orally, giving additional context where needed. In contrast, a written document that can be read by someone else without additional explanations needs to be self-contained and more elaborate.
 
-During the peer-review homework tutorials, you will both get feedback on your own work and review the work of your peers. While these assignments are not graded, you should still focus not only on *validity* (mathematical correctness) but also on *readability* and *fluency* (correct use of mathematical language and notation).
+During the peer-review homework tutorials, you will both get feedback on your own work and review the work of your peers. **You are not expected to grade your peer's work: just give clear, reasoned, and constructive feedback.** While these assignments are not graded, you should still focus not only on *validity* (mathematical correctness) but also on *readability* and *fluency* (correct use of mathematical language and notation).
 
 When you read the solution, ask yourself
 
@@ -91,11 +125,11 @@ Note: the exam will *not* be assessed using detailed rubrics. The reason is that
 
 [Waterproof](https://impermeable.github.io/) is an automatic proof assistant for real analysis. It can check the correctness of your proofs and give you feedback on mistakes you may have made. It is a great tool to practice your mathematical writing skills and get instant feedback.
 
-What is most important is that Waterproof uses controlled natural language. From all practical purposes, this means that the proof you write in Waterproof is a regular mathematical proof written in English. This makes Waterproof a great tool to practice your mathematical writing skills (and it can directly run in the browser).
+What is most important is that Waterproof uses controlled natural language. For all practical purposes, this means that the proof you write in Waterproof is a regular mathematical proof written in English. This makes Waterproof a great tool to practice your mathematical writing skills (and it can directly run in the browser).
 
-This year we start an experimentation with Waterproof. We spent a substantial amount of time to formalize all the lectures in Waterproof and the homework exercises will be provided with a Waterproof template that you can use to write your proof. You can then get instant feedback on its correctness. If you want to try it out, please follow the instructions on Brightspace or on [the course repository](https://github.com/mseri/analysis_rug).
+This year we are running an educational project with Waterproof. We spent a substantial amount of time formalizing the lectures in Waterproof, and each homework exercise comes with a Waterproof template (`.mv` file) that you can use to write your proof and get instant feedback on its correctness. Follow the install instructions on Brightspace or in [the course repository](https://github.com/mseri/analysis_rug).
 
-It would be extremely beneficial for us, if you would upload both your handwritten solutions and (if you used it) the Waterproof solutions on the corresponding Brightspace Homework page. We will use anonymized data to make an educational research on how Waterproof affects the learning.
+During the labs, you are asked to upload your (preferably handwritten) attempt, the peer feedback you wrote, and your attempted Waterproof formalization to the corresponding Brightspace Homework page. You are also encouraged to continue working on the formalization at home after the lab. Finishing it is very educative, even though the lab bonus point only depends on your effort during the session.
 
 ## Computation of the final grade
 
@@ -214,7 +248,7 @@ Tutorial $N$ belongs to lecture $N$. The exercises (from **Abbott, 2nd edition**
 
 # Homework assignments
 
-These assignments are prepared for the four homework peer-review and formalization labs. Participation is optional, but the requirements in the assessment section must be met to earn the bonus points. **Each prepared solution is due at the start of its lab**, on the dates below. You must bring it for the peer review and upload it to the corresponding Brightspace Homework page at the start of the session; at the end of the session you upload there the feedback you gave and your formalization as described above. Further submission instructions will be provided via Brightspace.
+These assignments are prepared for the four homework peer-review and formalization labs. Participation is optional, but the requirements in the [Assessment](#assessment) section must be met to earn the 0.25 bonus points per lab. **Each prepared attempt must be written on paper (preferably by hand; if you strongly prefer LaTeX, print the result) before the start of its lab (09:00)** on the dates below. Bring your paper solution to the lab for peer review; during the lab you will take a photo or scan of it (and of the peer feedback you wrote) and upload it to the corresponding Brightspace Homework page together with your attempted Waterproof formalization. Further submission instructions are provided on Brightspace.
 
 ## Assignment 1 (due 20 November 2026, 09:00; lab 09:00–11:00)
 

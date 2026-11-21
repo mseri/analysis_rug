@@ -56,12 +56,13 @@ Waterproof Register Expand "A";
 
 **Waterproof remark.** To unpack a nested existential `∃ x : ℝ, ∃ y : ℝ, ...`,
 obtain `x` first, then restate the remaining `∃ y : ℝ, ...` with
-`It holds that ... as (...)` before obtaining `y`. Split a conjunction with
+`It holds that ... as (...)` before obtaining `y`.  Split a conjunction with
 `Because (H) both (...) as (...) and (...) as (...)`.
 
 <hint title="💡 Hint (click to open/close)">
 Every element of $A$ is a quotient: show that its numerator and its denominator
-are positive, and use `Rdiv_lt_0_compat`.
+are positive, and use `Rdiv_lt_0_compat` (from Rocq stdlib, it says that the
+qutient of positive numbers is positive).
 </hint>
 
 ```coq
@@ -70,6 +71,31 @@ Proof.
 ```
 <input-area>
 ```coq
+(* To begin with, we need to express what does
+   [0 is a _lower bound_ for A]
+   more explicitly. How else can we write the same thing symbolically?
+   We can do this with [We need to show that ...] *)
+
+(* Once this is done we will need to take care of a quantifier.
+   How do we do that? *)
+
+(* Now it is time to use the fact that the point belongs to A.
+   Here we can make the hypothesis explicity by literlly copying
+   the Definition of A (see above) after [It holds that ...] *)
+
+(* Once this is done we will need to take care again of some quantifiers.
+   How do we do that? Remember to re-state each time what the hypothesis
+   should look like... And beware of syntax errors :)
+
+   I would recommend to look at the remark before this exercise to get acquainterd some useful syntax. *)
+
+(* You will need to help the system realize that numerator and denominator
+   are both positive, before it will be able to check that the fraction is
+   positive (in a reasonable time). *)
+
+(* Remember to finish your proof with [We conclude that ...]. Indeed,
+   what do we conclude? Note that the system can reconcile the point
+   with its definition, you don't need to remind it. *)
 
 ```
 </input-area>
@@ -83,8 +109,11 @@ It is useful to prove this lemma separately.
 
 **Waterproof remark.** After `Choose a := ...` for a goal `∃ a ∈ A, ...`, first
 show that `a ∈ A` in a block `{ We need to verify that a ∈ A. ... }`. The
-automation treats `/ u` as an unknown: give it `u * / u = 1` (`Rinv_r`), and
-cancel a positive factor with `Rmult_lt_reg_r`.
+automation can get in trouble with divisions: you may need to specifically
+remind it that `u * / u = 1` (with `Rinv_r`) for each specific real number `u`,
+that appears in your proof, and you may need to cancel a positive factor
+in the expressions with `Rmult_lt_reg_r` (which states that
+`0 < r -> r1 * r < r2 * r -> r1 < r2`).
 
 <hint title="💡 Hint (click to open/close)">
 Fix $x = \frac12$ and choose $y$ large, depending on $\varepsilon$.
@@ -96,6 +125,10 @@ Proof.
 ```
 <input-area>
 ```coq
+
+(* At some point here you need to help the system do the algebra,
+   which means going step by step, one identity and simplification at
+   a time... I know... *)
 
 ```
 </input-area>
@@ -114,6 +147,15 @@ Proof.
 ```
 <input-area>
 ```coq
+(* The ε-characterisation of the infimum (Lecture 1) applies,
+   since 0 is a lower bound by Part 1. We should spell it out with
+   [By ... it holds that ... as (HypothesisName)].
+   You write [⇔] with [\Leftrightarrow] *)
+
+(* To change the claim we want to prove with the appropriate side of the
+   if and only if we can use [By ... it suffices to show that ...]. *)
+
+(* At this point [By ... we can conclude that ...] ... *)
 
 ```
 </input-area>

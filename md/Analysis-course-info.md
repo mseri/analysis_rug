@@ -1,6 +1,6 @@
 # Analysis (WBMA012-05) — Course Information 2026–2027
 
-**Marcello Seri** — Bernoulliborg, room 484 — m.seri@rug.nl
+**Marcello Seri** — Bernoulliborg, room 466
 
 > **Calendar:** Dates, times and rooms follow the [2026–2027 RUG rooster](https://rooster.rug.nl/current?courseOffering=WBMA012-05.2026-2027.1). Check the live rooster for changes. The allocation of teaching topics and tutorial exercises remains provisional after lecture 9.
 

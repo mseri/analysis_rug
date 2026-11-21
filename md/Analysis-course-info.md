@@ -141,7 +141,7 @@ $$
 G =
 \begin{cases}
 FE & \text{ if } FE < 5.5 \\
-\max\{FE + L, 10\} & \text{ if } FE \geq 5.5
+\min\{FE + L, 10\} & \text{ if } FE \geq 5.5
 \end{cases}
 $$
 

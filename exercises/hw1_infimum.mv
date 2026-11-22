@@ -38,7 +38,59 @@ Open Scope subset_scope.
 
 Set Default Goal Selector "!".
 Set Bullet Behavior "Waterproof Relaxed Subproofs".
+
+Set Default Timeout 60.
 ```
+</hint>
+
+**Getting help.**
+
+- The [Waterproof reference sheet](../waterproof-reference-sheet.md) lists the
+  sentences you can use (Section 3) and the most common mistakes (Section 5).
+- The input areas below contain comments `(* ... *)` that walk you through the
+  proof, roughly one comment for each group of lines. Write your proof in
+  between; you may keep the comments or delete them.
+- Write one sentence at a time and check it before writing the next one: the
+  Goals panel then always tells you what is left to prove.
+- Each sentence gets at most 60 seconds (this is the `Set Default Timeout 60.`
+  among the imports). If a line times out and you are **sure** that you are
+  doing an obvious thing, you can write `By magic it holds that ... as (...).`
+  (or `By magic we conclude that ... .`) to circumvent the issue and
+  go on with the proof. Waterproof then accepts the statement without proof:
+  it warns `Please come back later to provide an actual proof of ...`, and the
+  `Qed.` of that lemma reports the proof as incomplete. The rest of the
+  notebook keeps working, so you can come back to it later.
+
+<hint title="🛠 What do the error messages mean? (click to open/close)">
+
+- `Syntax error: Unfortunately, this sentence cannot be understood.`
+  Waterproof could not read the sentence. Check that the parentheses match,
+  that the sentence ends with a `.`, and that there is a space before a closing
+  `}`. Check also that the autocompletion of the editor did not replace one of
+  your words: it sometimes inserts a lemma name when you press space after
+  `and`. Press `Esc` to close the list of suggestions before typing the space.
+  In a long sentence, write a shorter version first, or split it over several
+  lines, to find the culprit.
+- `Could not verify that ...` or `Could not verify this follows from ...`.
+  The statement may well be true, but the automation could not find a proof.
+  Make a smaller step: first state an intermediate fact with
+  `It holds that ... as (...)`, or hand over the lemma you have in mind with
+  `By ... it holds that ...`.
+- `Timeout: Waterproof could not find a proof in the allocated time.`
+  The same problem: the step is too large (it took more than 60 seconds).
+  Make a smaller step, or see the remark on `By magic` above.
+- `Wrong goal specified.` The statement after `We need to show that` is not
+  what has to be proved. Compare it, symbol by symbol, with the Goals panel.
+- `Wrong assumption specified.` The statement after `Assume that` is not the
+  hypothesis of the implication that you are proving.
+- `Expected variable name x instead of y` (after `Take` or `Obtain`). Use the
+  same name as in the statement you are working on.
+- `The reference H was not found in the current environment` (or
+  `The variable H was not found ...`). There is no `H` at this point: a typo,
+  a missing `as (H)`, or `H` was introduced inside another `{ ... }` block or
+  another bullet.
+- `Attempt to save an incomplete proof` (at `Qed.`). Some goals are still
+  open: look at the Goals panel.
 </hint>
 
 We define the set $A$ formally.
@@ -56,13 +108,27 @@ Waterproof Register Expand "A";
 
 **Waterproof remark.** To unpack a nested existential `∃ x : ℝ, ∃ y : ℝ, ...`,
 obtain `x` first, then restate the remaining `∃ y : ℝ, ...` with
-`It holds that ... as (...)` before obtaining `y`.  Split a conjunction with
-`Because (H) both (...) as (...) and (...) as (...)`.
+`It holds that ... as (...)` before obtaining `y`. For example, from a
+hypothesis `(Hp)` of the form `∃ x : ℝ, ∃ y : ℝ, P x y`:
+
+- `Obtain x according to (Hp).`
+- `It holds that ∃ y : ℝ, P x y as (Hy).` (with `P x y` written out)
+- `Obtain y according to (Hy).`
+
+Split a conjunction `A ∧ B` stored in `(H)` with
+`Because (H) both (A) as (HA) and (B) as (HB).` For a triple conjunction
+`A ∧ B ∧ C` do it twice: first into `A` and `B ∧ C`, then split `B ∧ C`.
 
 <hint title="💡 Hint (click to open/close)">
-Every element of $A$ is a quotient: show that its numerator and its denominator
-are positive, and use `Rdiv_lt_0_compat` (from Rocq stdlib, it says that the
-qutient of positive numbers is positive).
+An element $p \in A$ is a quotient $p = \frac{2x+1}{3y-x}$ with
+$1 \le 2x < y$. Its numerator is positive, since $2x + 1 \ge 2 > 0$, and so is
+its denominator, since $3y - x > 6x - x = 5x \ge \frac52 > 0$. Hence $p > 0$,
+and in particular $p \ge 0$.
+
+In Waterproof, prove the two positivity statements separately (for instance
+`It holds that 2*x + 1 > 0 as (Hnum).`), and then use the standard library
+lemma `Rdiv_lt_0_compat : 0 < a → 0 < b → 0 < a / b` (the quotient of positive
+numbers is positive) with `By Rdiv_lt_0_compat it holds that ...`
 </hint>
 
 ```coq
@@ -71,27 +137,34 @@ Proof.
 ```
 <input-area>
 ```coq
-(* To begin with, we need to express what does
+(* To begin with, we need to express what
    [0 is a _lower bound_ for A]
-   more explicitly. How else can we write the same thing symbolically?
+   means more explicitly. How else can we write the same thing symbolically?
+   What is a lower bound of A?
    We can do this with [We need to show that ...] *)
 
 (* Once this is done we will need to take care of a quantifier.
-   How do we do that? *)
+   How do we do that? (See Section 3 of the tutorial: [Take ... ∈ ... .]) *)
 
 (* Now it is time to use the fact that the point belongs to A.
-   Here we can make the hypothesis explicity by literlly copying
-   the Definition of A (see above) after [It holds that ...] *)
+   Here we can make the hypothesis explicit by literally copying
+   the definition of A (see above) after [It holds that ...],
+   with p replaced by the name of your point, and giving it a label
+   with, e.g., [as (Hp)]. *)
 
 (* Once this is done we will need to take care again of some quantifiers.
    How do we do that? Remember to re-state each time what the hypothesis
    should look like... And beware of syntax errors :)
 
-   I would recommend to look at the remark before this exercise to get acquainterd some useful syntax. *)
+   I would recommend to look at the remark before this exercise to get
+   acquainted with some useful syntax: [Obtain x according to (Hp).] and
+   [Because (H) both (...) as (...) and (...) as (...).] *)
 
 (* You will need to help the system realize that numerator and denominator
    are both positive, before it will be able to check that the fraction is
-   positive (in a reasonable time). *)
+   positive (in a reasonable time): one [It holds that ... > 0 ]
+   for each of them, and then [Rdiv_lt_0_compat] should do the trick.
+   If you are still struggling, see if the hint helps. *)
 
 (* Remember to finish your proof with [We conclude that ...]. Indeed,
    what do we conclude? Note that the system can reconcile the point
@@ -107,16 +180,46 @@ Qed.
 
 It is useful to prove this lemma separately.
 
-**Waterproof remark.** After `Choose a := ...` for a goal `∃ a ∈ A, ...`, first
-show that `a ∈ A` in a block `{ We need to verify that a ∈ A. ... }`. The
-automation can get in trouble with divisions: you may need to specifically
-remind it that `u * / u = 1` (with `Rinv_r`) for each specific real number `u`,
-that appears in your proof, and you may need to cancel a positive factor
-in the expressions with `Rmult_lt_reg_r` (which states that
-`0 < r -> r1 * r < r2 * r -> r1 < r2`).
+**Waterproof remark: choosing an element of a set.** After `Choose a := ...`
+for a goal `∃ a ∈ A, ...`, Waterproof first asks you to show that `a ∈ A`. Do
+this in a block `{ We need to verify that a ∈ A. ... }`).
+After the block you continue with the rest of the goal.
+
+**Waterproof remark: divisions.** The automation is good with `+`, `-` and
+`*`, but not with divisions. In Rocq, `x / u` means `x * / u`, where `/ u` is
+the inverse of `u`. The automation treats `/ u` as if it were a new unknown
+number: in particular, it does not know that `u * / u = 1`, because that is
+only true when `u ≠ 0`. You have to tell it, using the standard library lemma
+`Rinv_r : u ≠ 0 → u * / u = 1`, once for each expression `u` that you divide
+by:
+
+- `It holds that u > 0.`
+- `By Rinv_r it holds that u * / u = 1.`
+
+With these two facts in the context, the automation can check, for instance,
+`It holds that (x / u) * u = x.` (Replace `u` by the actual expression: in
+this exercise for example you will likely divide by `ε` and by the denominator
+of your element of $A$.)
+
+The second trick is to _clear the denominator_ in an inequality. To show
+`r1 < r2` it is often easier to show `r1 * r < r2 * r` for some `r > 0`, and
+then to cancel `r` with `Rmult_lt_reg_r : 0 < r → r1 * r < r2 * r → r1 < r2`:
+
+- `It holds that r > 0.`
+- `It holds that r1 * r < r2 * r.`
+- `By Rmult_lt_reg_r we conclude that r1 < r2.`
 
 <hint title="💡 Hint (click to open/close)">
-Fix $x = \frac12$ and choose $y$ large, depending on $\varepsilon$.
+Fix $x = \frac12$, the smallest allowed value: the numerator becomes
+$2x + 1 = 2$, and the element of $A$ is $a = \frac{2}{3y - 1/2}$, which tends to
+$0$ as $y \to \infty$. Given $\varepsilon > 0$, take
+$y = \frac1\varepsilon + 1$, so that $y > 1 = 2x$. The denominator is then
+$$
+d = 3y - \tfrac12 = \tfrac{3}{\varepsilon} + \tfrac52 > 0,
+\qquad\text{and}\qquad
+a \cdot d = 2 < 3 + \tfrac52\varepsilon = \varepsilon \cdot d,
+$$
+so $a < \varepsilon$ after cancelling $d$.
 </hint>
 
 ```coq
@@ -125,10 +228,38 @@ Proof.
 ```
 <input-area>
 ```coq
+(* As usual, start by taking care of the quantifier [∀ ε > 0]. *)
 
-(* At some point here you need to help the system do the algebra,
-   which means going step by step, one identity and simplification at
-   a time... I know... *)
+(* Now we have to give an element [a] of [A], with [Choose a := ... .].
+   Tip: do not simplify! Write [a] literally in the form
+   [(2*x + 1) / (3*y - x)], with your choice of x and y plugged in,
+   for instance [Choose a := (2 * (7/5) + 1) / (3 * (...) - 7/5).]
+   where you still have to fill in the dots, and pick your own
+   value for x. *)
+
+(* Waterproof now asks you to verify that a ∈ A. Do it in a block
+     {
+       We need to verify that a ∈ A.
+       ...
+     }
+   Inside the block:
+   - write out what a ∈ A means with [We need to show that ∃ x : ℝ, ...]
+     (copy the definition of A, with p replaced by a);
+   - choose the two witnesses with [Choose x := ... .] and [Choose y := ... .];
+   - finish with
+     [We conclude that 1 ≤ 2*x ∧ 2*x < y ∧ a = (2*x + 1) / (3*y - x).]
+     If this last step fails, try first to tell the system that 1/ε > 0. *)
+
+(* After the block, we need to show that a < 0 + ε. As in the remark
+   above, we clear the denominator d of a:
+   - give it a name with [Define d := ... .] and show that d > 0
+     (for this the system needs again to know that 1/ε > 0);
+   - provide [ε * / ε = 1] and [d * / d = 1], using Rinv_r;
+   - compute a * d and ε * d, each in its own [It holds that ... as (...)];
+   - deduce that a * d < ε * d;
+   - cancel d with [By Rmult_lt_reg_r we conclude that a < 0 + ε.]
+   This means helping the system do the algebra step by step, one
+   identity and simplification at a time... I know... *)
 
 ```
 </input-area>
@@ -150,12 +281,18 @@ Proof.
 (* The ε-characterisation of the infimum (Lecture 1) applies,
    since 0 is a lower bound by Part 1. We should spell it out with
    [By ... it holds that ... as (HypothesisName)].
+
+   Note that the lemma needs three arguments: the set, the candidate
+   infimum and the proof that it is a lower bound, so here we write
+   [By (inf_characterization A 0 A_lower_bound) it holds that ...]
+   followed by the equivalence (see the statement of inf_characterization
+   in theories/Reals.v, with A and 0 plugged in).
    You write [⇔] with [\Leftrightarrow] *)
 
 (* To change the claim we want to prove with the appropriate side of the
    if and only if we can use [By ... it suffices to show that ...]. *)
 
-(* At this point [By ... we can conclude that ...] ... *)
+(* At this point [By ... we conclude that ...] with the result of Part 2. *)
 
 ```
 </input-area>

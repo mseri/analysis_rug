@@ -47,9 +47,9 @@ Set Default Timeout 60.
 **Getting help.**
 
 - The
-  [Waterproof reference sheet](https://github.com/mseri/analysis_rug/blob/main/waterproof-reference-sheet.md)
-  lists the sentences you can use (Section 3) and the most common mistakes
-  (Section 5).
+  [Waterproof proof steps sheet](https://github.com/impermeable/waterproof-vscode/blob/main/docs/tactics-sheet.md)
+  lists all the sentences you can use, each with a short example. The most
+  common error messages are explained in the hint at the end of this section.
 - The automation of Waterproof handles logic well, and algebra with `+`, `-`
   and `*`. It does not always recognise that an algebraic step is correct,
   though, in particular when divisions and fractions are involved. For such

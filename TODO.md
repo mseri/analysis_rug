@@ -3,3 +3,4 @@
 - Move helpers back into Waterproof
 - Document Search and SearchPattern
 - Move the bonus lectures and exercises here
+- Change the definitions in theories/ (converges_uniformly, open_cover). Rewriting them with ∈ would remove the remaining : cases

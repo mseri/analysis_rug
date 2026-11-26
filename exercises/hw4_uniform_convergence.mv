@@ -10,19 +10,27 @@ $(0,\infty)$.
 
 **Course material.**
 
-- Lecture 10: [pointwise and uniform convergence](../index.html#lecture10)
+- Lecture 10:
+  [pointwise and uniform convergence](https://mseri.me/analysis_rug/#lecture10)
   (Abbott §6.2).
-- Formalisation: [`theories/FunctionSequences.v`](../theories/FunctionSequences.v),
+- Formalisation:
+  [`theories/FunctionSequences.v`](https://mseri.me/analysis_rug/docs/rocq/RUG.Analysis.FunctionSequences.html),
   in particular the examples `x_over_n_uniform`, `x_pow_n_not_uniform`; the
   definitions `converges_pointwise` / `converges_uniformly` are in
-  [`theories/Lib/UniformConvergence.v`](../theories/Lib/UniformConvergence.v)
+  [`theories/Lib/UniformConvergence.v`](https://mseri.me/analysis_rug/docs/rocq/RUG.Analysis.Lib.UniformConvergence.html)
   and are re-exported by `FunctionSequences`.
 
 Notes:
 
-- Recall that `a / b` is `a * / b` for Waterproof, and that the automation needs
-  help with inverses: the fact `b * / b = 1` (from `Rinv_r`, valid when
-  `b ≠ 0`) is usually all it is missing.
+- The exercise is cut into four parts. Part 1 (the exact value of the error) is
+  given. Part 2 and the first lemma of Part 4 are computations with real
+  numbers; only Part 3 and the last lemma are about uniform convergence.
+- Recall that `a / b` is `a * / b` for Waterproof, and that the automation
+  treats `/ b` as a new unknown number: it does not know that `b * / b = 1`
+  unless you tell it. The standard library lemma `Rinv_r : r ≠ 0 → r * / r = 1`
+  does that, e.g. once you know `b > 0`, write
+  `By Rinv_r it holds that b * / b = 1 as (Hb_inv).` This fact is usually all
+  the automation is missing to simplify an expression with `/ b`.
 
 <hint title="Import libraries (click to open/close)">
 
@@ -48,7 +56,69 @@ Open Scope subset_scope.
 
 Set Default Goal Selector "!".
 Set Bullet Behavior "Waterproof Relaxed Subproofs".
+
+Set Default Timeout 60.
 ```
+</hint>
+
+**Getting help.**
+
+- The
+  [Waterproof proof steps sheet](https://github.com/impermeable/waterproof-vscode/blob/main/docs/tactics-sheet.md)
+  lists all the sentences you can use, each with a short example. The most
+  common error messages are explained in the hint at the end of this section.
+- The automation of Waterproof handles logic well, and algebra with `+`, `-`
+  and `*`. It does not always recognise that an algebraic step is correct,
+  though, in particular when divisions, inverses, absolute values or natural
+  numbers seen as real numbers (`INR n`) are involved. For such steps you will
+  call a lemma from the Rocq standard library, with `By ... it holds that ...`
+  (in this homework, among others: `Rinv_r`, `Rinv_mult`,
+  `Rinv_le_contravar`, `le_INR` and `S_INR`). The notes above and the remarks
+  before each part explain which lemma to use and how.
+- The input areas below contain comments `(* ... *)` that walk you through the
+  proof, roughly one comment for each group of lines. Write your proof in
+  between; you may keep the comments or delete them.
+- Write one sentence at a time and check it before writing the next one: the
+  Goals panel then always tells you what is left to prove.
+- Each sentence gets at most 60 seconds (this is the `Set Default Timeout 60.`
+  among the imports). If a line times out and you are **sure** that you are
+  doing an obvious thing, you can write `By magic it holds that ... as (...).`
+  (or `By magic we conclude that ... .`) instead, to circumvent the issue and
+  go on with the proof. Waterproof then accepts the statement without proof:
+  it warns `Please come back later to provide an actual proof of ...`, and the
+  `Qed.` of that lemma reports the proof as incomplete. The rest of the
+  notebook keeps working, so you can come back to it later.
+
+<hint title="🛠 What do the error messages mean? (click to open/close)">
+
+- `Syntax error: Unfortunately, this sentence cannot be understood.`
+  Waterproof could not read the sentence. Check that the parentheses match,
+  that the sentence ends with a `.`, and that there is a space before a closing
+  `}`. Check also that the autocompletion of the editor did not replace one of
+  your words: it sometimes inserts a lemma name when you press space after
+  `and`. Press `Esc` to close the list of suggestions before typing the space.
+  In a long sentence, write a shorter version first, or split it over several
+  lines, to find the culprit.
+- `Could not verify that ...` or `Could not verify this follows from ...`.
+  The statement may well be true, but the automation could not find a proof.
+  Make a smaller step: first state an intermediate fact with
+  `It holds that ... as (...)`, or hand over the lemma you have in mind with
+  `By ... it holds that ...`.
+- `Timeout: Waterproof could not find a proof in the allocated time.`
+  The same problem: the step is too large (it took more than 60 seconds).
+  Make a smaller step, or see the remark on `By magic` above.
+- `Wrong goal specified.` The statement after `We need to show that` is not
+  what has to be proved. Compare it, symbol by symbol, with the Goals panel.
+- `Wrong assumption specified.` The statement after `Assume that` is not the
+  hypothesis of the implication that you are proving.
+- `Expected variable name x instead of y` (after `Take` or `Obtain`). Use the
+  same name as in the statement you are working on.
+- `The reference H was not found in the current environment` (or
+  `The variable H was not found ...`). There is no `H` at this point: a typo,
+  a missing `as (H)`, or `H` was introduced inside another `{ ... }` block or
+  another bullet.
+- `Attempt to save an incomplete proof` (at `Qed.`). Some goals are still
+  open: look at the Goals panel.
 </hint>
 
 We define the sequence $(f_n)$ and the candidate limit function $g(x) = 1/x$.
@@ -56,6 +126,24 @@ We define the sequence $(f_n)$ and the candidate limit function $g(x) = 1/x$.
 Definition fn_seq : ℕ → ℝ → ℝ := fun n x => INR n / (INR n * x + 1).
 Definition f_lim : ℝ → ℝ := fun x => 1 / x.
 ```
+
+**How to read these definitions and statements.**
+
+- `fn_seq : ℕ → ℝ → ℝ` says that `fn_seq` takes a natural number and a real
+  number, and returns a real number: `fn_seq n x` is $f_n(x)$. As in
+  Homework 1, `fun n x => ...` is "the function that sends `n` and `x` to
+  ...". Similarly, `f_lim x` is $\frac1x$. Here the colon reads "of type":
+  `ℕ → ℝ → ℝ` is a type of functions, not a set of numbers.
+- In a lemma, `(nR x a : ℝ)` says that `nR`, `x` and `a` are real numbers, and
+  a hypothesis in parentheses such as `(Ha : 0 < a)` is an assumption with the
+  label `Ha`, which you can use in the proof.
+- `[a, ∞)` and `(0, ∞)` are intervals, as usual: `x ∈ [a, ∞)` says that
+  `a ≤ x`.
+- `∀ n ≥ N1, P` means "for every natural number `n ≥ N1`, `P` holds". You
+  prove it with `Take n ≥ N1.`, and then `n ≥ N1` is among your hypotheses.
+- `%nat` tells Rocq to read an expression in `ℕ` rather than in `ℝ`, as in
+  `(S N1 ≥ N1)%nat`. Here `S N1` is the successor $N_1 + 1$ of the natural
+  number `N1`.
 
 **Waterproof remark: natural numbers as real numbers.** Rocq keeps `ℕ` and `ℝ`
 apart: `INR n` is the natural number `n` seen as a real number. The automation
@@ -106,11 +194,21 @@ where the inequality holds because $(nx+1)x = nx^2 + x \geq na^2$ for $x \geq a$
 goal: state it separately first. It also cannot compare inverses on its own;
 supply the facts you need with
 `Rinv_mult : / (r1 * r2) = / r1 * / r2` and
-`Rinv_le_contravar : 0 < x → x ≤ y → / y ≤ / x`.
+`Rinv_le_contravar : 0 < x → x ≤ y → / y ≤ / x`. In these statements `r1`,
+`r2`, `x` and `y` are placeholders: they stand for the expressions of your own
+proof.
 
 <hint title="💡 Hint (click to open/close)">
-Use `diff_value`; the quantity inside the absolute value is negative. Then
-compare the two inverses.
+By Part 1 (`diff_value`) the error is $-\frac{1}{(nx+1)x} < 0$, so its
+absolute value is $\frac{1}{(nx+1)x}$; in Waterproof this is
+`/ (nR*x + 1) * / x`, which is positive as a product of positive numbers. Next,
+$$
+(nx+1)x = nx^2 + x \ge n x^2 \ge n a^2 > 0,
+$$
+and taking inverses reverses the inequality: $\frac{1}{(nx+1)x} \le
+\frac{1}{na^2}$. For the last step turn `/ (nR*x + 1) * / x` into
+`/ ((nR*x + 1) * x)` with `Rinv_mult`, and compare the inverses with
+`Rinv_le_contravar`.
 </hint>
 
 ```coq
@@ -120,6 +218,23 @@ Proof.
 ```
 <input-area>
 ```coq
+(* Part 1 gives the exact value of the error. To apply it you need
+   0 < x (from 0 < a and a ≤ x): then
+   [By (diff_value nR x Hx0 Hn) it holds that ... as (E).]
+   where Hx0 is the label of 0 < x. *)
+
+(* The error is negative. Show, one at a time, that nR*x + 1 > 0,
+   / (nR*x + 1) > 0, / x > 0, and / (nR*x + 1) * / x > 0.
+   Then the system can check that
+   | nR / (nR*x + 1) - 1/x | = / (nR*x + 1) * / x. *)
+
+(* Now compare the inverses:
+   - turn the product of inverses into the inverse of a product with
+     [By Rinv_mult it holds that / ((nR*x + 1) * x) = ... as (...).];
+   - show a*a ≤ x*x separately (see the remark), then
+     nR*(a*a) ≤ (nR*x + 1) * x and nR*(a*a) > 0;
+   - [By Rinv_le_contravar it holds that / ((nR*x + 1) * x) ≤ / (nR*(a*a)) as (...).]
+   Finally conclude. *)
 
 ```
 </input-area>
@@ -149,15 +264,29 @@ Now prove uniform convergence on $[a,\infty)$ for every $a > 0$. Note how the
 threshold $N$ below depends on $\varepsilon$ and $a$, but *not* on $x$: that is
 exactly what uniform convergence means.
 
+In `theories/Lib/UniformConvergence.v` the definition of uniform convergence is
+written with `∀ n : ℕ, (n ≥ N1)%nat → ...`. This is the same as
+`∀ n ≥ N1, ...`, and Waterproof accepts both: below we use the shorter form.
+
 **Waterproof remark.** After `Choose N1 := ...`, restate the goal with
 `We need to show that ...` before using `Take`. For the facts about `INR n` you
 need here, use `le_INR`, `S_INR` and `pos_INR` (see the remark after the
 definition of `fn_seq`).
 
 <hint title="💡 Hint (click to open/close)">
-The threshold comes from the Archimedean property applied to
-$\frac{1}{\varepsilon a^2}$; taking `N1 := S n1` also gives `1 ≤ INR n`. Then
-combine Part 2 and `small_inv`.
+Given $\varepsilon > 0$, the Archimedean property gives a natural number
+$n_1 > \frac{1}{\varepsilon a^2}$. Take $N = n_1 + 1$ (in Waterproof
+`N1 := S n1`): then every $n \ge N$ satisfies $n \ge 1$, which Part 2 needs,
+and $n > \frac{1}{\varepsilon a^2}$. For such $n$ and every $x \ge a$, Part 2
+gives
+$$
+\bigg|\frac{n}{nx+1} - \frac1x\bigg| \le \frac{1}{na^2} < \varepsilon,
+$$
+where the last step is `small_inv` with $m = na^2 > \frac1\varepsilon$.
+
+In Waterproof: `By the Archimedean property it holds that ∃ n1 ∈ ℕ, n1 > ... .`
+followed by `Obtain such an n1.` This sentence does not accept `as (...)`:
+restate the inequality on the next line with `It holds that ... as (Hn1).`
 </hint>
 
 ```coq
@@ -167,6 +296,35 @@ Proof.
 ```
 <input-area>
 ```coq
+(* Unfold the definition of uniform convergence with
+   [We need to show that ∀ ε > 0, ∃ N1 ∈ ℕ, ∀ n ≥ N1,
+      ∀ x ∈ [a, ∞), | fn_seq n x - f_lim x | < ε.]
+   and take ε > 0. *)
+
+(* The threshold: show ε * (a*a) > 0 and use the Archimedean property
+   to get n1 with n1 > / (ε * (a*a)) (see the hint for the syntax). *)
+
+(* [Choose N1 := S n1.], check [{ Indeed, N1 ∈ ℕ. }], restate the goal
+   with [We need to show that ∀ n ≥ N1, ...], take n with
+   [Take n ≥ N1.], take x ∈ [a, ∞) and state a ≤ x with a label. *)
+
+(* Facts about INR n: with le_INR, S_INR and pos_INR (see the remark
+   after the definition of fn_seq) show 1 ≤ INR n and
+   INR n > / (ε * (a*a)). *)
+
+(* Apply Part 2 with nR := INR n:
+   [By (diff_bound (INR n) x a Ha Hax Hn1') it holds that ... as (Hb).]
+   where Hax is a ≤ x and Hn1' is 1 ≤ INR n. *)
+
+(* It remains to show 1 / (INR n * (a*a)) < ε, with small_inv applied to
+   m := INR n * (a*a). For this you need INR n * (a*a) > / ε, which takes
+   a few small steps: rewrite / (ε * (a*a)) with Rinv_mult, provide
+   (a*a) * / (a*a) = 1 with Rinv_r, and multiply the inequality for
+   INR n by a*a > 0. *)
+
+(* Finally unfold fn_seq and f_lim with
+   [We need to show that | INR n / (INR n * x + 1) - 1/x | < ε.]
+   and conclude. *)
 
 ```
 </input-area>
@@ -186,8 +344,15 @@ $$
 First the computation at that point.
 
 <hint title="💡 Hint (click to open/close)">
-Simplify `m * / m` and `/ / m` first (`Rinv_r`, `Rinv_inv`). `Rabs_Ropp` and
-`Rabs_pos_eq` remove the absolute value.
+Simplify `m * / m` and `/ / m` first, one identity at a time:
+$m \cdot \frac1m = 1$, so the denominator $m \cdot \frac1m + 1$ is $2$, and
+$\frac{1}{1/m} = m$. The expression inside the absolute value is then
+$\frac m2 - m = -\frac m2$, whose absolute value is $\frac m2 \ge \frac12$.
+
+Useful lemmas: `Rinv_r : r ≠ 0 → r * / r = 1`, `Rinv_inv : / / r = r`,
+`Rabs_Ropp : | - x | = | x |` and `Rabs_pos_eq : 0 ≤ x → | x | = x`.
+If you state an identity `u = v` as `(E)`, then `By E it holds that ...` can
+rewrite `u` into `v` inside a larger expression.
 </hint>
 
 ```coq
@@ -197,6 +362,17 @@ Proof.
 ```
 <input-area>
 ```coq
+(* First m > 0. Then simplify step by step, each identity in its own
+   [It holds that ... as (...)] or [By ... it holds that ... as (...)]:
+   - m * / m = 1, with Rinv_r;
+   - hence m * / m + 1 = 2;
+   - hence m / (m * / m + 1) = m / 2 (rewrite with the previous identity,
+     see the hint);
+   - / / m = m, with Rinv_inv;
+   - hence m / (m * / m + 1) - 1 / / m = - (m / 2). *)
+
+(* Remove the absolute value: | - (m / 2) | = | m / 2 | (Rabs_Ropp),
+   m / 2 ≥ 0, and | m / 2 | = m / 2 (Rabs_pos_eq). Conclude, using 1 ≤ m. *)
 
 ```
 </input-area>
@@ -214,8 +390,15 @@ Specialise a hypothesis `H` by applying it to its arguments instead, as in
 `S_INR` and `pos_INR`.
 
 <hint title="💡 Hint (click to open/close)">
-Take $\varepsilon = \frac12$ and evaluate at $n = N_1 + 1$, $x = 1/(N_1+1)$,
-then use `gap_at_inv`.
+Suppose the convergence were uniform. With $\varepsilon = \frac12$ we get
+an $N$ such that $|f_n(x) - \frac1x| < \frac12$ for all $n \ge N$ and all
+$x > 0$. Evaluate at $n = N + 1$ (in Waterproof `S N1`, which satisfies
+`(S N1 ≥ N1)%nat`) and $x = \frac1n > 0$: by `gap_at_inv` with $m = n$ the
+same quantity is at least $\frac12$, a contradiction.
+
+Note that `fn_seq n x - f_lim x` is by definition
+`INR n / (INR n * x + 1) - 1 / x`: with `x := / INR (S N1)` this is exactly
+the expression of `gap_at_inv` with `m := INR (S N1)`.
 </hint>
 
 ```coq
@@ -224,6 +407,26 @@ Proof.
 ```
 <input-area>
 ```coq
+(* Assume uniform convergence, with a label, and write it out:
+   [It holds that ∀ ε > 0, ∃ N1 ∈ ℕ, ∀ n ≥ N1,
+      ∀ x ∈ (0, ∞), | fn_seq n x - f_lim x | < ε as (H).] *)
+
+(* Use it with ε = 1/2. Since we are deriving a contradiction, Use is not
+   available (see the remark): show 1/2 > 0 as (Hhalf), then
+   [By (H (1/2) Hhalf) it holds that ∃ N1 ∈ ℕ, ... as (HN).]
+   Obtain N1 and restate what you know about it, with a label. *)
+
+(* Prepare the evaluation at n = S N1 and x = / INR (S N1):
+   (S N1 ≥ N1)%nat, 1 ≤ INR (S N1) (with S_INR and pos_INR),
+   / INR (S N1) > 0 and / INR (S N1) ∈ (0, ∞). Label each of them. *)
+
+(* Apply the statement about N1 to all its arguments, for instance
+   [By (HN1 (S N1) HSN (/ INR (S N1)) Hx) it holds that ... < 1/2 as (Hlt).]
+   where, after [it holds that], you write fn_seq and f_lim out explicitly
+   (see the hint). *)
+
+(* gap_at_inv with m := INR (S N1) says that the same quantity is ≥ 1/2.
+   State it, and then [Contradiction.] *)
 
 ```
 </input-area>

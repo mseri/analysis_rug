@@ -12,10 +12,11 @@ numbers, $\sum a_n$ converges if and only if $\sum \frac{a_n}{1+a_n}$ converges.
 
 **Course material.**
 
-- Lecture 4: [Cauchy sequences and series](../index.html#lecture04)
+- Lecture 4: [Cauchy sequences and series](https://mseri.me/analysis_rug/#lecture04)
   (Abbott §2.6–2.7).
-- Formalisation: [`theories/Series.v`](../theories/Series.v). The results used
-  below are `series_comparison_test`, `series_convergent_terms_zero` and
+- Formalisation:
+  [`theories/Series.v`](https://mseri.me/analysis_rug/docs/rocq/RUG.Analysis.Series.html).
+  The results used below are `series_comparison_test`, `series_convergent_terms_zero` and
   `series_algebraic_limit`; `partial_sums a n` is $\sum_{k=0}^{n} a_k$, and
   "$\sum a_n$ converges" is written `∃ l1 ∈ ℝ, partial_sums a ⟶ l1`.
 
@@ -24,6 +25,13 @@ Notes:
 - The ratio $a_n / b_n$ only makes sense when $b_n \neq 0$, so we assume
   $b_n > 0$ throughout. (In Rocq `x / 0` is `0`, which would make the statement
   false as written.)
+- Convergence of a series only depends on its tail, but the comparison test of
+  Lecture 4 (`series_comparison_test`) asks for the inequality $a_n \leq b_n$
+  for *all* $n$. Part 1 below is there to remove that restriction, so that
+  you have it available in Parts 3 and 4.
+- In the second half of the assignment you do not need the ratio test: one
+  direction is a plain comparison ($\frac{a_n}{1+a_n} \le a_n$), the other one
+  uses that the terms of a convergent series tend to $0$.
 - **Invoke lemmas together with their hypotheses**, as in
   `By (my_lemma x Hx) it holds that ...` rather than `By my_lemma it holds that ...`.
   Otherwise the automation has to search for the arguments itself, and checking
@@ -55,8 +63,90 @@ Open Scope subset_scope.
 
 Set Default Goal Selector "!".
 Set Bullet Behavior "Waterproof Relaxed Subproofs".
+
+Set Default Timeout 60.
 ```
 </hint>
+
+**Getting help.**
+
+- The
+  [Waterproof proof steps sheet](https://github.com/impermeable/waterproof-vscode/blob/main/docs/tactics-sheet.md)
+  lists all the sentences you can use, each with a short example. The most
+  common error messages are explained in the hint at the end of this section.
+- The automation of Waterproof handles logic well, and algebra with `+`, `-`
+  and `*`. It does not always recognise that an algebraic step is correct,
+  though, in particular when divisions, fractions or absolute values are
+  involved. For such steps you will call a lemma from the Rocq standard
+  library, with `By ... it holds that ...` (in this homework: `Rinv_r`,
+  `Rabs_def2` and `Rmult_le_reg_r`). The remarks before each part explain
+  which lemma to use and how.
+- The input areas below contain comments `(* ... *)` that walk you through the
+  proof, roughly one comment for each group of lines. Write your proof in
+  between; you may keep the comments or delete them.
+- Write one sentence at a time and check it before writing the next one: the
+  Goals panel then always tells you what is left to prove.
+- Each sentence gets at most 60 seconds (this is the `Set Default Timeout 60.`
+  among the imports). If a line times out and you are **sure** that you are
+  doing an obvious thing, you can write `By magic it holds that ... as (...).`
+  (or `By magic we conclude that ... .`) instead, to circumvent the issue and
+  go on with the proof. Waterproof then accepts the statement without proof:
+  it warns `Please come back later to provide an actual proof of ...`, and the
+  `Qed.` of that lemma reports the proof as incomplete. The rest of the
+  notebook keeps working, so you can come back to it later.
+
+<hint title="🛠 What do the error messages mean? (click to open/close)">
+
+- `Syntax error: Unfortunately, this sentence cannot be understood.`
+  Waterproof could not read the sentence. Check that the parentheses match,
+  that the sentence ends with a `.`, and that there is a space before a closing
+  `}`. Check also that the autocompletion of the editor did not replace one of
+  your words: it sometimes inserts a lemma name when you press space after
+  `and`. Press `Esc` to close the list of suggestions before typing the space.
+  In a long sentence, write a shorter version first, or split it over several
+  lines, to find the culprit.
+- `Could not verify that ...` or `Could not verify this follows from ...`.
+  The statement may well be true, but the automation could not find a proof.
+  Make a smaller step: first state an intermediate fact with
+  `It holds that ... as (...)`, or hand over the lemma you have in mind with
+  `By ... it holds that ...`.
+- `Timeout: Waterproof could not find a proof in the allocated time.`
+  The same problem: the step is too large (it took more than 60 seconds).
+  Make a smaller step, or see the remark on `By magic` above.
+- `Wrong goal specified.` The statement after `We need to show that` is not
+  what has to be proved. Compare it, symbol by symbol, with the Goals panel.
+- `Wrong assumption specified.` The statement after `Assume that` is not the
+  hypothesis of the implication that you are proving.
+- `Expected variable name x instead of y` (after `Take` or `Obtain`). Use the
+  same name as in the statement you are working on.
+- `The reference H was not found in the current environment` (or
+  `The variable H was not found ...`). There is no `H` at this point: a typo,
+  a missing `as (H)`, or `H` was introduced inside another `{ ... }` block or
+  another bullet.
+- `Attempt to save an incomplete proof` (at `Qed.`). Some goals are still
+  open: look at the Goals panel.
+</hint>
+
+**How to read the statements.**
+
+- `(a b : ℕ → ℝ)` in a lemma says that `a` and `b` are sequences of real
+  numbers, that is functions from `ℕ` to `ℝ`, and `a n` is the term $a_n$.
+  Here the colon reads "of type": `ℕ → ℝ` is a type of functions, not a set of
+  numbers, so `∈` cannot be used.
+- A hypothesis in parentheses, such as `(Ha : ∀ n ∈ ℕ, 0 ≤ a n)`, is an
+  assumption of the lemma, with the label `Ha`. In the proof you use it as any
+  other labelled hypothesis.
+- `fun n : ℕ => a n / b n` is the sequence $n \mapsto \frac{a_n}{b_n}$ (as in
+  Homework 1, `fun n => ...` is "the function that sends `n` to ..."). After
+  `fun` the variable needs its type, hence the colon.
+- `∀ n ≥ Nn, P` means "for every natural number `n ≥ Nn`, `P` holds", and
+  `∀ n > Nn, P` is similar. You prove such a statement with `Take n ≥ Nn.`
+  (or `Take n > Nn.`), and then `n ≥ Nn` is among your hypotheses.
+- `%nat` tells Rocq to read an expression in `ℕ` rather than in `ℝ`:
+  `(n + 1)%nat` is the natural number $n + 1$, and `(n ≥ Nn)%nat` compares two
+  natural numbers.
+- Sequences start at $n = 0$ in Rocq, so `partial_sums a n` is
+  $\sum_{k=0}^{n} a_k$.
 
 ## Part 1: comparison from a certain index onwards
 
@@ -66,18 +156,22 @@ convergence of $\sum b_n$ implies convergence of $\sum a_n$.
 This variant of `series_comparison_test` is given to you, since its proof is
 long and is not the point of the assignment. You will use it in Parts 3 and 4.
 You do not need to read the proof, but it is a good example of an induction in
-Waterproof: in the induction step the goal is stated for `(n + 1)%nat`, not
-`S n`, and in the base case one writes `0%nat`, because a plain `0` is read as
-a real number.
+Waterproof: note that in the induction step the goal is stated for
+`(n + 1)%nat`, not `S n`, and in the base case one writes `0%nat`, because `0`
+would be read as a real number.
+You can also select and delete the proof to try it on your own.
 
 ```coq
 Lemma tail_comparison (a b : ℕ → ℝ) (Nn : ℕ) (L : ℝ)
-    (Ha : ∀ n : ℕ, 0 ≤ a n)
-    (Hb0 : ∀ n : ℕ, 0 ≤ b n)
-    (Hab : ∀ n : ℕ, (n > Nn)%nat → a n ≤ b n)
+    (Ha : ∀ n ∈ ℕ, 0 ≤ a n)
+    (Hb0 : ∀ n ∈ ℕ, 0 ≤ b n)
+    (Hab : ∀ n > Nn, a n ≤ b n)
     (HL : partial_sums b ⟶ L) :
     ∃ l1 ∈ ℝ, partial_sums a ⟶ l1.
 Proof.
+```
+<input-area>
+```coq
 (* Step 1: the partial sums of a are non-decreasing. *)
 We claim that ∀ n ∈ ℕ, a n ≥ 0 as (Ha').
 { Take n ∈ ℕ. It holds that 0 ≤ a n. We conclude that a n ≥ 0. }
@@ -85,7 +179,7 @@ By partial_sums_pos_incr it holds that Un_growing (partial_sums a) as (Hgrow).
 
 (* Step 2: compare the partial sums: up to index Nn we use monotonicity,
    after Nn we use a n ≤ b n. *)
-We claim that ∀ n : ℕ, partial_sums a n ≤ partial_sums a Nn + partial_sums b n
+We claim that ∀ n ∈ ℕ, partial_sums a n ≤ partial_sums a Nn + partial_sums b n
   as (Hcomp).
 {
   We use induction on n.
@@ -97,7 +191,7 @@ We claim that ∀ n : ℕ, partial_sums a n ≤ partial_sums a Nn + partial_sums
     It holds that 0 ≤ b 0%nat as (Hb0pos).
     We conclude that partial_sums a 0 ≤ partial_sums a Nn + partial_sums b 0%nat.
   + We now show the induction step.
-    Take n : ℕ.
+    Take n ∈ ℕ.
     Assume that partial_sums a n ≤ partial_sums a Nn + partial_sums b n as (IH).
     We need to show that
       partial_sums a (n + 1)%nat ≤ partial_sums a Nn + partial_sums b (n + 1)%nat.
@@ -126,7 +220,7 @@ By partial_sums_pos_incr it holds that Un_growing (partial_sums b) as (Hgrowb).
 By convergence_equivalence it holds that
   (partial_sums b ⟶ L ⇔ Un_cv (partial_sums b) L) as (Hb_iff).
 By Hb_iff it holds that Un_cv (partial_sums b) L as (HbL).
-By growing_ineq it holds that ∀ n : ℕ, partial_sums b n ≤ L as (Hb_le).
+By growing_ineq it holds that ∀ n ∈ ℕ, partial_sums b n ≤ L as (Hb_le).
 
 (* Step 4: hence the partial sums of a are bounded ... *)
 We claim that bound (EUn (partial_sums a)).
@@ -151,6 +245,9 @@ By Ha_iff it holds that partial_sums a ⟶ l as (Hal).
 Choose l1 := l.
 { Indeed, l1 ∈ ℝ. }
 We conclude that partial_sums a ⟶ l1.
+```
+</input-area>
+```coq
 Qed.
 ```
 
@@ -164,29 +261,79 @@ $$
 a_n \le \frac{3c}{2} b_n \quad\text{and}\quad b_n \le \frac2c a_n .
 $$
 
-**Waterproof remark.** The automation treats `/ u` as an unknown. To pass from
-`a n / b n` to a statement about `a n`, give it `b n * / b n = 1`, and likewise
-`c * / c = 1`, using `Rinv_r : r ≠ 0 → r * / r = 1`.
-The automation also does not remove absolute values from hypotheses on its
-own. To turn `|t| < a` into two inequalities without absolute values, use
-`Rabs_def2 : |x| < a → x < a ∧ - a < x`, e.g.
-`By Rabs_def2 it holds that t < a ∧ - a < t as (H).`
+**Waterproof remark: divisions.** As in Homework 1, single letters such as
+`x`, `u`, `r`, `t` and `s` in the remarks are placeholders: replace them by the
+expressions of your own proof. In Rocq, `x / u` means `x * / u`, where
+`/ u` is the inverse of `u`. The automation treats `/ u` as if it were a new
+unknown number: in particular it does not know that `u * / u = 1`, because
+that is only true when `u ≠ 0`. You have to tell it, with the standard library
+lemma `Rinv_r : r ≠ 0 → r * / r = 1`. For instance, to pass from `a n / b n`
+to a statement about `a n`:
+
+- `It holds that b n > 0 as (Hbn).`
+- `By Rinv_r it holds that b n * / b n = 1 as (Hbinv).`
+- `It holds that (a n / b n) * b n = a n as (Hprod).`
+
+Do the same for `c * / c = 1`.
+
+**Waterproof remark: absolute values.** The automation does not remove
+absolute values from hypotheses on its own. To turn `|t| < s` into two
+inequalities without absolute values, use
+`Rabs_def2 : |x| < a → x < a ∧ - a < x` (here `x` and `a` are placeholders
+too, not the sequence `a`), e.g.
+`By Rabs_def2 it holds that t < s ∧ - s < t as (H).`
 
 <hint title="💡 Hint (click to open/close)">
-Use the definition of the limit with $\varepsilon = c/2$, remove the absolute
-value, then multiply by $b_n > 0$.
+Since $\frac{a_n}{b_n} \to c$, the definition of the limit with
+$\varepsilon = \frac c2 > 0$ gives an $N$ such that for all $n \ge N$
+$$
+\bigg|\frac{a_n}{b_n} - c\bigg| < \frac c2,
+\qquad\text{that is}\qquad
+\frac c2 < \frac{a_n}{b_n} < \frac{3c}{2}.
+$$
+Multiplying by $b_n > 0$ gives $\frac c2 b_n < a_n < \frac{3c}{2} b_n$. The
+right inequality is the first claim; multiplying the left one by
+$\frac2c > 0$ gives the second one.
+
+In Waterproof, the definition of `(fun n : ℕ => a n / b n) ⟶ c` reads
+`∀ ε > 0, ∃ N1 ∈ ℕ, ∀ n ≥ N1, |a n / b n - c| < ε`.
 </hint>
 
 ```coq
 Lemma ratio_bounds (a b : ℕ → ℝ) (c : ℝ) (Hc : c > 0)
-    (Hbpos : ∀ n : ℕ, b n > 0)
+    (Hbpos : ∀ n ∈ ℕ, b n > 0)
     (Hlim : (fun n : ℕ => a n / b n) ⟶ c) :
-    ∃ Nn ∈ ℕ, ∀ n : ℕ, (n ≥ Nn)%nat →
+    ∃ Nn ∈ ℕ, ∀ n ≥ Nn,
       a n ≤ (3*c/2) * b n ∧ b n ≤ (2/c) * a n.
 Proof.
 ```
 <input-area>
 ```coq
+(* First write out the definition of the limit in (Hlim), with
+   [It holds that ∀ ε > 0, ∃ N1 ∈ ℕ, ... as (Hlim').]
+   Before using it with ε = c / 2, tell the system that c / 2 > 0. *)
+
+(* Use the definition with ε = c / 2: [Use ε := c / 2 in (Hlim').]
+   Waterproof then asks you to check that c / 2 > 0, with
+   [{ Indeed, c / 2 > 0. }]. Restate what you obtained, that is
+   ∃ N1 ∈ ℕ, ... with c / 2 in place of ε, with [It holds that ... as (HN1).]
+   and obtain the index N1 from HN1 (see the Tutorial for the syntax) *)
+
+(* Now the goal: [Choose Nn := N1.] and check [{ Indeed, Nn ∈ ℕ. }].
+   Restate the goal with [We need to show that ∀ n ≥ Nn, ...]
+   and take n with [Take n ≥ Nn.] *)
+
+(* For this n we know that |a n / b n - c| < c / 2: state it with
+   [It holds that ... as (Hq).] Remove the absolute value with Rabs_def2
+   (see the remark above) and split the resulting conjunction with
+   [Because (...) both (...) as (...) and (...) as (...).] *)
+
+(* Now the algebra. Following the remark above, provide one at a time
+   b n > 0, b n * / b n = 1 (Rinv_r), (a n / b n) * b n = a n,
+   c * / c = 1 (Rinv_r) and / c > 0.
+   Then prove a n ≤ (3*c/2) * b n and c / 2 * b n ≤ a n, and from the
+   latter b n ≤ (2/c) * a n, each in its own [It holds that ... as (...)].
+   Finally [We conclude that ... ∧ ... .] *)
 
 ```
 </input-area>
@@ -198,7 +345,7 @@ Since the bounds of Part 2 involve a constant factor, we also need that
 rescaling a series does not affect convergence. Here `sprod b K` is the sequence
 $n \mapsto K \cdot b_n$ (see `theories/Series.v`). This is the first half of
 `series_algebraic_limit` from the lectures, with both sequences equal to `b`,
-so it is given to you.
+and we give you directly the proof.
 
 ```coq
 Lemma scaled_series_converges (b : ℕ → ℝ) (K L : ℝ) (HL : partial_sums b ⟶ L) :
@@ -222,19 +369,57 @@ Both series converge, or neither does.
 unfolding it with `We need to show that 0 ≤ K * a n.` (or similar).
 
 <hint title="💡 Hint (click to open/close)">
-Prove the two implications separately. They are symmetric: combine Part 2,
-`scaled_series_converges` and Part 1.
+Prove the two implications separately. They are symmetric. For instance, if
+$\sum b_n$ converges to $L$, then $\sum \frac{3c}{2} b_n$ converges to
+$\frac{3c}{2} L$ (`scaled_series_converges`), and by Part 2
+$a_n \le \frac{3c}{2} b_n$ for $n \ge N$. So Part 1 applies to $a_n$ and
+$\frac{3c}{2} b_n$. The other implication is the same with the roles of $a_n$
+and $b_n$ swapped, and the constant $\frac2c$.
+
+In Waterproof, `tail_comparison a b Nn L Ha Hb0 Hab HL` needs four facts,
+which you should first prove and label one by one: `0 ≤ a n` for all `n`,
+`0 ≤ b n` for all `n`, `a n ≤ b n` for `n > Nn`, and `partial_sums b ⟶ L`.
+Here the role of `b` is played by `sprod b (3*c/2)` (or `sprod a (2/c)`).
 </hint>
 
 ```coq
 Theorem series_ratio_comparison (a b : ℕ → ℝ) (c : ℝ) (Hc : c > 0)
-    (Ha0 : ∀ n : ℕ, 0 ≤ a n) (Hbpos : ∀ n : ℕ, b n > 0)
+    (Ha0 : ∀ n ∈ ℕ, 0 ≤ a n) (Hbpos : ∀ n ∈ ℕ, b n > 0)
     (Hlim : (fun n : ℕ => a n / b n) ⟶ c) :
     (∃ l1 ∈ ℝ, partial_sums a ⟶ l1) ⇔ (∃ l1 ∈ ℝ, partial_sums b ⟶ l1).
 Proof.
 ```
 <input-area>
 ```coq
+(* Before splitting the equivalence, get the index Nn from Part 2:
+   [By (ratio_bounds a b c Hc Hbpos Hlim) it holds that ... as (Hbounds).]
+   (copy the conclusion of ratio_bounds after [it holds that])
+   and [Obtain Nn according to ...] *)
+
+(* tail_comparison wants 0 ≤ b n, while we know b n > 0. Prove it once
+   and for all with [We claim that ∀ n ∈ ℕ, ....]
+   followed by its proof in a block { ... }. *)
+
+(* [We show both directions.] gives two bullets. Start each of them with
+   [We need to show that (...) ⇒ (...).] *)
+
+(* First direction: ∑ a converges ⇒ ∑ b converges. We compare b n with
+   (2/c) * a n, which is sprod a (2/c) n.
+   - Assume the hypothesis, obtain the limit l1, and restate
+     [It holds that partial_sums a ⟶ l1 as (Hacv').]
+   - By scaled_series_converges (applied to its arguments),
+     partial_sums (sprod a (2/c)) ⟶ ((2/c) * l1); call it (Hscal).
+   - Claim ∀ n ∈ ℕ, 0 ≤ sprod a (2/c) n as (Hpos). In its proof, after
+     [Take n ∈ ℕ.], unfold with [We need to show that 0 ≤ (2/c) * a n.]
+   - Claim ∀ n > Nn, b n ≤ sprod a (2/c) n as (Hle), and start its
+     proof with [Take n > Nn.] Hbounds is stated for n ≥ Nn, so first
+     get that from n > Nn with [It holds that (n ≥ Nn)%nat.]
+   - Conclude with
+     [By (tail_comparison b (sprod a (2/c)) Nn ((2/c) * l1) Hb0 Hpos Hle Hscal)
+        we conclude that ∃ l1 ∈ ℝ, partial_sums b ⟶ l1.] *)
+
+(* Second direction: the same, with a and b swapped and 3*c/2 in place
+   of 2/c. *)
 
 ```
 </input-area>
@@ -265,8 +450,15 @@ common factor in an inequality on its own: for that use
 `By Rmult_le_reg_r we conclude that u ≤ v.`
 
 <hint title="💡 Hint (click to open/close)">
-Clear the denominator: multiply by `1 + x` and cancel the common factor.
-For the third fact, first show `x ≤ 1`.
+Clear the denominator: multiply by `1 + x` and cancel the common factor. Since
+$1 + x > 0$ we have $\frac{x}{1+x}(1+x) = x$, hence
+
+- $0 \cdot (1+x) = 0 \le x = \frac{x}{1+x}(1+x)$, and cancelling $1+x$ gives
+  the first fact;
+- $\frac{x}{1+x}(1+x) = x \le x(1+x)$, because $x \ge 0$, and cancelling $1+x$
+  gives the second fact;
+- for the third fact, multiply the hypothesis by $1+x$: $x \le \frac12(1+x)$,
+  so $x \le 1$. Then $x = \frac{x}{1+x}(1+x) \le \frac{x}{1+x} \cdot 2$.
 </hint>
 
 ```coq
@@ -275,6 +467,10 @@ Proof.
 ```
 <input-area>
 ```coq
+(* Show 1 + x > 0 and (1 + x) * / (1 + x) = 1 (Rinv_r), then
+   x / (1 + x) * (1 + x) = x. Then show
+   0 * (1 + x) ≤ x / (1 + x) * (1 + x) and cancel 1 + x with
+   [By Rmult_le_reg_r we conclude that 0 ≤ x / (1 + x).] *)
 Admitted.
 ```
 </input-area>
@@ -285,6 +481,8 @@ Proof.
 ```
 <input-area>
 ```coq
+(* As for frac_nonneg, now comparing x / (1 + x) * (1 + x) with
+   x * (1 + x). *)
 Admitted.
 ```
 </input-area>
@@ -296,33 +494,64 @@ Proof.
 ```
 <input-area>
 ```coq
+(* Start as for frac_nonneg. Then multiply the hypothesis Hhalf by 1 + x
+   to show x ≤ 1. Finally compare x / (1 + x) * (1 + x) with
+   x / (1 + x) * 2, recalling that x / (1 + x) ≥ 0. *)
 Admitted.
 ```
 </input-area>
 
 Now prove the equivalence.
 
-**Waterproof remark.** The hypotheses of `series_comparison_test` are stated with
-`∀ n ∈ ℕ`, those of Part 1 with `∀ n : ℕ`; state them in exactly that form.
-As in Part 2, use `Rabs_def2` to remove an absolute value from a hypothesis.
+**Waterproof remark.** As in Part 2, use `Rabs_def2` to remove an absolute
+value from a hypothesis.
 
 <hint title="💡 Hint (click to open/close)">
-(⇒) Use `series_comparison_test`.
+(⇒) Since $0 \le \frac{a_n}{1+a_n} \le a_n$ for all $n$ (`frac_nonneg` and
+`frac_le`), this is the comparison test `series_comparison_test`.
 
-(⇐) The terms of a convergent series tend to $0$
-(`series_convergent_terms_zero`), so eventually
-$\frac{a_n}{1+a_n} \le \frac12$, and then `frac_ge` applies. Conclude with
-Part 1.
+(⇐) If $\sum \frac{a_n}{1+a_n}$ converges to $l$, its terms tend to $0$
+(`series_convergent_terms_zero`). With $\varepsilon = \frac12$ in the
+definition of the limit, eventually $\frac{a_n}{1+a_n} \le \frac12$, and then
+$a_n \le 2 \frac{a_n}{1+a_n}$ by `frac_ge`. Since
+$\sum 2 \frac{a_n}{1+a_n}$ converges to $2l$ (`scaled_series_converges`),
+Part 1 concludes.
 </hint>
 
 ```coq
-Theorem series_a_over_one_plus_a (a : ℕ → ℝ) (Ha : ∀ n : ℕ, 0 ≤ a n) :
+Theorem series_a_over_one_plus_a (a : ℕ → ℝ) (Ha : ∀ n ∈ ℕ, 0 ≤ a n) :
     (∃ l1 ∈ ℝ, partial_sums a ⟶ l1) ⇔
     (∃ l1 ∈ ℝ, partial_sums (fun n : ℕ => a n / (1 + a n)) ⟶ l1).
 Proof.
 ```
 <input-area>
 ```coq
+(* [We show both directions.] and start each bullet with
+   [We need to show that (...) ⇒ (...).] *)
+
+(* (⇒) Assume that ∑ a converges. series_comparison_test (see its
+   statement in theories/Series.v) needs two facts, stated with ∀ n ∈ ℕ:
+   - ∀ n ∈ ℕ, 0 ≤ (fun n : ℕ => a n / (1 + a n)) n, from frac_nonneg;
+   - ∀ n ∈ ℕ, (fun n : ℕ => a n / (1 + a n)) n ≤ a n, from frac_le.
+   Prove each as a claim. Inside, after [Take n ∈ ℕ.], get rid of the fun
+   with [We need to show that 0 ≤ a n / (1 + a n).] (and similarly), and
+   apply the lemma to its arguments, as in
+   [By (frac_nonneg (a n) Han) we conclude that ...], where (Han) is 0 ≤ a n.
+   Then [By (series_comparison_test ... ) we conclude that ...]. *)
+
+(* (⇐) Assume that ∑ a n / (1 + a n) converges, obtain the limit l1 and
+   restate [It holds that partial_sums (...) ⟶ l1 as (Hcv').]
+   - By series_convergent_terms_zero, (fun n : ℕ => a n / (1 + a n)) ⟶ 0.
+     Write out this limit with ε, as in Part 2, use it with ε := 1/2 and
+     obtain an index N1.
+   - By scaled_series_converges, the partial sums of
+     sprod (fun n : ℕ => a n / (1 + a n)) 2 converge to 2 * l1.
+   - Claim that the terms of this sequence are non-negative (frac_nonneg).
+   - Claim that a n ≤ sprod (fun n : ℕ => a n / (1 + a n)) 2 n
+     for all n > N1 (start with [Take n > N1.]): remove the absolute
+     value with Rabs_def2, deduce a n / (1 + a n) ≤ 1/2 and apply
+     frac_ge.
+   - Conclude with tail_comparison, as in Part 3. *)
 
 ```
 </input-area>

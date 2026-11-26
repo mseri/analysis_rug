@@ -6,13 +6,17 @@ point.
 
 **Course material.**
 
-- Lecture 5: [open and closed sets](../index.html#lecture05) (Abbott §3.2),
-  Lecture 6: [compactness](../index.html#lecture06) (Abbott §3.3).
-- Formalisation: [`theories/Topology.v`](../theories/Topology.v) (open sets
-  `A is _open_`, from the Waterproof library `Waterproof.Libs.Analysis.OpenAndClosed`,
-  and limit points `x is a _limit point_ of A`, i.e. `is_limit_point A x`) and
-  [`theories/Compactness.v`](../theories/Compactness.v) (`open_cover`,
-  `has_finite_subcover`, `compact_iff_finite_subcover`).
+- Lecture 5:
+  [open and closed sets](https://mseri.me/analysis_rug/#lecture05)
+  (Abbott §3.2), Lecture 6:
+  [compactness](https://mseri.me/analysis_rug/#lecture06) (Abbott §3.3).
+- Formalisation:
+  [`theories/Topology.v`](https://mseri.me/analysis_rug/docs/rocq/RUG.Analysis.Topology.html)
+  (open sets `A is _open_`, from the Waterproof library
+  `Waterproof.Libs.Analysis.OpenAndClosed`, and limit points
+  `x is a _limit point_ of A`, i.e. `is_limit_point A x`) and
+  [`theories/Compactness.v`](https://mseri.me/analysis_rug/docs/rocq/RUG.Analysis.Compactness.html)
+  (`open_cover`, `has_finite_subcover`, `compact_iff_finite_subcover`).
 
 **The idea of the proof.** Let $A$ be bounded, say $A \subseteq [-M, M]$, and
 suppose $A$ has *no* limit point. Then every $c \in [-M,M]$ has a radius
@@ -59,7 +63,67 @@ Open Scope subset_scope.
 
 Set Default Goal Selector "!".
 Set Bullet Behavior "Waterproof Relaxed Subproofs".
+
+Set Default Timeout 60.
 ```
+</hint>
+
+**Getting help.**
+
+- The
+  [Waterproof proof steps sheet](https://github.com/impermeable/waterproof-vscode/blob/main/docs/tactics-sheet.md)
+  lists all the sentences you can use, each with a short example. The most
+  common error messages are explained in the hint at the end of this section.
+- The automation of Waterproof handles logic well, and algebra with `+`, `-`
+  and `*`. It does not always recognise that a step is correct, though, in
+  particular when absolute values are involved. For such steps you will call a
+  lemma from the Rocq standard library, with `By ... it holds that ...` (in
+  this homework: `Rabs_pos_lt` and `Rabs_triang`). The hints explain which
+  lemma to use and how.
+- The input areas below contain comments `(* ... *)` that walk you through the
+  proof, roughly one comment for each group of lines. Write your proof in
+  between; you may keep the comments or delete them.
+- Write one sentence at a time and check it before writing the next one: the
+  Goals panel then always tells you what is left to prove.
+- Each sentence gets at most 60 seconds (this is the `Set Default Timeout 60.`
+  among the imports). If a line times out and you are **sure** that you are
+  doing an obvious thing, you can write `By magic it holds that ... as (...).`
+  (or `By magic we conclude that ... .`) instead, to circumvent the issue and
+  go on with the proof. Waterproof then accepts the statement without proof:
+  it warns `Please come back later to provide an actual proof of ...`, and the
+  `Qed.` of that lemma reports the proof as incomplete. The rest of the
+  notebook keeps working, so you can come back to it later.
+
+<hint title="🛠 What do the error messages mean? (click to open/close)">
+
+- `Syntax error: Unfortunately, this sentence cannot be understood.`
+  Waterproof could not read the sentence. Check that the parentheses match,
+  that the sentence ends with a `.`, and that there is a space before a closing
+  `}`. Check also that the autocompletion of the editor did not replace one of
+  your words: it sometimes inserts a lemma name when you press space after
+  `and`. Press `Esc` to close the list of suggestions before typing the space.
+  In a long sentence, write a shorter version first, or split it over several
+  lines, to find the culprit.
+- `Could not verify that ...` or `Could not verify this follows from ...`.
+  The statement may well be true, but the automation could not find a proof.
+  Make a smaller step: first state an intermediate fact with
+  `It holds that ... as (...)`, or hand over the lemma you have in mind with
+  `By ... it holds that ...`.
+- `Timeout: Waterproof could not find a proof in the allocated time.`
+  The same problem: the step is too large (it took more than 60 seconds).
+  Make a smaller step, or see the remark on `By magic` above.
+- `Wrong goal specified.` The statement after `We need to show that` is not
+  what has to be proved. Compare it, symbol by symbol, with the Goals panel.
+- `Wrong assumption specified.` The statement after `Assume that` is not the
+  hypothesis of the implication that you are proving.
+- `Expected variable name x instead of y` (after `Take` or `Obtain`). Use the
+  same name as in the statement you are working on.
+- `The reference H was not found in the current environment` (or
+  `The variable H was not found ...`). There is no `H` at this point: a typo,
+  a missing `as (H)`, or `H` was introduced inside another `{ ... }` block or
+  another bullet.
+- `Attempt to save an incomplete proof` (at `Qed.`). Some goals are still
+  open: look at the Goals panel.
 </hint>
 
 We call a set *infinite* if no finite list of reals exhausts it.
@@ -79,6 +143,23 @@ Definition iso_ball (A : subset ℝ) (p : ball_index) : subset ℝ :=
            ∧ | x - fst p | < snd p.
 ```
 
+**How to read these definitions.**
+
+- `list ℝ` is the type of finite lists of real numbers, and `In a l` says
+  that `a` is one of the elements of the list `l`. So `is_infinite A` says:
+  for every finite list `l` of real numbers, some `a ∈ A` is not in `l`. In
+  `∀ l : list ℝ` the colon reads "of type": a list is not a real number, and
+  `list ℝ` is a type rather than a set, so `∈` cannot be used here.
+- `ball_index` is the type of pairs of real numbers. `idx c r` is the pair
+  $(c, r)$, and for a pair `p` the components are `fst p` (first) and `snd p`
+  (second): here they are the centre and the radius of a ball.
+- As in Homework 1, a subset of $\mathbb{R}$ is given by the property of its
+  elements: `iso_ball A p` is `fun x => ...`, so `x ∈ iso_ball A p` (also
+  written `iso_ball A p x`) is the statement after `=>`. In words:
+  `iso_ball A p` is the ball with centre `fst p` and radius `snd p` if this
+  ball meets $A$ at most in its centre, and it is empty otherwise.
+- Similarly, `[-M, M] x` is the same as `x ∈ [-M, M]`.
+
 ## Part 1: points that are not limit points
 
 Show that if $c$ is not a limit point of $A$, then some ball around $c$ meets
@@ -86,11 +167,19 @@ $A$ at most in $c$.
 
 <hint title="💡 Hint (click to open/close)">
 Recall that `c is a _limit point_ of A` unfolds to
-`∀ ε > 0, ∃ y ∈ A, 0 < | y - c | < ε`. A proof by contradiction works well.
-It can help to rewrite the quantifiers pushing the negation of the conclusion
-by one quantifier at a time, and then check the definition of limit point
-directly.
-`Rabs_pos_lt` gives `0 < | t |` from `t ≠ 0`.
+`∀ ε > 0, ∃ y ∈ A, 0 < | y - c | < ε`.
+
+A proof by contradiction works well. If the conclusion fails, then for every
+$r > 0$ there is a $y \in A$ with $|y - c| < r$ and $y \neq c$. But then
+$0 < |y - c| < r$, so $c$ is a limit point of $A$, against the hypothesis.
+
+In Waterproof, push the negation of the conclusion through the quantifiers one
+quantifier at a time, each time with an `It holds that ...`: the negation of
+`∃ r > 0, ∀ y ∈ A, P` is `∀ r > 0, ¬ (∀ y ∈ A, P)`, that is
+`∀ r > 0, ∃ y ∈ A, ¬ P`, and the negation of an implication `Q → R` is
+`Q ∧ ¬ R`. Then check the definition of limit point directly.
+`Rabs_pos_lt : t ≠ 0 → 0 < | t |` gives `0 < | t |` from `t ≠ 0`, where `t`
+is a placeholder for any expression (here you will use `y - c`).
 </hint>
 
 ```coq
@@ -101,6 +190,30 @@ Proof.
 ```
 <input-area>
 ```coq
+(* Assume the hypothesis ¬ (c is a _limit point_ of A), with a label. *)
+
+(* Argue by contradiction: [We argue by contradiction.] followed by
+   [Assume that ¬ (...) as (Hcon).], where the dots are the goal. *)
+
+(* Push the negation inside, one quantifier at a time, with one or two
+   [It holds that ...] statements (see the hint), until you reach
+     ∀ r > 0, ∃ y ∈ A, | y - c | < r ∧ y ≠ c
+   and give a label to this last statement. *)
+
+(* We now show that c is a limit point after all, with
+   [We claim that c is a _limit point_ of A as (Hlp).] and a block { ... }.
+   Inside the block:
+   - unfold the definition with [We need to show that ∀ ε > 0, ...]
+     (see the hint for what it looks like);
+   - take ε > 0 and use the statement of the previous step with r := ε,
+     with [Use r := ε in (...).] and [{ Indeed, ε > 0. }];
+   - restate what you get, obtain y, and show 0 < | y - c | with
+     Rabs_pos_lt, after showing that y ≠ c and then y - c ≠ 0;
+   - the goal is now ∃ y ∈ A, ...: since the name y is already taken,
+     choose it with [Choose y0 := y.], check [{ Indeed, y0 ∈ A. }]
+     and conclude. *)
+
+(* The claim and the hypothesis contradict each other: [Contradiction.] *)
 
 ```
 </input-area>
@@ -125,6 +238,13 @@ can rewrite with it inside `| ... |`.
 <hint title="💡 Hint (click to open/close)">
 This is the usual "balls are open" proof (compare with `open_interval_is_open`
 in `theories/Topology.v`) together with the triangle inequality `Rabs_triang`.
+If $y$ lies in `iso_ball A p`, take the radius
+$r = \texttt{snd p} - |y - \texttt{fst p}| > 0$. For $|x - y| < r$,
+$$
+|x - \texttt{fst p}| \le |x - y| + |y - \texttt{fst p}| < \texttt{snd p},
+$$
+and the first half of the definition of `iso_ball` does not depend on the
+point at all, so $x$ lies in `iso_ball A p` too.
 </hint>
 
 ```coq
@@ -133,6 +253,17 @@ Proof.
 ```
 <input-area>
 ```coq
+(* Unfold the definition of open set with
+   [We need to show that ∀ y ∈ (iso_ball A p),
+      ∃ r > 0, ∀ x ∈ (open_ball y r), x ∈ (iso_ball A p).]
+   Take y, write out y ∈ iso_ball A p using the definition of iso_ball,
+   and split the conjunction. *)
+
+(* Choose the radius of the hint, prove that it is positive, take x in
+   the small ball, and show | x - fst p | < snd p with the triangle
+   inequality, as in the remark above. Finally restate the goal using the
+   definition of iso_ball, and conclude. *)
+
 Admitted.
 ```
 </input-area>
@@ -174,10 +305,37 @@ Now put the pieces together.
 `∀`-hypotheses to their arguments, e.g. `By (iso_ball_open A i) ...`: a bare
 `By iso_ball_open ...` makes the check way too slow.
 
+**Waterproof remark: reading the main theorem.** The hypothesis `HHB` is the
+Heine–Borel theorem: for every type `Idx` of indices and every family `U` of
+sets indexed by `Idx`, an open cover of $[-M, M]$ has a finite subcover. It is
+written with the plain `forall` instead of `∀` because it quantifies over a
+type (`Idx : Type`), but it means the same. You use it with `Idx` equal to
+`ball_index` and `U` equal to `iso_ball A`.
+
+The definitions `open_cover` and `has_finite_subcover` (see the hint) are
+written with `∀ x : ℝ, K x → ...`, which means "for every real number `x` in
+`K`". When you restate them with `We need to show that ...` or
+`It holds that ...`, copy them in exactly the form of the hint: Waterproof
+rejects equivalent forms there, for instance `∀ x ∈ ℝ, K x → ...`.
+
 <hint title="💡 Hint (click to open/close)">
-Argue by contradiction, so that no real number is a limit point of `A`. Then
-show `open_cover (iso_ball A) [-M, M]` (Parts 1 and 2), apply `HHB`, and use
-`Hinf` with the list of centres `map fst l`.
+Argue by contradiction, so that no real number is a limit point of `A`. Then:
+
+1. Show `open_cover (iso_ball A) [-M, M]`: the sets are open by Part 2, and
+   every $x \in [-M,M]$ lies in `iso_ball A (idx x r)`, where $r$ is the radius
+   given by Part 1.
+2. Apply `HHB` to obtain a finite subcover, that is a list `l` of indices.
+3. Apply `Hinf` to the list of centres `map fst l`: this gives an $a \in A$
+   that is not one of the centres.
+4. But $a \in [-M,M]$ by `HM`, so $a$ lies in one of the balls
+   `iso_ball A i` with `In i l`. That ball meets $A$ at most in its centre, so
+   $a = \texttt{fst i}$, while `not_in_map_fst` says $a \neq \texttt{fst i}$.
+
+Recall that `open_cover U K` unfolds to
+`(∀ i : I, (U i) is _open_) ∧ (∀ x : ℝ, K x → ∃ i : I, U i x)` and
+`has_finite_subcover U K` to
+`∃ l : list I, ∀ x : ℝ, K x → ∃ i : I, In i l ∧ U i x` (see
+`theories/Compactness.v`).
 </hint>
 
 ```coq
@@ -186,11 +344,44 @@ Theorem bounded_infinite_has_limit_point (A : subset ℝ) (M : ℝ)
     (Hinf : is_infinite A)
     (HHB : forall (Idx : Type) (U : Idx → (ℝ → Prop)),
              open_cover U [-M, M] → has_finite_subcover U [-M, M]) :
-    ∃ x : ℝ, x is a _limit point_ of A.
+    ∃ x ∈ ℝ, x is a _limit point_ of A.
 Proof.
 ```
 <input-area>
 ```coq
+(* Step 1. Argue by contradiction and assume that no real number is a
+   limit point of A:
+   [Assume that ¬ (∃ x ∈ ℝ, x is a _limit point_ of A) as (Hno).]
+   Then restate this as ∀ x ∈ ℝ, ¬ (x is a _limit point_ of A). *)
+
+(* Step 2. [We claim that open_cover (iso_ball A) [-M, M] as (Hcov).]
+   In its block { ... }:
+   - unfold it with [We need to show that ... ∧ ... .] (see the hint);
+   - [We show both statements.] and start each bullet with
+     [We need to show that ... .];
+   - first bullet: take i : ball_index and use (iso_ball_open A i);
+   - second bullet: take x and assume [-M, M] x. Apply Part 1, that is
+     (not_limit_point_char A x Hx), where Hx says that x is not a limit
+     point, and obtain the radius r. Choose the index [Choose i := idx x r.]
+     and unfold the goal with the definition of iso_ball:
+     [We need to show that (0 < r ∧ ...) ∧ | x - x | < r.] *)
+
+(* Step 3. Heine–Borel:
+   [By (HHB ball_index (iso_ball A) Hcov) it holds that
+      has_finite_subcover (iso_ball A) [-M, M] as (Hfin).]
+   Write out what this means (see the hint) and obtain the list l. *)
+
+(* Step 4. A is infinite: write out Hinf as
+   ∀ l0 : list ℝ, ∃ a ∈ A, ¬ In a l0
+   and use it with [Use l0 := (map fst l) in (...).]
+   Obtain a, and label both a ∈ A and ¬ In a (map fst l). *)
+
+(* Step 5. a ∈ [-M, M] by HM, so a lies in one of the sets iso_ball A i,
+   with In i l. Write out iso_ball A i a with the definition of iso_ball,
+   and split the conjunctions until you get
+   ∀ y ∈ A, | y - fst i | < snd i → y = fst i.
+   Applied to a, it gives a = fst i, while not_in_map_fst gives a ≠ fst i.
+   [Contradiction.] *)
 
 ```
 </input-area>

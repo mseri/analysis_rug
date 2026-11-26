@@ -7,10 +7,11 @@ $$
 
 **Course material.**
 
-- Lecture 1: [the real numbers, suprema and infima](../index.html#lecture01)
+- Lecture 1: [the real numbers, suprema and infima](https://mseri.me/analysis_rug/#lecture01)
   (Abbott §1.2–1.4).
-- Formalisation: [`theories/Reals.v`](../theories/Reals.v), in particular
-  `inf_characterization`. The notions `_ is a _lower bound_ for _` and
+- Formalisation:
+  [`theories/Reals.v`](https://mseri.me/analysis_rug/docs/rocq/RUG.Analysis.Reals.html),
+  in particular `inf_characterization`. The notions `_ is a _lower bound_ for _` and
   `_ is the _infimum_ of _` come from the Waterproof library
   `Waterproof.Libs.Analysis.SupAndInf`, which `RUG.Analysis.Reals` re-exports.
 
@@ -45,8 +46,17 @@ Set Default Timeout 60.
 
 **Getting help.**
 
-- The [Waterproof reference sheet](../waterproof-reference-sheet.md) lists the
-  sentences you can use (Section 3) and the most common mistakes (Section 5).
+- The
+  [Waterproof reference sheet](https://github.com/mseri/analysis_rug/blob/main/waterproof-reference-sheet.md)
+  lists the sentences you can use (Section 3) and the most common mistakes
+  (Section 5).
+- The automation of Waterproof handles logic well, and algebra with `+`, `-`
+  and `*`. It does not always recognise that an algebraic step is correct,
+  though, in particular when divisions and fractions are involved. For such
+  steps you will call a lemma from the Rocq standard library, with
+  `By ... it holds that ...` (in this homework: `Rdiv_lt_0_compat`, `Rinv_r`
+  and `Rmult_lt_reg_r`). The remarks before each part explain which lemma to
+  use and how.
 - The input areas below contain comments `(* ... *)` that walk you through the
   proof, roughly one comment for each group of lines. Write your proof in
   between; you may keep the comments or delete them.
@@ -96,7 +106,7 @@ Set Default Timeout 60.
 We define the set $A$ formally.
 ```coq
 Definition A : subset ℝ :=
-  fun p => ∃ x : ℝ, ∃ y : ℝ,
+  fun p => ∃ x ∈ ℝ, ∃ y ∈ ℝ,
     1 ≤ 2*x ∧ 2*x < y ∧ p = (2*x + 1) / (3*y - x).
 
 Waterproof Register Expand "A";
@@ -104,20 +114,40 @@ Waterproof Register Expand "A";
   as "Definition A".
 ```
 
+**How to read this definition.** In Rocq a subset of $\mathbb{R}$ is described
+by the property that its elements satisfy. `fun p => ...` means "the function
+that sends `p` to ...": here it sends a real number `p` to the statement
+"there are real numbers `x` and `y` with $1 \le 2x$, $2x < y$ and
+$p = \frac{2x+1}{3y-x}$". The letter `p` is only a name for the element of $A$
+we are describing, in fact, any other letter would do.
+So, for a real number `q`, `q ∈ A` means exactly this statement with `p`
+replaced by `q`.
+
+When you copy the definition of $A$ into your proof, copy it exactly as it is
+written above.
+
 ## Part 1: 0 is a lower bound for A
 
-**Waterproof remark.** To unpack a nested existential `∃ x : ℝ, ∃ y : ℝ, ...`,
-obtain `x` first, then restate the remaining `∃ y : ℝ, ...` with
-`It holds that ... as (...)` before obtaining `y`. For example, from a
-hypothesis `(Hp)` of the form `∃ x : ℝ, ∃ y : ℝ, P x y`:
+**Waterproof remark: nested existentials.** By the definition of $A$, the
+statement `p ∈ A` is `∃ x ∈ ℝ, ∃ y ∈ ℝ, ...`: an existential statement inside
+another one. This is called a _nested existential_, and it does not appear in
+the tutorial. To use `x` and `y` in your proof, you extract one variable at a
+time: first obtain `x`, then restate what is left (a statement `∃ y ∈ ℝ, ...`
+about this `x`), and then obtain `y`. For example, from a hypothesis `(Hp)` of
+the form `∃ x ∈ ℝ, ∃ y ∈ ℝ, P x y`:
 
 - `Obtain x according to (Hp).`
-- `It holds that ∃ y : ℝ, P x y as (Hy).` (with `P x y` written out)
+- `It holds that ∃ y ∈ ℝ, P x y as (Hy).` (with `P x y` written out)
 - `Obtain y according to (Hy).`
+- `It holds that P x y as (Hxy).` (again written out)
 
-Split a conjunction `A ∧ B` stored in `(H)` with
-`Because (H) both (A) as (HA) and (B) as (HB).` For a triple conjunction
-`A ∧ B ∧ C` do it twice: first into `A` and `B ∧ C`, then split `B ∧ C`.
+**Waterproof remark: conjunctions.** For our `x` and `y`, the statement
+`P x y` is the conjunction `1 ≤ 2*x ∧ 2*x < y ∧ p = (2*x + 1) / (3*y - x)`.
+To show that `0 ≤ p` you need its three parts separately: `p = ...` tells you
+what `p` is, while `1 ≤ 2*x` and `2*x < y` give you that the numerator and the
+denominator are positive. You split a conjunction `P ∧ Q` stored in `(H)` with
+`Because (H) both (P) as (HP) and (Q) as (HQ).` For a triple conjunction
+`P ∧ Q ∧ R` do it twice: first into `P` and `Q ∧ R`, then split `Q ∧ R`.
 
 <hint title="💡 Hint (click to open/close)">
 An element $p \in A$ is a quotient $p = \frac{2x+1}{3y-x}$ with
@@ -185,21 +215,27 @@ for a goal `∃ a ∈ A, ...`, Waterproof first asks you to show that `a ∈ A`.
 this in a block `{ We need to verify that a ∈ A. ... }`).
 After the block you continue with the rest of the goal.
 
-**Waterproof remark: divisions.** The automation is good with `+`, `-` and
-`*`, but not with divisions. In Rocq, `x / u` means `x * / u`, where `/ u` is
-the inverse of `u`. The automation treats `/ u` as if it were a new unknown
-number: in particular, it does not know that `u * / u = 1`, because that is
-only true when `u ≠ 0`. You have to tell it, using the standard library lemma
-`Rinv_r : u ≠ 0 → u * / u = 1`, once for each expression `u` that you divide
-by:
+The same happens with `∃ x ∈ ℝ, ...`: after `Choose x := ...`, Waterproof
+asks you to show that `x ∈ ℝ`, which you do with `{ Indeed, x ∈ ℝ. }`. Then
+restate what is left with `We need to show that ...` before you go on.
+
+**Waterproof remark: divisions.** In this remark `x`, `u`, `r`, `r1` and
+`r2` are placeholders: they stand for the expressions in your own proof, and
+you replace them by those expressions when you write the sentences.
+
+The automation is good with `+`, `-` and `*`, but not with divisions. In Rocq,
+`x / u` means `x * / u`, where `/ u` is the inverse of `u`. The automation
+treats `/ u` as if it were a new unknown number: in particular, it does not
+know that `u * / u = 1`, because that is only true when `u ≠ 0`. You have to
+tell it, using the standard library lemma `Rinv_r : u ≠ 0 → u * / u = 1`, once
+for each expression `u` that you divide by:
 
 - `It holds that u > 0.`
 - `By Rinv_r it holds that u * / u = 1.`
 
 With these two facts in the context, the automation can check, for instance,
-`It holds that (x / u) * u = x.` (Replace `u` by the actual expression: in
-this exercise for example you will likely divide by `ε` and by the denominator
-of your element of $A$.)
+`It holds that (x / u) * u = x.` (In this exercise you will divide by `ε`
+and by the denominator of your element of $A$.)
 
 The second trick is to _clear the denominator_ in an inequality. To show
 `r1 < r2` it is often easier to show `r1 * r < r2 * r` for some `r > 0`, and
@@ -243,9 +279,11 @@ Proof.
        ...
      }
    Inside the block:
-   - write out what a ∈ A means with [We need to show that ∃ x : ℝ, ...]
+   - write out what a ∈ A means with [We need to show that ∃ x ∈ ℝ, ...]
      (copy the definition of A, with p replaced by a);
    - choose the two witnesses with [Choose x := ... .] and [Choose y := ... .];
+     after each of them, add [{ Indeed, x ∈ ℝ. }] (or y), and restate what
+     is left with [We need to show that ...];
    - finish with
      [We conclude that 1 ≤ 2*x ∧ 2*x < y ∧ a = (2*x + 1) / (3*y - x).]
      If this last step fails, try first to tell the system that 1/ε > 0. *)
@@ -269,8 +307,12 @@ Qed.
 
 ## Main result: 0 is the infimum of A
 
-The $\varepsilon$-characterisation of the infimum from Lecture 1,
-`inf_characterization` in `theories/Reals.v`, can be of great help.
+This follows from Parts 1 and 2 by the $\varepsilon$-characterisation of the
+infimum from Lecture 1 (`inf_characterization` in
+[`theories/Reals.v`](https://mseri.me/analysis_rug/docs/rocq/RUG.Analysis.Reals.html)).
+The Waterproof library contains the same characterisation (as `alt_char_inf`),
+and the automation can use it automatically.
+You only have to point it to the two lemmas you have proved.
 
 ```coq
 Lemma inf_A : 0 is the _infimum_ of A.
@@ -278,21 +320,8 @@ Proof.
 ```
 <input-area>
 ```coq
-(* The ε-characterisation of the infimum (Lecture 1) applies,
-   since 0 is a lower bound by Part 1. We should spell it out with
-   [By ... it holds that ... as (HypothesisName)].
-
-   Note that the lemma needs three arguments: the set, the candidate
-   infimum and the proof that it is a lower bound, so here we write
-   [By (inf_characterization A 0 A_lower_bound) it holds that ...]
-   followed by the equivalence (see the statement of inf_characterization
-   in theories/Reals.v, with A and 0 plugged in).
-   You write [⇔] with [\Leftrightarrow] *)
-
-(* To change the claim we want to prove with the appropriate side of the
-   if and only if we can use [By ... it suffices to show that ...]. *)
-
-(* At this point [By ... we conclude that ...] with the result of Part 2. *)
+(* Use the results of Parts 1 and 2 together:
+   [By ... and ... we conclude that ...] *)
 
 ```
 </input-area>
